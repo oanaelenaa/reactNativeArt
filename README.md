@@ -1,7 +1,7 @@
 # React Native Workshop app
 
 
-Instalation
+Getting started:
 
 1. npm install -g react-native-cli
 2. npm install
