@@ -36,6 +36,8 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+expo-react-native-workshop/node_modules
+
 # BUCK
 buck-out/
 \.buckd/
