@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     },
     textInput: {
         flex: 1,
-        //borderBottomWidth: Platform.os === 'ios' ? 1 : 0,
+        borderBottomWidth: Platform.OS === 'ios' ? 1 : 0,
         borderBottomColor: '#cdcdcd'
     }
 })
