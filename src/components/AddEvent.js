@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, Platform } from 'react-native';
 
 export default class AddEvent extends Component {
 
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     },
     textInput: {
         flex: 1,
-        borderBottomWidth: 1,
+        //borderBottomWidth: Platform.os === 'ios' ? 1 : 0,
         borderBottomColor: '#cdcdcd'
     }
 })
