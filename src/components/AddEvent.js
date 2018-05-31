@@ -51,7 +51,8 @@ export default class AddEvent extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 50
+        paddingTop: 50,
+        backgroundColor: 'rgba(0,0,0,0.5)'
     },
     line: {
         flexDirection: 'row',

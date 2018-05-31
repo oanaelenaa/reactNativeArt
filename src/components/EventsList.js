@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button, FlatList, Modal } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal } from 'react-native';
 import Event from './Event';
 import AddEvent from './AddEvent';
+import { RNCamera } from 'react-native-camera';
+console.log(RNCamera)
 
 
 export default class EventsList extends Component {
@@ -37,6 +39,22 @@ export default class EventsList extends Component {
         return (
             <View style={styles.container}>
                 {this.renderModal()}
+                <RNCamera
+                    ref={ref => {
+                    this.camera = ref;
+                    }}
+                    style = {styles.preview}
+                    type={RNCamera.Constants.Type.back}
+                    //flashMode={RNCamera.Constants.FlashMode.on}
+                    permissionDialogTitle={'Permission to use camera'}
+                    permissionDialogMessage={'We need your permission to use your camera phone'}
+                />
+                <TouchableOpacity
+            onPress={this.takePicture.bind(this)}
+            style = {styles.capture}
+        >
+            <Text style={{fontSize: 14}}> SNAP </Text>
+        </TouchableOpacity>
                 <Text style={styles.title}>{this.state.title}</Text>
                 <Button title="Update events" onPress={this.updateEventList.bind(this)} />
                 <Button title="Add event" onPress={this.toggleModal.bind(this)} />
@@ -53,6 +71,8 @@ export default class EventsList extends Component {
     renderModal() {
         return (
             <Modal
+                style={{padding: 40}}
+                transparent={true}
                 visible={this.state.visibleAddEvent}
             >
                 <AddEvent onAddEvent={this.addEvent.bind(this)}/>
@@ -65,9 +85,19 @@ export default class EventsList extends Component {
     }
 
     addEvent(event) {
+        this.props.navigation.navigat('')
         this.setState({eventList: [...this.state.eventList, {...event, id: Math.random()}]});
         this.toggleModal();
     }
+
+    takePicture = async function() {
+        if (this.camera) {
+          const options = { quality: 0.5, base64: true };
+          const data = await this.camera.takePictureAsync(options)
+          alert(data.uri)
+          console.log(data.uri);
+        }
+      };
 }
 
 const styles = StyleSheet.create({
@@ -80,5 +110,20 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold',
         textAlign: 'center'
+    },
+    preview: {
+        // justifyContent: 'flex-end',
+        // alignItems: 'center',
+        height: 200,
+        width: 200
+      },
+    capture: {
+        flex: 0,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 15,
+        paddingHorizontal: 20,
+        alignSelf: 'center',
+        margin: 20
     }
 })
