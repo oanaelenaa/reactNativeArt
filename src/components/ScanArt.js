@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal } from 'react-native';
-import Event from './Event';
-import AddEvent from './AddEvent';
 import { RNCamera } from 'react-native-camera';
 console.log(RNCamera)
 
 
-export default class EventsList extends Component {
+export default class ScanArt extends Component {
 
     constructor() {
         super();
@@ -38,7 +36,6 @@ export default class EventsList extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {this.renderModal()}
                 <RNCamera
                     ref={ref => {
                     this.camera = ref;
@@ -55,41 +52,11 @@ export default class EventsList extends Component {
         >
             <Text style={{fontSize: 14}}> SNAP </Text>
         </TouchableOpacity>
-                <Text style={styles.title}>{this.state.title}</Text>
-                <Button title="Update events" onPress={this.updateEventList.bind(this)} />
-                <Button title="Add event" onPress={this.toggleModal.bind(this)} />
-                
-                <FlatList
-                    data={this.state.eventList}
-                    renderItem={({item})=> this.renderItem(item)}
-                    keyExtractor={(item) => item.id.toString()}
-                />
+               
             </View>
         );
     }
-
-    renderModal() {
-        return (
-            <Modal
-                style={{padding: 40}}
-                transparent={true}
-                visible={this.state.visibleAddEvent}
-            >
-                <AddEvent onAddEvent={this.addEvent.bind(this)}/>
-            </Modal>
-        )
-    }
-
-    updateEventList() {
-        this.setState({eventList: [...this.state.eventList, {id: Math.random(), name: 'Test'}]});
-    }
-
-    addEvent(event) {
-        this.props.navigation.navigat('')
-        this.setState({eventList: [...this.state.eventList, {...event, id: Math.random()}]});
-        this.toggleModal();
-    }
-
+    
     takePicture = async function() {
         if (this.camera) {
           const options = { quality: 0.5, base64: true };

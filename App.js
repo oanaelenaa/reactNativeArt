@@ -12,7 +12,7 @@ import {
   View
 } from 'react-native';
 
-import EventsList from './src/components/EventsList';
+import ScanArt from './src/components/ScanArt';
 import TabNavigator from './src/components/TabNavigator';
 
 export default class App extends Component {
