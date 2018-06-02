@@ -70,7 +70,7 @@ export default class ScanArt extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 50,
+        paddingTop: 0,
         width: '100%'
     },
     title: {
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
     preview: {
         // justifyContent: 'flex-end',
         // alignItems: 'center',
-        height: 200,
-        width: 200
+        height: 300,
+        ///width:100%
       },
     capture: {
         flex: 0,

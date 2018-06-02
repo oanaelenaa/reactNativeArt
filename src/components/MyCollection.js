@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal,Alert } from 'react-native';
-import ArtItem from './ArtItem';
+import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal,Alert,Icon } from 'react-native';
+//import ArtItem from './ArtItem';
 let resultsCache = [];
-export default class ArtCollection extends Component {
+export default class MyCollection extends Component {
 
     constructor() {
         super();
@@ -15,7 +15,7 @@ export default class ArtCollection extends Component {
     }
 
     componentWillMount() {
-       this.loadData();
+      /// this.loadData();
     }
 
     loadData(){
@@ -27,8 +27,9 @@ export default class ArtCollection extends Component {
                 articles:data.records
             })           
         })
-    }
 
+    }
+    
     renderItem(item) {
         return (
             <ArtItem event={item}/>
@@ -38,33 +39,25 @@ export default class ArtCollection extends Component {
     render() {
         return (
             <View style={styles.container}>
-               <FlatList
-                    data={this.state.articles}
-                    renderItem={({item})=> this.renderItem(item)}
-                    keyExtractor={(item) => item.id.toString()}
-                />
+        
             </View>
         );
     }
-/* <Text style={styles.title}>{this.state.title}</Text>
-                <Button title="Update events" onPress={this.updateEventList.bind(this)} />
-                <Button title="Add event" onPress={this.toggleModal.bind(this)} />
-                
-                <FlatList
-                    data={this.state.eventList}
-                    renderItem={({item})=> this.renderItem(item)}
-                    keyExtractor={(item) => item.id.toString()}
-                />*/
-  /*  renderModal() {
-        return (
-            <Modal
-                style={{padding: 40}}
-                transparent={true}
-                visible={this.state.visibleAddEvent}
-            >
-                <AddEvent onAddEvent={this.addEvent.bind(this)}/>
-            </Modal>
-        )
+/*
+    <TouchableOpacity
+   style={{
+       borderWidth:1,
+       borderColor:'rgba(0,0,0,0.2)',
+       alignItems:'center',
+       justifyContent:'center',
+       width:100,
+       height:100,
+       backgroundColor:'#fff',
+       borderRadius:100,
+     }}
+ >
+   <Icon name={"chevron-right"}  size={30} color="#01a699" />
+ </TouchableOpacity>
 
 */
 }

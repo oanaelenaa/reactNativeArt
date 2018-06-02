@@ -4,6 +4,7 @@ import { TabNavigator } from 'react-navigation';
 import ScanArt from './ScanArt';
 import ArtCollection from './ArtCollection';
 import Event from './Event.js';
+import MyCollection from './MyCollection';
 class InfoScreen extends Component {
   render() {
     return (
@@ -18,6 +19,7 @@ export default TabNavigator(
   {
     ScanArt: ScanArt,
     Collection: ArtCollection,
+    Profile:MyCollection
   },
   {
     tabBarOptions: {
@@ -25,7 +27,7 @@ export default TabNavigator(
       inactiveTintColor: 'gray',
       labelStyle: {
         color: '#000000',
-        fontSize: 20,
+        fontSize: 12,
         flex: 1
       },
     },
