@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, Image, StyleSheet } from 'react-native';
+import { Animated, View, Text, Image, StyleSheet,TouchableHighlight } from 'react-native';
 
 export default class ArtItem extends Component {
     progress = new Animated.Value(0);
 
     componentDidMount() {
         Animated.timing(this.progress, { toValue: 1, duration: 500 }).start();
+    }
+    onPress(){
+        console.log("preeess");
     }
 
     render() {

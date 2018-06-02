@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal,Alert,Icon } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal,Alert } from 'react-native';
 //import ArtItem from './ArtItem';
+import Icon from 'react-native-vector-icons/FontAwesome';
 let resultsCache = [];
 export default class MyCollection extends Component {
 
@@ -39,12 +40,7 @@ export default class MyCollection extends Component {
     render() {
         return (
             <View style={styles.container}>
-        
-            </View>
-        );
-    }
-/*
-    <TouchableOpacity
+            <TouchableOpacity
    style={{
        borderWidth:1,
        borderColor:'rgba(0,0,0,0.2)',
@@ -56,36 +52,24 @@ export default class MyCollection extends Component {
        borderRadius:100,
      }}
  >
-   <Icon name={"chevron-right"}  size={30} color="#01a699" />
+   <Icon name={"user"}  size={60} color="#01a699" />
  </TouchableOpacity>
+            </View>
+        );
+    }
 
-*/
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 50,
+        paddingTop: 10,
+        paddingLeft:10,
         width: '100%'
     },
     title: {
         fontSize: 25,
         fontWeight: 'bold',
         textAlign: 'center'
-    },
-    preview: {
-        // justifyContent: 'flex-end',
-        // alignItems: 'center',
-        height: 200,
-        width: 200
-      },
-    capture: {
-        flex: 0,
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        padding: 15,
-        paddingHorizontal: 20,
-        alignSelf: 'center',
-        margin: 20
     }
 })

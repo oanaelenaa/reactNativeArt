@@ -1,22 +1,35 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal,Alert } from 'react-native';
+import { TouchableOpacity,TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal,Alert } from 'react-native';
 import ArtItem from './ArtItem';
-let resultsCache = [];
+import { SearchBar } from 'react-native-elements'
 export default class ArtCollection extends Component {
 
     constructor() {
         super();
         this.state = {
-            title: 'My events for this year',
+            title: 'art news feed',
             visibleAddEvent: false,
-            eventList: [],
-            articles: []
+            articles: [],
+            lastPress: 0
         }
     }
 
     componentWillMount() {
        this.loadData();
     }
+    onPress() {
+        debugger;
+        var delta = new Date().getTime() - this.state.lastPress;
+    
+        if(delta < 200) {
+          // double tap happend
+          console.log("double");
+        }
+    
+        this.setState({
+          lastPress: new Date().getTime()
+        })
+      }
 
     loadData(){
         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed')
@@ -34,10 +47,19 @@ export default class ArtCollection extends Component {
             <ArtItem event={item}/>
         )
     }
+    smartSearch(){
+
+    }
 
     render() {
         return (
             <View style={styles.container}>
+
+    <SearchBar
+            round
+            onChangeText={this.smartSearch()}
+            onClearText={this.smartSearch()}
+            placeholder='or maybe we can look up for you...' />
                <FlatList
                     data={this.state.articles}
                     renderItem={({item})=> this.renderItem(item)}
@@ -46,33 +68,12 @@ export default class ArtCollection extends Component {
             </View>
         );
     }
-/* <Text style={styles.title}>{this.state.title}</Text>
-                <Button title="Update events" onPress={this.updateEventList.bind(this)} />
-                <Button title="Add event" onPress={this.toggleModal.bind(this)} />
-                
-                <FlatList
-                    data={this.state.eventList}
-                    renderItem={({item})=> this.renderItem(item)}
-                    keyExtractor={(item) => item.id.toString()}
-                />*/
-  /*  renderModal() {
-        return (
-            <Modal
-                style={{padding: 40}}
-                transparent={true}
-                visible={this.state.visibleAddEvent}
-            >
-                <AddEvent onAddEvent={this.addEvent.bind(this)}/>
-            </Modal>
-        )
-
-*/
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 50,
+        paddingTop: 0,
         width: '100%'
     },
     title: {

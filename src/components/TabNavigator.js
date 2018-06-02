@@ -3,7 +3,6 @@ import { Text, View } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import ScanArt from './ScanArt';
 import ArtCollection from './ArtCollection';
-import Event from './Event.js';
 import MyCollection from './MyCollection';
 class InfoScreen extends Component {
   render() {
@@ -25,11 +24,16 @@ export default TabNavigator(
     tabBarOptions: {
       activeTintColor: 'tomato',
       inactiveTintColor: 'gray',
+    //  backgroundcolor:'#7A4988',
+      backgroundColor:'#7A4988',
       labelStyle: {
-        color: '#000000',
+        color: 'white',
         fontSize: 12,
         flex: 1
       },
     },
+    tabBarIcon:{
+      backgroundColor:'#7A4988'
+    }
   }
 );
