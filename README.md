@@ -1,4 +1,4 @@
-# React Native Workshop app
+# React Native WhastArt app - art lovers personal assistant
 
 
 Getting started:

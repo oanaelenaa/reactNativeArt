@@ -35,7 +35,6 @@ export default class ArtCollection extends Component {
         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed')
         .then(response => response.json())
         .then(data =>{
-           //s resultsCache=_.concat(resultsCache,_.toArray(data))
            this.setState({
                 articles:data.records
             })           
