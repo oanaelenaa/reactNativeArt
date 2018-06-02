@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal,Alert } from 'react-native';
-//import ArtItem from './ArtItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
 let resultsCache = [];
 export default class MyCollection extends Component {
@@ -33,7 +32,7 @@ export default class MyCollection extends Component {
     
     renderItem(item) {
         return (
-            <ArtItem event={item}/>
+            <ArtItem addevent={item}/>
         )
     }
 

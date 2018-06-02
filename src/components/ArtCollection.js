@@ -17,20 +17,7 @@ export default class ArtCollection extends Component {
     componentWillMount() {
        this.loadData();
     }
-    onPress() {
-        debugger;
-        var delta = new Date().getTime() - this.state.lastPress;
     
-        if(delta < 200) {
-          // double tap happend
-          console.log("double");
-        }
-    
-        this.setState({
-          lastPress: new Date().getTime()
-        })
-      }
-
     loadData(){
         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed')
         .then(response => response.json())
@@ -43,11 +30,14 @@ export default class ArtCollection extends Component {
 
     renderItem(item) {
         return (
-            <ArtItem event={item}/>
+            <ArtItem addedToCollectionNew={this.addedToCollectionNew.bind(this)} event={item}/>
         )
     }
     smartSearch(){
 
+    }
+    addedToCollectionNew(){
+        
     }
 
     render() {

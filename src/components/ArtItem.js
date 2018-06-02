@@ -1,15 +1,37 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, Image, StyleSheet,TouchableHighlight } from 'react-native';
+import { Animated, View, Text, Image, StyleSheet,TouchableHighlight,TouchableOpacity } from 'react-native';
 
 export default class ArtItem extends Component {
     progress = new Animated.Value(0);
+    constructor() {
+        super();
+        this.state = {
+            lastPress: 0,
+            lastIdPressed:0
+        }
+    }
 
     componentDidMount() {
         Animated.timing(this.progress, { toValue: 1, duration: 500 }).start();
     }
-    onPress(){
-        console.log("preeess");
-    }
+    
+    onPress() {
+        var delta = new Date().getTime() - this.state.lastPress;
+    
+        if(delta < 200 ) {
+          // double tap happend
+          console.log("double");
+         if (typeof this.props.addedToCollectionNew === 'function') {
+                 this.props.addedToCollectionNew(this.state);
+                 console.log("lol");
+          }
+        }
+    
+        this.setState({
+          lastPress: new Date().getTime()
+        })
+      }
+
 
     render() {
         let opacity = this.progress.interpolate({
@@ -24,12 +46,15 @@ export default class ArtItem extends Component {
 
         const { department, creditline, culture, accessionyear, title,primaryimageurl} = this.props.event;
         return (
+            
             <Animated.View style={[styles.container, {opacity, transform: [{ scale }]}]}>
+                <TouchableOpacity  style={styles.buttonLove} onPress={() => this.onPress()}>
                 <Image
                     resizeMode="contain"
                     style={styles.image}
                     source={{ uri: primaryimageurl }}
                 />
+                </TouchableOpacity>
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>{title}</Text>
                     <Text style={styles.text} numberOfLines={2}>{department}</Text>
@@ -67,5 +92,8 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 13
+    },
+    buttonLove:{
+
     }
 })

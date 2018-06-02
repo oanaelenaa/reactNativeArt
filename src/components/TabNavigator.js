@@ -5,6 +5,24 @@ import ScanArt from './ScanArt';
 import ArtCollection from './ArtCollection';
 import MyCollection from './MyCollection';
 class InfoScreen extends Component {
+  constructor(){
+    super();
+    this.state={
+      counter:0
+    }
+  }
+  componentDidMount(){
+    if(this.state.counter!=0)
+    {
+      console.log("ff");
+    }
+
+  }
+
+  addedToCollectionNew(){
+    this.setState({counter:counter+1})
+  }
+
   render() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -18,7 +36,12 @@ export default TabNavigator(
   {
     ScanArt: ScanArt,
     Collection: ArtCollection,
-    Profile:MyCollection
+    Profile:{
+      screen:MyCollection,
+      navigationOptions:{
+
+      }
+    }
   },
   {
     tabBarOptions: {
