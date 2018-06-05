@@ -39,7 +39,6 @@ export default TabNavigator(
     Profile:{
       screen:MyCollection,
       navigationOptions:{
-
       }
     }
   },

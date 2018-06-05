@@ -2,21 +2,38 @@ import React, { Component } from 'react';
 import { TouchableOpacity,TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal,Alert } from 'react-native';
 import ArtItem from './ArtItem';
 import { SearchBar } from 'react-native-elements'
+//,{ SlideAnimation }
+/*const slideAnimation = new SlideAnimation({
+    slideFrom: 'bottom',
+  });  
+  <PopupDialog
+                    ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+                >
+                    <View>
+                        <TextInput style={styles.input} placeholder="username" keyboardTyppe="email-address" value={this.state.email} onChangeText={(email) => this.setState({ email })} />
+
+                        <TextInput style={styles.input} placeholder="password" secureTextEntry value={this.state.password} onChangeText={(password) => this.setState({ password })} />
+
+                        <TouchableOpacity onPress={() => this.onLoginPressed()} style={styles.buttonContainer}>
+                            <Text style={styles.buttonText}>LOGIN</Text></TouchableOpacity>
+                    </View>
+
+                </PopupDialog>*/
 export default class ArtCollection extends Component {
 
     constructor() {
         super();
         this.state = {
-            title: 'art news feed',
+            title: 'My events for this year',
             visibleAddEvent: false,
-            articles: [],
+            articles: [],         
             lastPress: 0
         }
     }
-
     componentWillMount() {
-       this.loadData();
-    }
+        this.loadData();
+        
+     }
     
     loadData(){
         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed')
@@ -39,6 +56,34 @@ export default class ArtCollection extends Component {
     addedToCollectionNew(){
         
     }
+
+    async onLoginPressed() {
+        //var usersRef = firebase.database().ref().child('/Users');
+        firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .then(function () {
+                console.log(firebase.auth().currentUser.email + "!");
+               /* this.popupDialog.dismiss(() => {
+                    console.log('callback - will be called immediately')
+                  });*/
+            }).catch(function (error) {
+                alert(error.code);
+                alert(error.message);
+            });
+    }
+
+    renderItem(item) {
+        return (
+            <ArtItem addedToCollectionNew={this.addedToCollectionNew.bind(this)} event={item}/>
+        )
+    }
+
+    /*<TextInput style={styles.input} placeholder="username" keyboardTyppe="email-address" value={this.state.email} onChangeText={(email) => this.setState({ email })} />
+
+        <TextInput style={styles.input} placeholder="password" secureTextEntry value={this.state.password} onChangeText={(password) => this.setState({ password })} />
+
+        <TouchableOpacity onPress={() => this.onLoginPressed()} style={styles.buttonContainer}>
+          <Text style={styles.buttonText}>LOGIN</Text>
+     */
 
     render() {
         return (
