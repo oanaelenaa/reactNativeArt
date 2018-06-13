@@ -1,99 +1,141 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal,Alert } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-//import {MapView} from 'react-native-maps';
+import PersonalCollectionArtItem from '../models/PersonalCollectionArtItem';
+import Firebase from './Firebase';
 export default class MyCollection extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            title: 'My events for this year',
-            visibleAddEvent: false,
-            eventList: [],
-            latitude:null,
-            longitude:null
+            personalCollection: [],
+            email: "",
+            refreshing: false
         }
+        this.onLoad=this.onLoad.bind(this);
     }
 
     componentWillMount() {
-        this.getCoordinates();
-        this.loadPlaces();
+        ///this.onRefresh();
+        this.onLoad();
     }
 
     componentDidMount() {
-        this.getCoordinates();
+    //  this.setState({ email: Firebase.registrationInfo.email });
     }
 
-    getCoordinates(){
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-              console.log(position);
-              this.setState({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                error: null,
-              });
-            },
-            (error) => this.setState({ error: error.message }),
-            { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
-          );
-    }
-     
-    
-    loadPlaces(){
-       /// var url='https://maps.googleapis.com/maps/api/place/radarsearch/json';
-     
-       var location="46.7666872,23.5996782"
-       params ={location:location,type:"museum",key:"AIzaSyCWU8IjM7VbjRw37ZXX5GwLnZPddQRw4lU",radius:"5000"}
-        var url2=`https://maps.googleapis.com/maps/api/place/radarsearch/json?key=${encodeURIComponent(params.key)}&location=${encodeURIComponent(params.location)}&radius=${encodeURIComponent(params.radius)}&type=${encodeURIComponent(params.type)}`
-        console.log(url2);
-        fetch(url2)
-        .then(response => response.json())
-        .then(data =>{
-            console.log("Dataa",data);     
-        })
+   /*  loadData() {
+         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed')
+             .then(response => response.json())
+             .then(data => {
+                 this.setState({
+                     personalCollection: data.records
+                 })
+                 console.log(this.state.personalCollection)
+             })
+     }*/
 
-    }
-    
     renderItem(item) {
+        ///item.primaryimageurl="";
         return (
-            <ArtItem addevent={item}/>
+            <PersonalCollectionArtItem event={item} />
         )
+    }
+
+    onLoad() {
+       this.setState({ refreshing: true });
+        const uid="UyX1xi8HPKOtKktDLZXKyD2rzfu2";
+        Firebase.databaseRef.child("/SavedArtItems/UyX1xi8HPKOtKktDLZXKyD2rzfu2").on('value', (childSnapshot) => {
+            childSnapshot.forEach((doc) => {
+                var artItem = {
+                    imageURL: doc.toJSON().imageURL,
+                    title: doc.toJSON().title,
+                    author:doc.toJSON().author,
+                    pageURL: doc.toJSON().pageURL,
+                  //  otherInformation:doc.toJSON().otherInformation,
+                   // userId:doc.toJSON().userId
+                }
+
+                this.state.personalCollection.push(artItem);
+            });
+        });
+        this.setState({ refreshing: false });
+        console.log(this.state.personalCollection);
+    }
+
+
+
+    async logOut() {
+        try {
+            if (Firebase.registrationInfo.isAutheticated == true) {
+                await Firebase.auth.signOut();
+            }
+            this.props.navigation.navigate('Login');
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     render() {
         return (
             <View style={styles.container}>
-            <TouchableOpacity
-   style={{
-       borderWidth:1,
-       borderColor:'rgba(0,0,0,0.2)',
-       alignItems:'center',
-       justifyContent:'center',
-       width:100,
-       height:100,
-       backgroundColor:'#fff',
-       borderRadius:100,
-     }}
- >
-   <Icon name={"user"}  size={60} color="#01a699" />
- </TouchableOpacity>
+                <TouchableOpacity
+                    style={{
+                        borderWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.2)',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 100,
+                        height: 100,
+                        backgroundColor: '#fff',
+                        borderRadius: 100,
+                    }}
+                >
+                    <Icon name={"user"} size={60} color="#01a699" />
+
+                </TouchableOpacity>
+                <Text>{this.state.email}</Text>
+                <TouchableOpacity
+                    style={styles.logOutButton}
+                    onPress={this.logOut.bind(this)}
+                >
+
+                    <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', }}>LOG OUT </Text>
+                </TouchableOpacity>
+                <View style={styles.lineStyle} />
+               
+
+                
             </View>
         );
     }
-
 }
-
+/*
+   <FlatList
+                    data={this.state.personalCollection}
+                    renderItem={({ item }) => this.renderItem(item)}
+                    keyExtractor={(item) => item.id.toString()}
+                    />
+ */
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
-        paddingLeft:10,
+        paddingLeft: 10,
         width: '100%'
     },
     title: {
         fontSize: 25,
         fontWeight: 'bold',
         textAlign: 'center'
+    },
+    logOutButton: {
+        paddingTop: 10,
+        paddingLeft: 100
+    },
+    lineStyle: {
+        borderWidth: 0.5,
+        borderColor: 'gray',
+        margin: 10
     }
 })

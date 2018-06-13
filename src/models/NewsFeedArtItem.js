@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { Animated, View, Text, Image, StyleSheet,TouchableHighlight,TouchableOpacity } from 'react-native';
-
-export default class ArtItem extends Component {
+///import  ArtItem from './ArtItem';
+export default class NewsFeedArtItem extends Component {
     progress = new Animated.Value(0);
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             lastPress: 0,
             lastIdPressed:0
         }
     }
+
 
     componentDidMount() {
         Animated.timing(this.progress, { toValue: 1, duration: 500 }).start();
@@ -24,6 +25,8 @@ export default class ArtItem extends Component {
          if (typeof this.props.addedToCollectionNew === 'function') {
                  this.props.addedToCollectionNew(this.state);
                  console.log("lol");
+                 Alert("addedToPreferences");
+
           }
         }
     
@@ -43,10 +46,9 @@ export default class ArtItem extends Component {
             inputRange: [0, 1],
             outputRange: [0, 1],
         });
+        const { department, creditline, culture, accessionyear, title,primaryimageurl,pageURL} = this.props.event;
 
-        const { department, creditline, culture, accessionyear, title,primaryimageurl} = this.props.event;
         return (
-            
             <Animated.View style={[styles.container, {opacity, transform: [{ scale }]}]}>
                 <TouchableOpacity  style={styles.buttonLove} onPress={() => this.onPress()}>
                 <Image
@@ -61,7 +63,6 @@ export default class ArtItem extends Component {
                     <Text style={styles.text}>Credits: {creditline}</Text>
                     <Text style={styles.text}>Culture: {culture}</Text>
                     <Text style={styles.text}>Accession year: {accessionyear}</Text>
-
                 </View>
             </Animated.View>
         );
