@@ -2,65 +2,94 @@ import React, { Component } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PersonalCollectionArtItem from '../models/PersonalCollectionArtItem';
+import NewsFeedArtItem from '../models/NewsFeedArtItem';
 import Firebase from './Firebase';
 export default class MyCollection extends Component {
 
     constructor(props) {
         super(props);
+        this.personalCollection = [];
+        this.savedNewsFeedCollection = [];
         this.state = {
-            personalCollection: [],
             email: "",
             refreshing: false
         }
-        this.onLoad=this.onLoad.bind(this);
+        this.onLoad = this.onLoad.bind(this);
+        this.getSavedNewsFeedArtCollecton = this.getSavedNewsFeedArtCollecton.bind(this);
     }
 
     componentWillMount() {
         ///this.onRefresh();
         this.onLoad();
+        this.getSavedNewsFeedArtCollecton();
     }
 
     componentDidMount() {
-    //  this.setState({ email: Firebase.registrationInfo.email });
+        //  this.setState({ email: Firebase.registrationInfo.email });
     }
 
-   /*  loadData() {
-         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed')
-             .then(response => response.json())
-             .then(data => {
-                 this.setState({
-                     personalCollection: data.records
-                 })
-                 console.log(this.state.personalCollection)
-             })
-     }*/
+    getSavedNewsFeedArtCollecton() {
+        const uid = Firebase.registrationInfo.UID;
+        Firebase.databaseRef.child(`/SavedNewsFeedItems/${uid}`).on('value', (childSnapshot) => {
+            childSnapshot.forEach((doc) => {
+                var artItem = {
+                    department: doc.toJSON().department,
+                    title: doc.toJSON().title,
+                    creditline: doc.toJSON().creditline,
+                    pageURL: doc.toJSON().pageURL,
+                    culture: doc.toJSON().culture,
+                    accessionyear: doc.toJSON().accessionyear,
+                    primaryimageURL: doc.toJSON().primaryimageURL,
+                    id: doc.toJSON().id
+                }
+                //  console.log(doc.toJSON());
+
+                this.savedNewsFeedCollection.push(artItem);
+            });
+        });
+        this.setState({ refreshing: false });
+        console.log(this.savedNewsFeedCollection);
+    }
+
+
+    /*  renderItem(item) {
+          console.log(this.personalCollection);
+          debugger;
+          return (
+              <PersonalCollectionArtItem event={item} />
+          )
+      }
+  */
 
     renderItem(item) {
-        ///item.primaryimageurl="";
+        console.log(this.personalCollection);
+        debugger;
         return (
-            <PersonalCollectionArtItem event={item} />
+            <NewsFeedArtItem event={item} />
         )
     }
 
     onLoad() {
-       this.setState({ refreshing: true });
-        const uid="UyX1xi8HPKOtKktDLZXKyD2rzfu2";
-        Firebase.databaseRef.child("/SavedArtItems/UyX1xi8HPKOtKktDLZXKyD2rzfu2").on('value', (childSnapshot) => {
+        this.setState({ refreshing: true });
+        const uid = Firebase.registrationInfo.UID;
+        Firebase.databaseRef.child(`/SavedArtItems/${uid}`).on('value', (childSnapshot) => {
             childSnapshot.forEach((doc) => {
                 var artItem = {
                     imageURL: doc.toJSON().imageURL,
                     title: doc.toJSON().title,
-                    author:doc.toJSON().author,
+                    author: doc.toJSON().author,
                     pageURL: doc.toJSON().pageURL,
-                  //  otherInformation:doc.toJSON().otherInformation,
-                   // userId:doc.toJSON().userId
+                    id: doc.toJSON().id,
+                    //  otherInformation:doc.toJSON().otherInformation,
+                    // userId:doc.toJSON().userId
                 }
+                //  console.log(doc.toJSON());
 
-                this.state.personalCollection.push(artItem);
+                this.personalCollection.push(artItem);
             });
         });
         this.setState({ refreshing: false });
-        console.log(this.state.personalCollection);
+        console.log(this.personalCollection);
     }
 
 
@@ -103,25 +132,29 @@ export default class MyCollection extends Component {
                     <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', }}>LOG OUT </Text>
                 </TouchableOpacity>
                 <View style={styles.lineStyle} />
-               
+                <FlatList style={styles.containerList}
+                    data={this.personalCollection}
+                    renderItem={({ item }) => this.renderItem(item)}
+                    keyExtractor={(item) => item.id}
+                />
 
-                
+
+
             </View>
         );
     }
 }
-/*
-   <FlatList
-                    data={this.state.personalCollection}
-                    renderItem={({ item }) => this.renderItem(item)}
-                    keyExtractor={(item) => item.id.toString()}
-                    />
- */
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
         paddingLeft: 10,
+        width: '100%'
+    },
+    containerList: {
+        flex: 1,
+        paddingTop: 0,
         width: '100%'
     },
     title: {

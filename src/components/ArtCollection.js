@@ -27,11 +27,6 @@ export default class ArtCollection extends Component {
             })
     }
 
-    renderItem(item) {
-        return (
-            <ArtItem addedToCollectionNew={this.addedToCollectionNew.bind(this)} event={item} />
-        )
-    }
 
     smartSearch() {
 
@@ -43,6 +38,7 @@ export default class ArtCollection extends Component {
 
   
     renderItem(item) {
+        console.log(this.state.artItems);
         return (
             <NewsFeedArtItem addedToCollectionNew={this.addedToCollectionNew.bind(this)} event={item} />
         )

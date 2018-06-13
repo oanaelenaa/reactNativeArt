@@ -121,7 +121,9 @@ export default class ScanArt extends Component {
     }
 
     async savePictureToCollection(){
-       // let id=Firebase.databaseRef
+       const uid=Firebase.registrationInfo.UID;
+       
+
 
     }
 

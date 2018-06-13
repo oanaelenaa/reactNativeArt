@@ -13,16 +13,27 @@ export default class Firebase{
 
     static auth;
     static databaseRef;
+    static database;
     static registrationInfo={
         email:"nomail",
         isAutheticated:false,
         refreshToken:"",
-        UID:0,
+        UID:"UyX1xi8HPKOtKktDLZXKyD2rzfu2",
     }
 
     static init(){
         firebase.initializeApp(config);
         Firebase.auth=firebase.auth();
+        Firebase.database=firebase.database();
         Firebase.databaseRef=firebase.database().ref();
+    }
+    static getDatabaseRefUser(path)
+    {
+        return firebase.database().ref(path+this.registrationInfo.UID);
+    }
+
+    static getDatabaseRef(path)
+    {
+        return firebase.database().ref(path);
     }
 }

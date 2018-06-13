@@ -13,6 +13,7 @@ export default class PersonalCollectionArtItem extends Component  {
     }
     
     onPress() { 
+        //see details
       }
 
     render() {
@@ -25,7 +26,7 @@ export default class PersonalCollectionArtItem extends Component  {
             inputRange: [0, 1],
             outputRange: [0, 1],
         });
-        const { department, creditline, culture, accessionyear, title,primaryimageurl,pageURL} = this.props.event;
+        const { title, author, otherInformation,primaryimageURL,pageURL} = this.props.event;
 
         return (
             <Animated.View style={[styles.container, {opacity, transform: [{ scale }]}]}>
@@ -33,7 +34,7 @@ export default class PersonalCollectionArtItem extends Component  {
                 <Image
                     resizeMode="contain"
                     style={styles.image}
-                    source={{ uri: primaryimageurl }}
+                    source={{ uri: primaryimageURL }}
                 />
                 </TouchableOpacity>
             </Animated.View>
