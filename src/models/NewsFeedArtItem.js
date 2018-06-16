@@ -74,7 +74,6 @@ export default class NewsFeedArtItem extends Component {
         });
         const { department, creditline, culture, accessionyear, title, primaryimageurl, pageURL,id } = this.props.event;
 
-
         return (
             <Animated.View style={[styles.container, { opacity, transform: [{ scale }] }]}>
                 <TouchableOpacity style={styles.buttonLove} onPress={() => this.onPress()}>

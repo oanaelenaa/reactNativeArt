@@ -26,7 +26,7 @@ export default class PersonalCollectionArtItem extends Component  {
             inputRange: [0, 1],
             outputRange: [0, 1],
         });
-        const { title, author, otherInformation,primaryimageURL,pageURL} = this.props.event;
+        const { title, author, otherInformation,primaryimageURL,pageURL,id} = this.props.event;
 
         return (
             <Animated.View style={[styles.container, {opacity, transform: [{ scale }]}]}>

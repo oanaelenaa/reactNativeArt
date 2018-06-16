@@ -12,14 +12,25 @@ export default class MuseumsFinder extends Component{
             latitude: null,
             longitude: null
         }
+        this.getMuseumsEU=this.getMuseumsEU.bind(this);
     }
     componentWillMount() {
-        this.getCoordinates();
-        this.loadPlaces();
+ //       this.getCoordinates();
+   //     this.loadPlaces();
+        this.getMuseumsEU();
     }
 
     componentDidMount() {
         this.getCoordinates();
+    }
+    getMuseumsEU(){
+        var apikey="AdHmgwgdm";
+        var url2="http://museums.eu/search/index?keyword=Cluj+napoca&documenttype=";
+        fetch(url2)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Dataa", data);
+            })
     }
 
     getCoordinates() {

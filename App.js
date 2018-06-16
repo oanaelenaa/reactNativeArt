@@ -17,6 +17,7 @@ export default class App extends Component {
 
   state = {
     isAutheticated: false,
+    loading:true,
   };
 
   componentDidMount() {
@@ -40,3 +41,29 @@ const styles = StyleSheet.create({
   }
 });
 //        <TabNavigator screenProps={{ unreadMessagesCount: 8 , email:"",password:"" }}/>
+
+
+/*
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({ loading: false, authenticated: true });
+      } else {
+        this.setState({ loading: false, authenticated: false });
+      }
+    });
+  }
+
+  render() {
+    if (this.state.loading) return null; // Render loading/splash screen etc
+
+    if (!this.state.authenticated) {
+      return <Login />;
+    }
+
+    return <Home />;
+  }
+
+
+*/

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
 import NewsFeedArtItem from '../models/NewsFeedArtItem';
 import { SearchBar } from 'react-native-elements';
+
+const categories=['object','person','exhibition','publication','gallery','spectrum','place','period'];
 export default class ArtCollection extends Component {
 
     constructor() {
@@ -17,14 +19,15 @@ export default class ArtCollection extends Component {
 
     }
 
-    loadData() {
-        fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed')
+    loadData() {//object
+        fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&size=100')
             .then(response => response.json())
             .then(data => {
                 this.setState({
                     artItems: data.records
                 })
             })
+            console.log(this.state.artItems);
     }
 
 
@@ -36,11 +39,10 @@ export default class ArtCollection extends Component {
 
     }
 
-  
+  //addedToCollectionNew={this.addedToCollectionNew.bind(this)}
     renderItem(item) {
-        console.log(this.state.artItems);
         return (
-            <NewsFeedArtItem addedToCollectionNew={this.addedToCollectionNew.bind(this)} event={item} />
+            <NewsFeedArtItem  event={item} />
         )
     }
 

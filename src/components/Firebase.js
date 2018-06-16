@@ -14,6 +14,7 @@ export default class Firebase{
     static auth;
     static databaseRef;
     static database;
+    static persistanceLevel;
     static registrationInfo={
         email:"nomail",
         isAutheticated:false,
@@ -26,6 +27,7 @@ export default class Firebase{
         Firebase.auth=firebase.auth();
         Firebase.database=firebase.database();
         Firebase.databaseRef=firebase.database().ref();
+        Firebase.persistanceLevel=firebase.auth.Auth.Persistence.LOCAL;
     }
     static getDatabaseRefUser(path)
     {

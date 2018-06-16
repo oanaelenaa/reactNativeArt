@@ -18,7 +18,7 @@ import Firebase from './Firebase';
   password:string,
 }*/
 export default class Login extends Component {
-
+  static navigationOptions = { header: null }
 
   constructor(props) {
     super(props)
@@ -30,7 +30,7 @@ export default class Login extends Component {
       cca2: 'US',
       callingCode: '1',
     }
-    this.goToHomeScreen=this.goToHomeScreen.bind(this);
+    this.goToHomeScreen = this.goToHomeScreen.bind(this);
 
   }
 
@@ -39,33 +39,21 @@ export default class Login extends Component {
   }
 
   async logIn() {
-    debugger
-    ///irebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-    //.then(function () {
-    //createUserWithEmailAndPassword
-    //return 
-    const credentials=this.state.email;
-    Firebase.auth//signInWithEmailAndPassword
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(function (result) {
-        console.log("Account created", result);
-        // this.setState({ isAuthenticated: true });
-         Firebase.registrationInfo.email = credentials;
-         Firebase.registrationInfo.isAuthenticated = true;
-         Firebase.registrationInfo.refreshToken=result.user.refreshToken;
-         Firebase.registrationInfo.UID=result.user.UID;
-
-        // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        // DatabaseReference ref = FirebaseDatabase.getInstance().getReference(USERS_TABLE);
-        //s   ref.child(user.getUid()).setValue(user_class);
+    Firebase.auth//createUserWithEmailAndPassword
+      //.setPersistance(Firebase.persistanceLevel)
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
+      .then((result) => {
+        Firebase.registrationInfo.email = result.user.email;
+        Firebase.registrationInfo.isAuthenticated = true;
+        Firebase.registrationInfo.refreshToken = result.user.refreshToken;
+        Firebase.registrationInfo.UID = result.user.uid;
+        this.goToHomeScreen();
       }).catch(function (error) {
         var errorCode = error.code;
         var errorMessage = error.message;
         console.log(error.code)
         console.log(error.message)
       });
-      this.goToHomeScreen();
-    /// });
   }
 
   goToHomeScreen() {
