@@ -33,10 +33,7 @@ export default class ScanResponseModal extends Modal{
                             </TouchableHighlight>
                         </View>
                     </View>
-                </Modal>
-
+                </Modal> 
         );
     }
-
-
 }

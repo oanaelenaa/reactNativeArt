@@ -1,6 +1,6 @@
-import ScanArt from './ScanArt';
-import ArtCollection from './ArtCollection';
-import MyCollection from './MyCollection';
+import ScanArt from './ScanArt/ScanArt';
+import ArtCollection from './NewsFeed/ArtCollection';
+import MyCollection from './Profile/MyCollection';
 import { createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
 import Login from './Login';
 
@@ -28,7 +28,6 @@ const TabNavi = createMaterialTopTabNavigator({
 TabNavi.navigationOptions = {
   // Hide the header from AppNavigator stack
   header: null,
-
 };
 
 export default AppNavigator = createStackNavigator({

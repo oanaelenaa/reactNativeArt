@@ -1,52 +1,53 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
-import NewsFeedArtItem from '../models/NewsFeedArtItem';
+import NewsFeedArtItem from '../../models/NewsFeedArtItem';
 import { SearchBar } from 'react-native-elements';
-
-const categories=['object','person','exhibition','publication','gallery','spectrum','place','period'];
+import Spinner from 'react-native-loading-spinner-overlay';
+const categories = ['object', 'person', 'exhibition', 'publication', 'gallery', 'spectrum', 'place', 'period'];
 export default class ArtCollection extends Component {
 
     constructor() {
         super();
         this.state = {
-            visibleAddEvent: false,
+            visible: false,
             artItems: [],
             lastPress: 0
         }
     }
+
     componentWillMount() {
         this.loadData();
-
     }
 
-    loadData() {//object
+    componentDidMount() {
+    }
+
+
+    loadData() {
         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&size=100')
             .then(response => response.json())
             .then(data => {
                 this.setState({
-                    artItems: data.records
+                    artItems: data.records,
+                    visible: !this.state.visible
                 })
             })
-            console.log(this.state.artItems);
+        console.log(this.state.artItems);
     }
 
 
     smartSearch() {
-
     }
 
-    addedToCollectionNew() {
-
-    }
-
-  //addedToCollectionNew={this.addedToCollectionNew.bind(this)}
+    //addedToCollectionNew={this.addedToCollectionNew.bind(this)}
     renderItem(item) {
         return (
-            <NewsFeedArtItem  event={item} />
+            <NewsFeedArtItem event={item} />
         )
     }
 
     render() {
+        //   let items=this.state.artItems;
         return (
             <View style={styles.container}>
 
@@ -55,15 +56,17 @@ export default class ArtCollection extends Component {
                     onChangeText={this.smartSearch()}
                     onClearText={this.smartSearch()}
                     placeholder='or maybe we can look up for you...' />
-                <FlatList
-                    data={this.state.artItems}
-                    renderItem={({ item }) => this.renderItem(item)}
-                    keyExtractor={(item) => item.id.toString()}
-                />
+                    <FlatList
+                        data={this.state.artItems}
+                        renderItem={({ item }) => this.renderItem(item)}
+                        keyExtractor={(item) => item.id.toString()}
+                    />
             </View>
         );
     }
 }
+//                <Spinner visible={this.state.visible} textContent={"Loading..."} textStyle={{ color: '#FFF' }}>
+
 
 const styles = StyleSheet.create({
     container: {

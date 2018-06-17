@@ -26,9 +26,6 @@ export default class Login extends Component {
       email: "",
       password: "",
       error: "", loading: false, showErrorMessage: false,
-      code: null,
-      cca2: 'US',
-      callingCode: '1',
     }
     this.goToHomeScreen = this.goToHomeScreen.bind(this);
 
@@ -66,7 +63,7 @@ export default class Login extends Component {
         <Image
           resizeMode="contain"
           style={styles.image}
-          source={require("./LogoSample_ByTailorBrands-2.jpg")}
+          source={require("../assets/logoFinal.png")}
         />
         <View style={styles.formContainer}>
           <TextInput style={styles.input} placeholder="username" keyboardTyppe="email-address" value={this.state.email} onChangeText={(email) => this.setState({ email })} />
@@ -83,14 +80,6 @@ export default class Login extends Component {
     );
   }
 }
-
-
-
-/**
- *  <Modal isVisible={this.state.dialogShow} onSwipe={() => this.setState({ dialogShow: false, isAuthenticated: false })}
-                    swipeDirection="left">
-                    <View style={styles.modal}>
-*/
 
 const styles = StyleSheet.create({
   container: {
@@ -114,12 +103,12 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   image: {
-    width: 150,
-    height: 150,
+    width: 300,
+    height: 300,
     //flex:1,
-    marginTop: 50,
+    marginTop: 20,
     justifyContent: 'center',
-    marginLeft: 100
+  //  marginLeft: 
   },
   data: {
     padding: 15,
@@ -141,54 +130,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   }
 });
-
-
-/* _fbAuth() {
-     LoginManager.logInWithReadPermissions(['public_profile']).then(
-       function (result) {
-         if (Result.isCancelled) {
-           console.log('login cancelled');
-         } else {
-           console.log("succes" + result.grantedPermissions);
-         }
-       }, function (error) {
-         console.log("rror" + error);
- 
-       })
- 
- 
-   }
-   async onLoginPressed() {
-     //var usersRef = firebase.database().ref().child('/Users');
-     firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-       .then(function () {
-         console.log(firebase.auth().currentUser.email + "!");
-       }).catch(function (error) {
-         alert(error.code);
-         alert(error.message);
-       });
-   }
- 
-   async signup() {
-     console.log("djd");
-     try {
-       await firebase.auth()
-         .createUserWithEmailAndPassword(this.state.email, this.state.pass);
-       console.log("Account created");
-       // Navigate to the Home page, the user is auto logged in
- 
-     } catch (error) {
-       console.log(error.toString())
-     }
- 
-   }
-   getInitialState() {
-     return { code: null };
-   }*/
-
-  /*getSelectedCountry() {
-    var _this = this;
-    CountryPicker.show(function (country) {
-      _this.setState({ code: country.code });
-    });
-  }*/

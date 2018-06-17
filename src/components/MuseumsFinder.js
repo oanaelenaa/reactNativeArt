@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PersonalCollectionArtItem from '../models/PersonalCollectionArtItem';
-import {MapView} from 'react-native-maps';
+import MapView from 'react-native-maps';
 //import NewsFeedArtItem from '../models/NewsFeedArtItem';
 
 export default class MuseumsFinder extends Component{
@@ -32,6 +32,23 @@ export default class MuseumsFinder extends Component{
                 console.log("Dataa", data);
             })
     }
+    /*
+    getMuseumsEU() {
+        var apikey = "AdHmgwgdm";
+        var url2 = "https://www.europeana.eu/api/v2/search.json?wskey=AdHmgwgdm&query=museums";
+        fetch(url2)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Dataa", data);
+            })
+            .catch(function (error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(error.code)
+                console.log(error.message)
+            });
+    }
+     */
 
     getCoordinates() {
         navigator.geolocation.getCurrentPosition(

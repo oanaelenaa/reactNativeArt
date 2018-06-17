@@ -10,7 +10,6 @@ import {
   Text,
   View
 } from 'react-native';
-//import Firebase from './src/components/Firebase';
 import Firebase from './src/components/Firebase'; 
 import AppNavigator from './src/components/AppNavigator';
 export default class App extends Component {
@@ -28,9 +27,9 @@ export default class App extends Component {
    // const { isAutheticated } = this.state;
     //const { onNavigationStateChange } = this;
     return (
-      <View style={styles.container}>
+     // <View style={styles.container}>
         <AppNavigator></AppNavigator>
-      </View>
+     /// </View>
     );
   }
 }

@@ -24,7 +24,7 @@ export default class NewsFeedArtItem extends Component {
             creditline: this.props.event.creditline,
             culture: this.props.event.culture,
             accessionyear: this.props.event.accessionyear,
-            imageURL: this.props.event.primaryimageurl,
+            primaryimageURL: this.props.event.primaryimageurl,
             pageURL: this.props.event.url,
             id: this.props.event.id
         });
@@ -47,13 +47,12 @@ export default class NewsFeedArtItem extends Component {
         if (delta < 200) {
             // double tap happend
             console.log("double");
-            if (typeof this.props.addedToCollectionNew === 'function') {
-                this.props.addedToCollectionNew(this.state);
-                console.log("lol");
+           // if (typeof this.props.addedToCollectionNew === 'function') {
+             //   this.props.addedToCollectionNew(this.state);
                 this.saveTopersonalCollection();
                 console.log(this.props.event);
 
-            }
+            //}
         }
 
         this.setState({
@@ -82,6 +81,7 @@ export default class NewsFeedArtItem extends Component {
                         style={styles.image}
                         source={{ uri: primaryimageurl }}
                     />
+
                 </TouchableOpacity>
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>{title}</Text>

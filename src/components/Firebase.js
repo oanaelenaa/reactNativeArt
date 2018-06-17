@@ -15,9 +15,10 @@ export default class Firebase{
     static databaseRef;
     static database;
     static persistanceLevel;
+    static storageRef;
     static registrationInfo={
         email:"nomail",
-        isAutheticated:false,
+        isAutheticated:true,
         refreshToken:"",
         UID:"UyX1xi8HPKOtKktDLZXKyD2rzfu2",
     }
@@ -28,6 +29,7 @@ export default class Firebase{
         Firebase.database=firebase.database();
         Firebase.databaseRef=firebase.database().ref();
         Firebase.persistanceLevel=firebase.auth.Auth.Persistence.LOCAL;
+        Firebase.storageRef=firebase.storage();
     }
     static getDatabaseRefUser(path)
     {
