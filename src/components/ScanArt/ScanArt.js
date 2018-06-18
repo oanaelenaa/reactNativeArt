@@ -3,8 +3,10 @@ import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, F
 import { RNCamera } from 'react-native-camera';
 import Firebase from '../Firebase';
 import MuseumsFinder from '../MuseumsFinder';
+import RNFetchBlob from 'react-native-fetch-blob';
 console.log(RNCamera);
 import ScanResponseModal from './ScanResponseModal';
+//import uploadImage from './ConvertImageToBase64';
 function FoundLabel() {
     this.probability = 0;
     this.tagId = 0;
@@ -97,7 +99,7 @@ export default class ScanArt extends Component {
                 >
                     <Text style={{ fontSize: 14 }}> SNAP </Text>
                 </TouchableOpacity>
-
+                <MuseumsFinder></MuseumsFinder>
                 <TouchableOpacity
                     style={styles.museumsFinderButton}
                     onPress={this.getMuseumsEU.bind(this)}
@@ -120,12 +122,12 @@ export default class ScanArt extends Component {
             "Url": this.state.url
         };
         // Make the REST API call.
-        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/cfb6e5e4-57e1-4a35-8d5f-736613c6bf56/url?iterationId=f903217a-63bf-4c54-ae65-3777cdbcc5de";
-        fetch(baseUrl, {
+        var baseUrl ="https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/url?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
+           fetch(baseUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Prediction-Key': '3f85f3746d0f4e82843f9eae70e09e97'
+                'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
             },
             body: JSON.stringify(objtosend)
 
@@ -143,15 +145,12 @@ export default class ScanArt extends Component {
 
     async classifyImageFile() {
         debugger
-        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/cfb6e5e4-57e1-4a35-8d5f-736613c6bf56/image?iterationId=f903217a-63bf-4c54-ae65-3777cdbcc5de";
-        fetch(baseUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/octet-stream',
-                'Prediction-Key': '3f85f3746d0f4e82843f9eae70e09e97'
-            },
-            body: new Buffer.from(this.state.imageFile, 'base64')
-        }).then((response) => response.json())
+        var baseUrl ="https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
+        var pathtofile = this.state.url;
+        RNFetchBlob.fetch('POST', baseUrl, {
+            'Content-Type': 'application/octet-stream',
+            'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
+        }, RNFetchBlob.wrap()).then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson)
                 this.validateResponse(responseJson);
@@ -161,6 +160,27 @@ export default class ScanArt extends Component {
                 console.log(error.code)
                 console.log(error.message)
             });
+
+        /*
+        fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/octet-stream',
+                'Prediction-Key': '3f85f3746d0f4e82843f9eae70e09e97'
+            },
+            body:new Buffer(thi.state.imageFile,'base64')
+            // RNFetchBlob.wrap(this.state.uri)
+            //new Buffer.from(this.state.imageFile, 'base64')
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+                this.validateResponse(responseJson);
+            }).catch(function (error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(error.code)
+                console.log(error.message)
+            });*/
     }
 
     async savePictureToCollection() {
@@ -171,31 +191,20 @@ export default class ScanArt extends Component {
  */
 
     async takePicture() {
-        /*  if (this.camera) {
-              const options = { quality: 0.5, base64: true };
-              const data = await this.camera.takePictureAsync(options)
-              Alert(data.uri)
-              this.setState({
-                  url: data.uri,
-                  imageFile: data.base64
-              })
-              //this.classifyImageFile();
-      }*/
-     // debugger
+        debugger;
         if (this.camera) {
-            this.camera
-                .takePictureAsync()
-                .then(data => {
-                    //  CameraRoll.saveToCameraRoll(data.uri, "photo");
-                    console.log(data);
-                })
-                .catch(err => {
-                    alert("err");
-                    console.log(err);
-                });
-
-        };
+            const options = { quality: 0.5, base64: true };
+            const data = await this.camera.takePictureAsync(options)
+            /// Alert(data.uri)
+            this.setState({
+                url: data.uri,
+                imageFile: data
+            })
+            this.classifyImageFile();
+            // uploadImage(this.state.url,"test");
+        }
     }
+
 }
 
 const styles = StyleSheet.create({

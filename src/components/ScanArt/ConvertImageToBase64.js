@@ -4,7 +4,8 @@ import RNFetchBlob from 'react-native-fetch-blob';
 const Blob = RNFetchBlob.polyfill.Blob;
 const fs = RNFetchBlob.fs;
 
-const uploadImage = (uri, imageName, mime = 'image/jpg') => {
+export function uploadImage (uri, imageName, mime = 'image/jpg') {
+  debugger
   const uid = Firebase.registrationInfo.UID;
   return new Promise((resolve, reject) => {
     let uploadBlob = null

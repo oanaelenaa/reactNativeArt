@@ -5,27 +5,30 @@ import PersonalCollectionArtItem from '../models/PersonalCollectionArtItem';
 import MapView from 'react-native-maps';
 //import NewsFeedArtItem from '../models/NewsFeedArtItem';
 
-export default class MuseumsFinder extends Component{
+export default class MuseumsFinder extends Component {
     constructor(props) {
         super(props);
+        this.museumsRef = [];
         this.state = {
             latitude: null,
             longitude: null
         }
-        this.getMuseumsEU=this.getMuseumsEU.bind(this);
+        this.getMuseumsEU = this.getMuseumsEU.bind(this);
+        this.showLocationsDetails = this.showLocationsDetails.bind(this);
     }
     componentWillMount() {
- //       this.getCoordinates();
-   //     this.loadPlaces();
-        this.getMuseumsEU();
+        //       this.getCoordinates();
+        this.loadPlaces();
+        //   this.getMuseumsEU();
     }
 
     componentDidMount() {
         this.getCoordinates();
     }
-    getMuseumsEU(){
-        var apikey="AdHmgwgdm";
-        var url2="http://museums.eu/search/index?keyword=Cluj+napoca&documenttype=";
+    getMuseumsEU() {
+        debugger;
+        var apikey = "AdHmgwgdm";
+        var url2 = "http://museums.eu/search/index?keyword=Cluj+napoca&documenttype=";
         fetch(url2)
             .then(response => response.json())
             .then(data => {
@@ -66,6 +69,7 @@ export default class MuseumsFinder extends Component{
     }
 
     loadPlaces() {
+        // debugger;
         /// var url='https://maps.googleapis.com/maps/api/place/radarsearch/json';
         var location = "46.7666872,23.5996782"
         params = { location: location, type: "museum", key: "AIzaSyCWU8IjM7VbjRw37ZXX5GwLnZPddQRw4lU", radius: "5000" }
@@ -75,12 +79,39 @@ export default class MuseumsFinder extends Component{
             .then(response => response.json())
             .then(data => {
                 console.log("Dataa", data);
+                this.museumsRef = data.results;
+                this.showLocationsDetails();
             })
+    }
+    loadPlacedetails(placeid) {
+        var url = "https://maps.googleapis.com/maps/api/place/details/output?parameters";
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                return data;
+            })
+        return nulll;
 
     }
+    showLocationsDetails() {
+        debugger;
+        this.museumsRef.map(function(x,i)
+        {// {$}
+        var place_id=x.place_id;
+            //console.log(this.loadPlacedetails(x.place_id));
+            var url = `https://maps.googleapis.com/maps/api/place/details/json?key=${encodeURIComponent(params.key)}&placeid=${place_id}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                });
+        })
+    }
 
-
-
-
-
+    render() {
+        return (
+            <View>
+            </View>
+        );
+    }
 }

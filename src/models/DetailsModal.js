@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, ScrollView, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import Modal from "react-native-modal";
-//import WebViewLink from '../assets/WebViewLink';
+import WebViewLink from './WebViewLink';
 export default class DetailsModal extends Component {
 
     state = {
@@ -24,6 +24,9 @@ export default class DetailsModal extends Component {
                 transparent={false}
             >
                 <View>
+                {
+                                this.state.openURL ? <WebViewLink link={pageURL}/> : null
+                            }
                     <TouchableHighlight onPress={this._toggleModal}>
                         <Text>Hide Modal</Text>
                     </TouchableHighlight>
