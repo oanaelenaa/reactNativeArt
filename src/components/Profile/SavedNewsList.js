@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
-import NewsFeedArtItem from '../../models/NewsFeedArtItem';
+import NewsFeedArtItem from '../../components/NewsFeed/NewsFeedArtItem';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Firebase from '../Firebase';
-import SavedNewsItem from '../../models/SavedNewsItem';
+import SavedNewsItem from '../../components/Profile/SavedNewsItem';
 export default class SavedNewsList extends Component {
 
     constructor() {
@@ -17,10 +17,11 @@ export default class SavedNewsList extends Component {
     }
 
     componentWillMount() {
-        this.loadData();
     }
 
     componentDidMount() {
+        this.loadData();
+
     }
 
 

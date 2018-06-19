@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import Firebase from '../Firebase';
-import MuseumsFinder from '../MuseumsFinder';
+import MuseumsFinder from '../MuseumFinder/MuseumsFinder';
 import RNFetchBlob from 'react-native-fetch-blob';
 console.log(RNCamera);
 import ScanResponseModal from './ScanResponseModal';
-//import uploadImage from './ConvertImageToBase64';
 function FoundLabel() {
     this.probability = 0;
     this.tagId = 0;
@@ -23,7 +22,6 @@ export default class ScanArt extends Component {
             labels: [],
             result: null,
             notFoundMessage: "",
-            frebasest: null
         }
         this.classifyImageURL = this.classifyImageURL.bind(this);
         this.classifyImageFile = this.classifyImageFile.bind(this);
@@ -31,17 +29,16 @@ export default class ScanArt extends Component {
         this.validateResponse = this.validateResponse.bind(this);
         this.setModalVisible = this.setModalVisible.bind(this);
         this.displayResponseModal = this.displayResponseModal.bind(this);
-        this.getMuseumsEU = this.getMuseumsEU.bind(this);
     }
-
 
     componentDidMount() {
     }
-    getMuseumsEU() {
-
-    }
 
     componentWillMount() {
+    }
+
+    componentWillUnmount() {
+
     }
 
 
@@ -99,18 +96,7 @@ export default class ScanArt extends Component {
                 >
                     <Text style={{ fontSize: 14 }}> SNAP </Text>
                 </TouchableOpacity>
-                <MuseumsFinder></MuseumsFinder>
-                <TouchableOpacity
-                    style={styles.museumsFinderButton}
-                    onPress={this.getMuseumsEU.bind(this)}
-                >
-                    <Image
-                        resizeMode="contain"
-                        style={styles.image}
-                        source={require("../map_finder.png")}
-                    />
-                    <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', }}> nearby museums </Text>
-                </TouchableOpacity>
+
             </View>
         );
     }
@@ -122,8 +108,8 @@ export default class ScanArt extends Component {
             "Url": this.state.url
         };
         // Make the REST API call.
-        var baseUrl ="https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/url?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
-           fetch(baseUrl, {
+        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/url?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
+        fetch(baseUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -145,7 +131,7 @@ export default class ScanArt extends Component {
 
     async classifyImageFile() {
         debugger
-        var baseUrl ="https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
+        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
         var pathtofile = this.state.url;
         RNFetchBlob.fetch('POST', baseUrl, {
             'Content-Type': 'application/octet-stream',
@@ -194,15 +180,23 @@ export default class ScanArt extends Component {
         debugger;
         if (this.camera) {
             const options = { quality: 0.5, base64: true };
-            const data = await this.camera.takePictureAsync(options)
-            /// Alert(data.uri)
+            //const data = await this.camera.takePictureAsync(options)
+            try {
+                const cameraData = await this.camera.takePictureAsync()
+                console.log(cameraData.uri);
+              } catch (e) {
+               // This logs the error
+                console.log(e)
+              }
+            }
+           /* Alert(data.uri)
             this.setState({
                 url: data.uri,
                 imageFile: data
             })
-            this.classifyImageFile();
+            this.classifyImageFile();*/
             // uploadImage(this.state.url,"test");
-        }
+        
     }
 
 }
@@ -212,13 +206,13 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 0,
         width: '100%',
-        backgroundColor: '#696969'
+        backgroundColor: "#FFFFFF"
     },
     modal: {
         paddingTop: 20,
         flex: 1,
         padding: 10,
-        backgroundColor: '#7A4988'
+        backgroundColor: '#000000',
     },
     title: {
         fontSize: 25,
@@ -260,3 +254,15 @@ const styles = StyleSheet.create({
         right: 0
     }
 })
+
+/*   <TouchableOpacity
+                    style={styles.museumsFinderButton}
+                    onPress={this.setMuseumsmodalVisible}
+                >
+                    <Image
+                        resizeMode="contain"
+                        style={styles.image}
+                        source={require("../map_finder.png")}
+                    />
+                    <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', }}> nearby museums </Text>
+                </TouchableOpacity>*/

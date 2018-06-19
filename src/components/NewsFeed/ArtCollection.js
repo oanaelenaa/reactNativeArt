@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
-import NewsFeedArtItem from '../../models/NewsFeedArtItem';
+import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList,ActivityIndicator } from 'react-native';
+import NewsFeedArtItem from './NewsFeedArtItem';
 import { SearchBar } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 const categories = ['object', 'person', 'exhibition', 'publication', 'gallery', 'spectrum', 'place', 'period'];
@@ -11,15 +11,16 @@ export default class ArtCollection extends Component {
         this.state = {
             visible: false,
             artItems: [],
-            lastPress: 0
+            lastPress: 0,
+            loaded:false
         }
     }
 
     componentWillMount() {
-        this.loadData();
     }
 
     componentDidMount() {
+        this.loadData();
     }
 
 
@@ -29,7 +30,8 @@ export default class ArtCollection extends Component {
             .then(data => {
                 this.setState({
                     artItems: data.records,
-                    visible: !this.state.visible
+                    visible: !this.state.visible,
+                    loaded: true
                 })
             })
         console.log(this.state.artItems);
@@ -39,7 +41,6 @@ export default class ArtCollection extends Component {
     smartSearch() {
     }
 
-    //addedToCollectionNew={this.addedToCollectionNew.bind(this)}
     renderItem(item) {
         return (
             <NewsFeedArtItem event={item} />
@@ -47,7 +48,12 @@ export default class ArtCollection extends Component {
     }
 
     render() {
-        //   let items=this.state.artItems;
+        if (this.state.loaded==false) {
+            console.log("not loaded");
+            return (
+                <ActivityIndicator size="large" color='#8979B7' />
+            )
+          }
         return (
             <View style={styles.container}>
 
@@ -80,8 +86,6 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     preview: {
-        // justifyContent: 'flex-end',
-        // alignItems: 'center',
         height: 200,
         width: 200
     },

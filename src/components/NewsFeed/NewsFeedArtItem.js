@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
-import Firebase from '../components/Firebase';
+import Firebase from '../Firebase';
+import WebViewLink from '../../utils/WebViewLink';
+import Toaster, { ToastStyles } from 'react-native-toaster'
 export default class NewsFeedArtItem extends Component {
     progress = new Animated.Value(0);
     constructor(props) {
@@ -16,6 +18,11 @@ export default class NewsFeedArtItem extends Component {
         Animated.timing(this.progress, { toValue: 1, duration: 500 }).start();
 
     }
+
+    _openUrl = () => {
+        this.setState({ openURL: !this.state.openURL });
+    }
+
     async saveTopersonalCollection() {
         let uid = Firebase.registrationInfo.UID;
         var objToSave = ({
@@ -32,7 +39,8 @@ export default class NewsFeedArtItem extends Component {
         var ref = Firebase.database.ref(`/SavedNewsFeedItems/${uid}`);
         ref.push(JSON.parse(JSON.stringify(objToSave)))
             .then((result) => {
-                console.log('result', result); //this wasn't null until the 3.1.0 version console.log(result.path); })
+                console.log('result', result);
+
             }).catch(function (error) {
                 var errorCode = error.code;
                 var errorMessage = error.message;
@@ -43,15 +51,12 @@ export default class NewsFeedArtItem extends Component {
 
     onPress() {
         var delta = new Date().getTime() - this.state.lastPress;
-
         if (delta < 200) {
             // double tap happend
-            console.log("double");
            // if (typeof this.props.addedToCollectionNew === 'function') {
              //   this.props.addedToCollectionNew(this.state);
                 this.saveTopersonalCollection();
                 console.log(this.props.event);
-
             //}
         }
 
@@ -71,20 +76,25 @@ export default class NewsFeedArtItem extends Component {
             inputRange: [0, 1],
             outputRange: [0, 1],
         });
-        const { department, creditline, culture, accessionyear, title, primaryimageurl, pageURL,id } = this.props.event;
-
+        const { department, creditline, culture, accessionyear, title, primaryimageurl, url,id } = this.props.event;
+        console.log(this.props.event);
         return (
             <Animated.View style={[styles.container, { opacity, transform: [{ scale }] }]}>
                 <TouchableOpacity style={styles.buttonLove} onPress={() => this.onPress()}>
                     <Image
                         resizeMode="contain"
                         style={styles.image}
-                        source={{ uri: primaryimageurl }}
+                        source={{ uri: url }}
                     />
 
                 </TouchableOpacity>
                 <View style={styles.textContainer}>
-                    <Text style={styles.title}>{title}</Text>
+                {
+                        this.state.openURL ? <WebViewLink link={primaryimageurl} /> : null
+                    }
+                    <TouchableOpacity onPress={this._openUrl}>
+                        <Text style={styles.title}>{title}</Text>
+                        </TouchableOpacity>
                     <Text style={styles.text} numberOfLines={2}>{department}</Text>
                     <Text style={styles.text}>Credits: {creditline}</Text>
                     <Text style={styles.text}>Culture: {culture}</Text>

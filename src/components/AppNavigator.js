@@ -1,27 +1,58 @@
+import React, { Component } from 'react';
 import ScanArt from './ScanArt/ScanArt';
 import ArtCollection from './NewsFeed/ArtCollection';
 import MyCollection from './Profile/MyCollection';
-import { createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 import Login from './Login';
+import MuseumsFinder from './MuseumFinder/MuseumsFinder';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import {Image} from 'react-native';
 
-const TabNavi = createMaterialTopTabNavigator({
-  ScanArt: ScanArt,
-  NewsFeed: ArtCollection,
-  Profile: MyCollection
+const TabNavi = createMaterialBottomTabNavigator({
+  ScanArt: {
+    screen: ScanArt,
+    navigationOptions: ({
+      tabBarIcon: (tintColor) => (
+        <Image
+          source={require('../assets/scanLogo.png')}
+        />
+      )
+    })
+  },
+  NewsFeed: {
+    screen: ArtCollection,
+    navigationOptions: ({
+      tabBarIcon: (tintColor) => (
+        <Image
+          source={require('../assets/newsfeedLogo.png')}
+        />
+      )
+    })
+  },
+  Profile: {
+    screen: MyCollection,
+    navigationOptions: ({
+      tabBarIcon: (tintColor) => (
+        <Image
+          source={require('../assets/logoProfile.png')}
+        />
+      )
+    })
+  },
+  Museums: {
+    screen: MuseumsFinder,
+    navigationOptions: ({
+      tabBarIcon: (tintColor) => (
+        <Image
+          source={require('../assets/findmuseum.png')}
+        />
+      )
+    })
+  }
 }, {
-    tabBarOptions: {
-      activeTintColor: 'tomato',
-      inactiveTintColor: 'gray',
-      backgroundColor: '#8979B7',
-      labelStyle: {
-        color: 'white',
-        fontSize: 12,
-        flex: 1,
-        backgroundColor: '#8979B7'
-      },
-      style: {
-        backgroundColor: '#8979B7'
-      }
+    initialRouteName: 'ScanArt',
+    barStyle: {
+      backgroundColor: '#8979B7'
     }
   });
 
@@ -34,3 +65,5 @@ export default AppNavigator = createStackNavigator({
   Login: Login,
   Home: TabNavi,
 });
+
+

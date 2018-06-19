@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
-import Firebase from '../components/Firebase';
 import DetailsModal from './DetailsModal';
-export default class SavedArtItem extends Component {
+export default class SavedNewsItem extends Component {
     progress = new Animated.Value(0);
     constructor(props) {
         super(props);
@@ -18,6 +17,7 @@ export default class SavedArtItem extends Component {
     }
 
     onPress() {
+        console.log("dd");
         this.setState({
             showDetails: !this.state.showDetails
         })

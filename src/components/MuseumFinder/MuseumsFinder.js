@@ -1,29 +1,32 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
+import { TouchableOpacity, TouchableHighlight, View, ActivityIndicator, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import PersonalCollectionArtItem from '../models/PersonalCollectionArtItem';
 import MapView from 'react-native-maps';
-//import NewsFeedArtItem from '../models/NewsFeedArtItem';
-
+import MuseumModel from './MuseumModel';
+//import GooglePlacesInput from './MuseumFinder/searchGoogle';
+//var GooglePlacesInput=require('../components/MuseumFinder/searchGoogle');
 export default class MuseumsFinder extends Component {
     constructor(props) {
         super(props);
         this.museumsRef = [];
+        this.museumsDetailsList = [];
         this.state = {
             latitude: null,
-            longitude: null
+            longitude: null,
+            isModalVisible: true,
+            loaded: false
         }
         this.getMuseumsEU = this.getMuseumsEU.bind(this);
         this.showLocationsDetails = this.showLocationsDetails.bind(this);
     }
     componentWillMount() {
         //       this.getCoordinates();
-        this.loadPlaces();
+        this.getCoordinates();
+        //   this.loadPlaces();
         //   this.getMuseumsEU();
     }
 
     componentDidMount() {
-        this.getCoordinates();
     }
     getMuseumsEU() {
         debugger;
@@ -83,35 +86,54 @@ export default class MuseumsFinder extends Component {
                 this.showLocationsDetails();
             })
     }
-    loadPlacedetails(placeid) {
-        var url = "https://maps.googleapis.com/maps/api/place/details/output?parameters";
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                return data;
-            })
-        return nulll;
 
-    }
     showLocationsDetails() {
-        debugger;
-        this.museumsRef.map(function(x,i)
-        {// {$}
-        var place_id=x.place_id;
-            //console.log(this.loadPlacedetails(x.place_id));
+        this.museumsDetailsList = [];
+        this.museumsRef.map(function (x, i) {// {$}
+            var place_id = x.place_id;
             var url = `https://maps.googleapis.com/maps/api/place/details/json?key=${encodeURIComponent(params.key)}&placeid=${place_id}`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
+                    this.museumsDetailsList.push(data);
                 });
         })
+        console.log(this.museumsDetailsList, "listaaaaa");
+    }
+
+    renderItem(item) {
+        debugger
+        return (
+            <MuseumModel event={item} />
+        )
     }
 
     render() {
+        if (this.state.loaded == false) {
+            console.log("not loaded");
+            return (
+                <ActivityIndicator size="large" color='#8979B7' />
+            )
+        }
         return (
-            <View>
+            <View style={styles.container}>
+                <FlatList
+                    data={this.museumsDetailsList}
+                    renderItem={({ item }) => this.renderItem(item)}
+                    keyExtractor={(item) => item.id.toString()}
+                />
             </View>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#FFFFFF',
+        flex: 1,
+        paddingTop: 0,
+        width: '100%'
+    },
+
+});

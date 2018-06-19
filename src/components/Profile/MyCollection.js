@@ -19,33 +19,25 @@ export default class MyCollection extends Component {
         this.showScans = this.showScans.bind(this);
         this.showSavedNews = this.showSavedNews.bind(this);
         this.logOut = this.logOut.bind(this);
-
     }
 
     componentWillMount() {
-
     }
 
     componentDidMount() {
         this.setState({ email: Firebase.registrationInfo.email });
+        this.showScans();
         ///this.onRefresh();
     }
 
     showScans() {
-        //  debugger
         this.setState({
-            showScans: true,
-            showNewsFeed: false,
             changeList: false,
-
         });
 
     }
     showSavedNews() {
-        //   debugger
         this.setState({
-            showNewsFeed: true,
-            showScans: false,
             changeList: true,
         });
     }
@@ -108,12 +100,6 @@ export default class MyCollection extends Component {
         );
     }
 }
-/* {
-                   this.state.showNewsFeed ? <SavedNewsList /> : null
-               }
-               {
-                   this.state.showScans ? <ScansList /> : null
-               }*/
 
 const styles = StyleSheet.create({
     container: {

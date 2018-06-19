@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     padding: 20
-
   },
   input: {
     height: 40,
@@ -103,12 +102,12 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   image: {
-    width: 300,
+    width: 350,
     height: 300,
     //flex:1,
     marginTop: 20,
     justifyContent: 'center',
-  //  marginLeft: 
+    //  marginLeft: 
   },
   data: {
     padding: 15,
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   LaterSignInContainer: {
-    marginLeft: 80,
+    marginRight: 10,
     marginTop: 20,
   }
 });

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Firebase from '../Firebase';
-import PersonalCollectionArtItem from '../../models/PersonalCollectionArtItem';
+import PersonalCollectionArtItem from '../../components/Profile/PersonalCollectionArtItem';
 export default class Scanslist extends Component {
 
     constructor() {
@@ -17,11 +17,11 @@ export default class Scanslist extends Component {
     }
 
     componentWillMount() {
-        this.loadData();
 
     }
 
     componentDidMount() {
+        this.loadData();
     }
 
 
