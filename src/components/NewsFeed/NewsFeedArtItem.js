@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { addToast } from '../../utils/redux/actions';
 const mapDispatchToProps = { addToast }
 //export default connect(null, mapDispatchToProps)(NewsFeedArtItem)
-export class NewsFeedArtItem extends Component {
+export default class NewsFeedArtItem extends Component {
     progress = new Animated.Value(0);
     constructor(props) {
         super(props);
@@ -32,6 +32,7 @@ export class NewsFeedArtItem extends Component {
         var objToSave = ({
             department: this.props.event.department,
             title: this.props.event.title,
+           /// people=this.props.event.people,
             creditline: this.props.event.creditline,
             culture: this.props.event.culture,
             accessionyear: this.props.event.accessionyear,
@@ -74,6 +75,7 @@ export class NewsFeedArtItem extends Component {
 
 
     render() {
+        debugger
         let opacity = this.progress.interpolate({
             inputRange: [0, 1],
             outputRange: [0, 1],
@@ -102,10 +104,10 @@ export class NewsFeedArtItem extends Component {
                     <TouchableOpacity onPress={this._openUrl}>
                         <Text style={styles.title}>{title}</Text>
                     </TouchableOpacity>
-                    <Text style={styles.text} numberOfLines={2}>{department}</Text>
-                    <Text style={styles.text}>Credits: {creditline}</Text>
                     <Text style={styles.text}>Culture: {culture}</Text>
                     <Text style={styles.text}>Accession year: {accessionyear}</Text>
+                    <Text style={styles.text} numberOfLines={2}>{department}</Text>
+                    <Text style={styles.text}>Credits: {creditline}</Text>
                 </View>
             </Animated.View>
         );

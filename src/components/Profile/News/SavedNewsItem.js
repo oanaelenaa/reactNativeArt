@@ -8,7 +8,7 @@ export default class SavedNewsItem extends Component {
         this.state = {
             showDetails: false
         }
-        this.displayDetailsModal=this.displayDetailsModal.bind(this);
+        this.displayDetailsModal = this.displayDetailsModal.bind(this);
     }
 
     componentDidMount() {
@@ -24,7 +24,7 @@ export default class SavedNewsItem extends Component {
     }
     displayDetailsModal() {
         if (this.state.showDetails)
-            return <NewsDetailsModal isModalVisible={true}  event={this.props.event}></NewsDetailsModal>;
+            return <NewsDetailsModal isModalVisible={true} event={this.props.event}></NewsDetailsModal>;
     }
 
     render() {
@@ -37,7 +37,7 @@ export default class SavedNewsItem extends Component {
             inputRange: [0, 1],
             outputRange: [0, 1],
         });
-        const primaryimageurl=this.props.event.primaryimageurl;
+        const primaryimageurl = this.props.event.primaryimageurl;
         return (
             <View styles={styles.container}>
                 {this.displayDetailsModal()}

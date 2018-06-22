@@ -17,7 +17,7 @@ export default class NewsDetailsModal extends Component {
     }
 
     render() {
-        const { department, creditline, culture, accessionyear, title, primaryimageurl, pageURL, id } = this.props.event;
+        const { department, creditline, culture, accessionyear, title, people, primaryimageurl, pageURL, id } = this.props.event;
         return (
             <Modal isVisible={this.state.isModalVisible}
                 animationType="slide"

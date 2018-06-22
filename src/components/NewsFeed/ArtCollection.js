@@ -48,7 +48,6 @@ export default class ArtCollection extends Component {
     loadSearchData() {
         debugger;
         var result = [];
-        //${encodeURIComponent(this.state.searchTerm)}
         fetch(`https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&keyword=${encodeURIComponent(this.state.searchTerm)}&size=200`)
             .then(response => response.json())
             .then(data => {
@@ -72,6 +71,7 @@ export default class ArtCollection extends Component {
 
 
     renderItem(item) {
+        debugger;
         return (
             <NewsFeedArtItem event={item} />
         )

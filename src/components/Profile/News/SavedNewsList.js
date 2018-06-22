@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
+import { TouchableOpacity, TouchableHighlight, View, Text, ActivityIndicator, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Firebase from '../../Firebase';
 import SavedNewsItem from './SavedNewsItem';
@@ -8,11 +8,12 @@ export default class SavedNewsList extends Component {
 
     constructor() {
         super();
-        this.savedNewsFeedCollection= [],
-        this.state = {
-            visible: false,
-            lastPress: 0
-        }
+        this.savedNewsFeedCollection = [],
+            this.state = {
+                visible: false,
+                lastPress: 0,
+                loaded: false,
+            }
         this.loadData = this.loadData.bind(this);
     }
 
@@ -24,16 +25,16 @@ export default class SavedNewsList extends Component {
 
     }
 
-
     loadData() {
         //debugger;
         const uid = Firebase.registrationInfo.UID;
         var list = [];//databaseRef.
         Firebase.databaseRef.child(`/SavedNewsFeedItems/${uid}`).on('value', (childSnapshot) => {
             childSnapshot.forEach((doc) => {
-               // debugger;
+                // debugger;
                 var artItem = {
                     department: doc.toJSON().department,
+                    people:doc.toJSON().people,
                     creditline: doc.toJSON().creditline,
                     title: doc.toJSON().title,
                     pageURL: doc.toJSON().pageURL,
@@ -46,8 +47,10 @@ export default class SavedNewsList extends Component {
                 list.push(artItem);
             });
         });
-        this.setState({ refreshing: false });
-        this.savedNewsFeedCollection=list;
+        this.setState({
+            refreshing: false, loaded: true
+        });
+        this.savedNewsFeedCollection = list;
         console.log(this.savedNewsFeedCollection);
     }
 
@@ -62,14 +65,21 @@ export default class SavedNewsList extends Component {
     }
 
     render() {
-        var items=this.savedNewsFeedCollection;
+        if (this.state.loaded == false) {
+            return (
+                <View style={styles.centerLoader}>
+                    <ActivityIndicator size="large" color='#8979B7' />
+                </View>
+            )
+        }
+        var items = this.savedNewsFeedCollection;
         return (
             <View style={styles.container}>
                 <GridView
                     itemDimension={130}
                     items={items}
                     renderItem={item => this.renderItem(item)}
-                   // keyExtractor={(item) => item.id.toString()}
+                // keyExtractor={(item) => item.id.toString()}
                 />
             </View>
         );

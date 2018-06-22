@@ -22,7 +22,6 @@ export default class MyCollection extends Component {
         this.logOut = this.logOut.bind(this);
         this.colorText = this.colorText.bind(this);
         this.resetText = this.resetText.bind(this);
-
     }
 
     componentWillMount() {
@@ -30,19 +29,21 @@ export default class MyCollection extends Component {
 
     componentDidMount() {
         this.setState({ email: Firebase.registrationInfo.email });
-        this.showScans();
+       // this.showScans();
         ///this.onRefresh();
     }
 
     showScans() {
         this.setState({
-            changeList: false,
+            showScans: true,
+            showNews: false
         });
 
     }
     showSavedNews() {
         this.setState({
-            changeList: true,
+            showScans: false,
+            showNews: true
         });
     }
 
@@ -113,9 +114,8 @@ export default class MyCollection extends Component {
                 </View>
                 <View style={styles.lineStyle} />
                 {
-                    this.state.changeList ? <SavedNewsList /> : <ScansList />
+                    this.state.showScans ? <ScansList /> : <SavedNewsList />
                 }
-
             </View>
         );
     }

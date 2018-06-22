@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
+import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, ActivityIndicator, Button, FlatList, Modal, Alert } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Firebase from '../../Firebase';
 import PersonalCollectionArtItem from './PersonalCollectionArtItem';
@@ -7,12 +7,13 @@ export default class Scanslist extends Component {
 
     constructor() {
         super();
-        this.personalCollection=[],
-        this.state = {
-            visible: false,
-            lastPress: 0
-        }
-        this.loadData=this.loadData.bind(this);
+        this.personalCollection = [],
+            this.state = {
+                visible: false,
+                lastPress: 0,
+                loaded: false,
+            }
+        this.loadData = this.loadData.bind(this);
     }
 
     componentWillMount() {
@@ -26,7 +27,7 @@ export default class Scanslist extends Component {
         ///debugger;
         this.setState({ refreshing: true });
         const uid = Firebase.registrationInfo.UID;
-        var list=[];
+        var list = [];
         Firebase.databaseRef.child(`/SavedArtItems/${uid}`).on('value', (childSnapshot) => {
             childSnapshot.forEach((doc) => {
                 var artItem = {
@@ -39,8 +40,10 @@ export default class Scanslist extends Component {
                 list.push(artItem);
             });
         });
-        this.setState({ refreshing: false });
-        this.personalCollection=list;
+        this.setState({
+            refreshing: false, loaded: true
+        });
+        this.personalCollection = list;
     }
 
 
@@ -52,6 +55,13 @@ export default class Scanslist extends Component {
     }
 
     render() {
+        if (this.state.loaded == false) {
+            return (
+                <View style={styles.centerLoader}>
+                    <ActivityIndicator size="large" color='#8979B7' />
+                </View>
+            )
+        }
         return (
             <View style={styles.container}>
                 <FlatList
