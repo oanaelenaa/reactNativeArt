@@ -23,12 +23,12 @@ export default class ScanArt extends Component {
             camEnabled: true
         }
         this.classifyImageURL = this.classifyImageURL.bind(this);
-        this.classifyImageFile = this.classifyImageFile.bind(this);
+    //    this.classifyImageFile = this.classifyImageFile.bind(this);
         this.initializeLabels = this.initializeLabels.bind(this);
         this.validateResponse = this.validateResponse.bind(this);
         this.setModalVisible = this.setModalVisible.bind(this);
         this.displayResponseModal = this.displayResponseModal.bind(this);
-        this.updateUrl=thi.updateUrl.bind(this);
+        this.updateUrl=this.updateUrl.bind(this);
     }
     onNavigation() {
         this.setState({ camEnabled: false })
@@ -131,26 +131,7 @@ export default class ScanArt extends Component {
             });
     }
 
-    async classifyImageFile() {
-        debugger
-        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
-        var pathtofile = this.state.url;
-        conole.log(pathtofile);
-        RNFetchBlob.fetch('POST', baseUrl, {
-            'Content-Type': 'application/octet-stream',
-            'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
-        }, RNFetchBlob.wrap()).then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson)
-                this.validateResponse(responseJson);
-            }).catch(function (error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(error.code)
-                console.log(error.message)
-            });
-    }
-
+   
     async savePictureToCollection() {
         const uid = Firebase.registrationInfo.UID;
     }

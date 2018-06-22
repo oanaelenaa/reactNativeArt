@@ -13,14 +13,31 @@ export default class CameraView extends Component {
 		try {
 			const cameraData = await this.camera.takePictureAsync(options);
 			console.log(cameraData.uri);
-			this.setState({
-				url:cameraData.url
-			})
+			this.classifyImageFile2(cameraData.uri)
 
 		} catch (e) {
 			// This logs the error
 			console.log(e)
 		}
+	}
+
+	async classifyImageFile(url) {
+		debugger
+		var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
+		RNFetchBlob.fetch('POST', baseUrl, {
+			'Content-Type': 'application/octet-stream',
+			'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
+
+		}, RNFetchBlob.wrap(url)).then((response) => response.json())
+			.then((responseJson) => {
+				console.log(responseJson)
+				this.validateResponse(responseJson);
+			}).catch(function (error) {
+				var errorCode = error.code;
+				var errorMessage = error.message;
+				console.log(error.code)
+				console.log(error.message)
+			});
 	}
 
 
