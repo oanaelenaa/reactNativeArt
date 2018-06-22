@@ -73,7 +73,7 @@ export default class Login extends Component {
             <Text style={styles.buttonText}>take me to my account</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.LaterSignInContainer} onPress={() => this.goToHomeScreen()} style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.goToHomeScreen()} style={styles.buttonContainer}>
           <Text style={styles.buttonText}>I'll do it later on</Text>
         </TouchableOpacity>
       </View>
@@ -124,8 +124,4 @@ const styles = StyleSheet.create({
     color: "#8979B7",
     fontSize: 18
   },
-  LaterSignInContainer: {
-    marginRight: 10,
-    marginTop: 20,
-  }
 });

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, TouchableWithoutFeedback, TouchableHighlight, Image, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Firebase from '../Firebase';
-import SavedNewsList from './SavedNewsList';
-import ScansList from './ScansList';
+import SavedNewsList from './News/SavedNewsList';
+import ScansList from './Scans/ScansList';
 export default class MyCollection extends Component {
 
     constructor(props) {
@@ -14,11 +14,15 @@ export default class MyCollection extends Component {
             savedNewsFeedCollection: [],
             showNewsFeed: false,
             showScans: true,
-            changeList: false
+            changeList: false,
+            textColored: true
         }
         this.showScans = this.showScans.bind(this);
         this.showSavedNews = this.showSavedNews.bind(this);
         this.logOut = this.logOut.bind(this);
+        this.colorText = this.colorText.bind(this);
+        this.resetText = this.resetText.bind(this);
+
     }
 
     componentWillMount() {
@@ -54,6 +58,21 @@ export default class MyCollection extends Component {
         }
     }
 
+
+    colorText() {
+        this.setState({ textColored: true });
+    }
+    resetText() {
+        this.setState({ textColored: false });
+    }
+    textColored() {
+        if (this.state.textColored) {
+            return styles.textColored;
+        } else {
+            return styles.textNormal;
+        }
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -67,24 +86,25 @@ export default class MyCollection extends Component {
                     </TouchableOpacity>
 
                     <Text>{this.state.email}</Text>
-                    <TouchableHighlight
+                    <TouchableHighlight style={styles.logOutButton}
                         onLongPress={() => {
                             alert("we are logging out");
                             this.logOut();
                             //  this.onRefresh();
                         }}>
-                        <Text>LOG OUT</Text>
+                        <Image
+                            source={require('../../assets/logout.png')} />
                     </TouchableHighlight>
                 </View>
-                <View style={{ flexDirection: "row" }}>
+                <View style={styles.listsButtons}>
 
-                    <TouchableOpacity
+                    <TouchableOpacity onPressIn={this.colorText} onPressOut={this.resetText}
                         style={styles.capture}
                         onPress={this.showScans.bind(this)}
                     >
                         <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', }}>SCANS </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
+                    <TouchableOpacity onPressIn={this.colorText} onPressOut={this.resetText}
                         style={styles.capture}
                         onPress={this.showSavedNews.bind(this)}
                     >
@@ -118,9 +138,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center'
     },
+    listsButtons: {
+        flexDirection: "row",
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     logOutButton: {
-        paddingTop: 10,
-        paddingLeft: 100
+        top: 10,
+        right: 0,
+        paddingLeft: 150
     },
     lineStyle: {
         borderWidth: 0.5,
@@ -129,15 +155,6 @@ const styles = StyleSheet.create({
     },
     header: {
         /// display: inline,
-    },
-    capture: {
-        flex: 0,
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        padding: 10,
-        paddingHorizontal: 20,
-        alignSelf: 'center',
-        margin: 20
     },
     profileIcon: {
         borderWidth: 1,
@@ -149,7 +166,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 100,
 
+    },
+    textNormal: {
+        color: '#fff',
+
+    },
+    textColored: {
+        color: 'gray'
     }
+
 })
 /*
  <FlatList style={styles.containerList}

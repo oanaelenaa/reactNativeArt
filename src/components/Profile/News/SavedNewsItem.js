@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
-import DetailsModal from './DetailsModal';
+import NewsDetailsModal from './NewsDetailsModal';
 export default class SavedNewsItem extends Component {
     progress = new Animated.Value(0);
     constructor(props) {
@@ -24,7 +24,7 @@ export default class SavedNewsItem extends Component {
     }
     displayDetailsModal() {
         if (this.state.showDetails)
-            return <DetailsModal isModalVisible={true}  event={this.props.event}></DetailsModal>;
+            return <NewsDetailsModal isModalVisible={true}  event={this.props.event}></NewsDetailsModal>;
     }
 
     render() {
@@ -37,10 +37,9 @@ export default class SavedNewsItem extends Component {
             inputRange: [0, 1],
             outputRange: [0, 1],
         });
-        const { department, creditline, culture, accessionyear, title, primaryimageurl, pageURL, id } = this.props.event;
-
+        const primaryimageurl=this.props.event.primaryimageurl;
         return (
-            <View>
+            <View styles={styles.container}>
                 {this.displayDetailsModal()}
                 <Animated.View style={[styles.container, { opacity, transform: [{ scale }] }]}>
                     <TouchableOpacity style={styles.buttonLove} onPress={() => this.onPress()}>
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 10,
         borderBottomColor: '#cdcdcd',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
     },
     image: {
         height: 150,

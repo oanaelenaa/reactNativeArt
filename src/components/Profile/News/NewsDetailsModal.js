@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, ScrollView, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import Modal from "react-native-modal";
-import WebViewLink from '../../utils/WebViewLink';
-export default class DetailsModal extends Component {
+import WebViewLink from '../../../utils/WebViewLink';
+export default class NewsDetailsModal extends Component {
 
     state = {
         isModalVisible: true,
         openURL: false,
-        isScan: false
     };
 
     _toggleModal = () =>
@@ -17,33 +16,8 @@ export default class DetailsModal extends Component {
         this.setState({ openURL: !this.state.openURL });
     }
 
-    _renderArtItemDetails = () => {
-        if (this.props.isScan==false) {
-            const { department, creditline, culture, accessionyear, title, primaryimageurl, pageURL, id } = this.props.event;
-            return (
-                <ScrollView>
-                    <Text style={styles.title}>Title: {title}</Text>
-                    <Text style={styles.text} numberOfLines={2}>Department: {department}</Text>
-                    <Text style={styles.text}>Credits: {creditline}</Text>
-                    <Text style={styles.text}>Culture: {culture}</Text>
-                    <Text style={styles.text}>Accession year: {accessionyear}</Text>
-                </ScrollView>
-            );
-        }
-        const { title, author, otherInformation, primaryimageURL, pageURL, id } = this.props.event;
-        return (
-            <ScrollView>
-                <Text style={styles.title}>Title: {title}</Text>
-                <Text style={styles.text}>Author: {author}</Text>
-            </ScrollView>
-        );
-    }
-
-
-
     render() {
-        const primaryimageurl = this.props.event.primaryimageurl;
-        const pageURL = this.props.event.pageURL;
+        const { department, creditline, culture, accessionyear, title, primaryimageurl, pageURL, id } = this.props.event;
         return (
             <Modal isVisible={this.state.isModalVisible}
                 animationType="slide"
@@ -65,15 +39,20 @@ export default class DetailsModal extends Component {
                             style={styles.image}
                             source={{ uri: primaryimageurl }} />
                     </View>
-                    {this._renderArtItemDetails}
+                    <ScrollView>
+                        <Text style={styles.title}>Title: {title}</Text>
+                        <Text style={styles.text} numberOfLines={2}>Department: {department}</Text>
+                        <Text style={styles.text}>Credits: {creditline}</Text>
+                        <Text style={styles.text}>Culture: {culture}</Text>
+                        <Text style={styles.text}>Accession year: {accessionyear}</Text>
+                    </ScrollView>
+
                 </View>
             </Modal>
         );
     }
 }
-/*{
-                                this.state.openURL ? <WebViewLink /> : null
-                            } */
+
 
 const styles = StyleSheet.create({
     container: {

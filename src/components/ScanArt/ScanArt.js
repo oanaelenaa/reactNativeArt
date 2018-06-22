@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
-import { RNCamera } from 'react-native-camera';
 import Firebase from '../Firebase';
-import MuseumsFinder from '../MuseumFinder/MuseumsFinder';
 import RNFetchBlob from 'react-native-fetch-blob';
-console.log(RNCamera);
 import ScanResponseModal from './ScanResponseModal';
+import CameraView from './CameraView';
 function FoundLabel() {
     this.probability = 0;
     this.tagId = 0;
@@ -13,8 +11,8 @@ function FoundLabel() {
 }
 export default class ScanArt extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             modalVisible: false,
             url: "",
@@ -22,6 +20,7 @@ export default class ScanArt extends Component {
             labels: [],
             result: null,
             notFoundMessage: "",
+            camEnabled: true
         }
         this.classifyImageURL = this.classifyImageURL.bind(this);
         this.classifyImageFile = this.classifyImageFile.bind(this);
@@ -29,9 +28,23 @@ export default class ScanArt extends Component {
         this.validateResponse = this.validateResponse.bind(this);
         this.setModalVisible = this.setModalVisible.bind(this);
         this.displayResponseModal = this.displayResponseModal.bind(this);
+        this.updateUrl=thi.updateUrl.bind(this);
+    }
+    onNavigation() {
+        this.setState({ camEnabled: false })
+    }
+
+    updateUrl(){
+      /*  this.setState({
+            url:
+        })*/
+
     }
 
     componentDidMount() {
+        requestAnimationFrame(() => {
+            // update the camera state here or send a value to a function that changes the cameraEnabled state
+        })
     }
 
     componentWillMount() {
@@ -80,23 +93,12 @@ export default class ScanArt extends Component {
         return (
             <View style={styles.container}>
                 {this.displayResponseModal()}
-                <RNCamera
-                    ref={ref => {
-                        this.camera = ref;
-                    }}
-                    style={styles.preview}
-                    type={RNCamera.Constants.Type.back}
-                    //flashMode={RNCamera.Constants.FlashMode.on}
-                    permissionDialogTitle={'Permission to use camera'}
-                    permissionDialogMessage={'We need your permission to use your camera phone'}
-                />
-                <TouchableOpacity
-                    onPress={this.takePicture.bind(this)}
-                    style={styles.capture}
-                >
-                    <Text style={{ fontSize: 14 }}> SNAP </Text>
-                </TouchableOpacity>
-
+                <CameraView
+                    enabled={this.state.camEnabled}
+                    ref={(cam) => { this.camera = cam }} 
+                   // onChange={this.state.url}
+              //      value={this.props.url}
+                    />
             </View>
         );
     }
@@ -133,6 +135,7 @@ export default class ScanArt extends Component {
         debugger
         var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
         var pathtofile = this.state.url;
+        conole.log(pathtofile);
         RNFetchBlob.fetch('POST', baseUrl, {
             'Content-Type': 'application/octet-stream',
             'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
@@ -146,27 +149,6 @@ export default class ScanArt extends Component {
                 console.log(error.code)
                 console.log(error.message)
             });
-
-        /*
-        fetch(baseUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/octet-stream',
-                'Prediction-Key': '3f85f3746d0f4e82843f9eae70e09e97'
-            },
-            body:new Buffer(thi.state.imageFile,'base64')
-            // RNFetchBlob.wrap(this.state.uri)
-            //new Buffer.from(this.state.imageFile, 'base64')
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson)
-                this.validateResponse(responseJson);
-            }).catch(function (error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(error.code)
-                console.log(error.message)
-            });*/
     }
 
     async savePictureToCollection() {
@@ -184,19 +166,19 @@ export default class ScanArt extends Component {
             try {
                 const cameraData = await this.camera.takePictureAsync()
                 console.log(cameraData.uri);
-              } catch (e) {
-               // This logs the error
+            } catch (e) {
+                // This logs the error
                 console.log(e)
-              }
             }
-           /* Alert(data.uri)
-            this.setState({
-                url: data.uri,
-                imageFile: data
-            })
-            this.classifyImageFile();*/
-            // uploadImage(this.state.url,"test");
-        
+        }
+        /* Alert(data.uri)
+         this.setState({
+             url: data.uri,
+             imageFile: data
+         })
+         this.classifyImageFile();*/
+        // uploadImage(this.state.url,"test");
+
     }
 
 }
@@ -240,19 +222,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         paddingVertical: 15
     },
-    museumsFinderButton: {
-        borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.2)',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 100,
-        height: 100,
-        backgroundColor: '#fff',
-        borderRadius: 100,
-        position: "absolute",
-        bottom: 0,
-        right: 0
-    }
 })
 
 /*   <TouchableOpacity

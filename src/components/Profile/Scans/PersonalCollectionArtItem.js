@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity, Modal } from 'react-native';
-import DetailsModal from './DetailsModal';
+import ScanDetailsModal from './ScanDetailsModal';
 
 export default class PersonalCollectionArtItem extends Component {
     progress = new Animated.Value(0);
@@ -17,20 +17,17 @@ export default class PersonalCollectionArtItem extends Component {
 
 
     onPress() {
-        debugger;
-        console.log("dd");
         this.setState({
             showDetails: !this.state.showDetails
         })
     }
     displayDetailsModal() {
         if (this.state.showDetails)
-            return <DetailsModal isModalVisible={true} event={this.props.event} isScan={true}></DetailsModal>;
+            return <ScanDetailsModal isModalVisible={true} event={this.props.event}></ScanDetailsModal>;
     }
 
     render() {
-        const { title, author, otherInformation, primaryimageURL, pageURL, id } = this.props.event;
-
+        primaryimageURL=this.props.event.primaryimageURL;
         return (
 
             <View style={styles.container}>
