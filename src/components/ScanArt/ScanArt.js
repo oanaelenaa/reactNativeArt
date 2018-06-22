@@ -23,22 +23,14 @@ export default class ScanArt extends Component {
             camEnabled: true
         }
         this.classifyImageURL = this.classifyImageURL.bind(this);
-    //    this.classifyImageFile = this.classifyImageFile.bind(this);
+        //    this.classifyImageFile = this.classifyImageFile.bind(this);
         this.initializeLabels = this.initializeLabels.bind(this);
         this.validateResponse = this.validateResponse.bind(this);
         this.setModalVisible = this.setModalVisible.bind(this);
         this.displayResponseModal = this.displayResponseModal.bind(this);
-        this.updateUrl=this.updateUrl.bind(this);
     }
     onNavigation() {
         this.setState({ camEnabled: false })
-    }
-
-    updateUrl(){
-      /*  this.setState({
-            url:
-        })*/
-
     }
 
     componentDidMount() {
@@ -83,11 +75,17 @@ export default class ScanArt extends Component {
         this.state.labels = labels;
     }
 
+   
 
     displayResponseModal() {
         if (this.state.modalVisible)
             return <ScanResponseModal modalVisible={this.state.modalVisible} labels={this.state.labels} notFoundMessage={this.state.notFoundMessage}></ScanResponseModal>;
     }
+
+    handleScanResponse= (langValue) => {
+        this.setState({result: langValue});
+    }
+
 
     render() {
         return (
@@ -95,17 +93,14 @@ export default class ScanArt extends Component {
                 {this.displayResponseModal()}
                 <CameraView
                     enabled={this.state.camEnabled}
-                    ref={(cam) => { this.camera = cam }} 
-                   // onChange={this.state.url}
-              //      value={this.props.url}
-                    />
+                    ref={(cam) => { this.camera = cam }}
+                    onGetResponseScan={this.handleScanResponse}
+                />
             </View>
         );
     }
 
     async classifyImageURL() {
-        debugger
-        //"Url": "https://thumbs-prod.si-cdn.com/uTAij75m6bRq94JAv-gQtcWBfQs=/800x600/filters:no_upscale():focal(3455x1709:3456x1710)/https://public-media.smithsonianmag.com/filer/d1/bb/d1bbf47d-256a-4833-b57c-eeb71a48b0bd/mona.jpg"
         var objtosend = {
             "Url": this.state.url
         };
@@ -118,7 +113,6 @@ export default class ScanArt extends Component {
                 'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
             },
             body: JSON.stringify(objtosend)
-
         }).then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson)
@@ -131,13 +125,9 @@ export default class ScanArt extends Component {
             });
     }
 
-   
     async savePictureToCollection() {
         const uid = Firebase.registrationInfo.UID;
     }
-    /* RNFS.readFile(data.uri.substring(7), "base64")  //substring(7) -> to remove the file://
-      .then(res => console.log(res));
- */
 
     async takePicture() {
         debugger;
@@ -204,15 +194,3 @@ const styles = StyleSheet.create({
         paddingVertical: 15
     },
 })
-
-/*   <TouchableOpacity
-                    style={styles.museumsFinderButton}
-                    onPress={this.setMuseumsmodalVisible}
-                >
-                    <Image
-                        resizeMode="contain"
-                        style={styles.image}
-                        source={require("../map_finder.png")}
-                    />
-                    <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', }}> nearby museums </Text>
-                </TouchableOpacity>*/

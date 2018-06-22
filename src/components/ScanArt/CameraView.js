@@ -6,6 +6,9 @@ console.log(RNCamera);
 export default class CameraView extends Component {
 	constructor(props) {
 		super(props)
+		this.state = {
+			response: ""
+		}
 	}
 
 	async capture() {
@@ -21,6 +24,12 @@ export default class CameraView extends Component {
 		}
 	}
 
+	handleScanResponseChange = () => {
+		var response = this.state.response;
+		this.props.onGetResponseScan(response);
+	}
+
+
 	async classifyImageFile(url) {
 		debugger
 		var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
@@ -31,7 +40,9 @@ export default class CameraView extends Component {
 		}, RNFetchBlob.wrap(url)).then((response) => response.json())
 			.then((responseJson) => {
 				console.log(responseJson)
-				this.validateResponse(responseJson);
+				this.setState({
+					response: responseJson
+				})
 			}).catch(function (error) {
 				var errorCode = error.code;
 				var errorMessage = error.message;
@@ -65,7 +76,7 @@ export default class CameraView extends Component {
 					onPress={this.capture.bind(this)}
 					style={styles.capture}
 				>
-					<Text style={{ fontSize: 14 }}> SNAP </Text>
+					<Text style={styles.scanButtonText}> SNAP </Text>
 				</TouchableOpacity>
 			</View>
 		);
@@ -87,5 +98,8 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		margin: 20
 	},
-
+	scanButtonText: {
+		color: "#8979B7",
+		fontSize: 24
+	}
 })

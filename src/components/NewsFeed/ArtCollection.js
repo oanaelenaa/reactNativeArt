@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, TextInput, StyleSheet, Button, FlatList, ActivityIndicator } from 'react-native';
 import NewsFeedArtItem from './NewsFeedArtItem';
 import { SearchBar } from 'react-native-elements';
-//import Toaster from 'react-native-toaster';
-//import { connect } from 'react-redux';
+import Toaster from 'react-native-toaster';
+import { connect } from 'react-redux';
 const categories = ['object', 'person', 'exhibition', 'publication', 'gallery', 'spectrum', 'place', 'period'];
-//const mapStateToProps = ({ toastMessage }) => ({ toastMessage })
+const mapStateToProps = ({ toastMessage }) => ({ toastMessage })
 //<Toaster message={this.props.toastMessage} />
+//export default connect(mapStateToProps)(ArtCollection)
 export default class ArtCollection extends Component {
 
     constructor() {
@@ -20,7 +21,6 @@ export default class ArtCollection extends Component {
         }
         this.smartSearch = this.smartSearch.bind(this);
         this.loadSearchData = this.loadSearchData.bind(this);
-
     }
 
     componentWillMount() {
@@ -87,6 +87,7 @@ export default class ArtCollection extends Component {
         }
         return (
             <View style={styles.container}>
+            <Toaster message={this.props.toastMessage} />
                 <TextInput
                     style={styles.TextInputStyleClass}
                     onChangeText={(text) => this.smartSearch(text)}

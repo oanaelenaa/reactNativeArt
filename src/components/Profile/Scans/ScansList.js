@@ -16,13 +16,11 @@ export default class Scanslist extends Component {
     }
 
     componentWillMount() {
-
     }
 
     componentDidMount() {
         this.loadData();
     }
-
 
     loadData() {
         ///debugger;
@@ -65,7 +63,6 @@ export default class Scanslist extends Component {
         );
     }
 }
-//                <Spinner visible={this.state.visible} textContent={"Loading..."} textStyle={{ color: '#FFF' }}>
 
 const styles = StyleSheet.create({
     container: {

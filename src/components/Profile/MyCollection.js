@@ -102,13 +102,13 @@ export default class MyCollection extends Component {
                         style={styles.capture}
                         onPress={this.showScans.bind(this)}
                     >
-                        <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', }}>SCANS </Text>
+                        <Text style={styles.ListsButtonText}>SCANS </Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPressIn={this.colorText} onPressOut={this.resetText}
                         style={styles.capture}
                         onPress={this.showSavedNews.bind(this)}
                     >
-                        <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', }}>SAVED NEWS</Text>
+                        <Text style={styles.ListsButtonText}>SAVED NEWS</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.lineStyle} />
@@ -173,6 +173,13 @@ const styles = StyleSheet.create({
     },
     textColored: {
         color: 'gray'
+    },
+    ListsButtonText: {
+        color: "#8979B7",
+        fontSize: 18,
+        fontSize: 14,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 
 })
