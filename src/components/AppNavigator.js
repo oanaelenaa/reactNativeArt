@@ -12,7 +12,7 @@ const TabNavi = createMaterialBottomTabNavigator({
   ScanArt: {
     screen: ScanArt,
     navigationOptions: ({
-      tabBarIcon: (tintColor) => (
+      tabBarIcon: () => (
         <Image
           source={require('../assets/scanLogo.png')}
         />
@@ -32,7 +32,7 @@ const TabNavi = createMaterialBottomTabNavigator({
   Profile: {
     screen: MyCollection,
     navigationOptions: ({
-      tabBarIcon: (tintColor) => (
+      tabBarIcon: () => (
         <Image
           source={require('../assets/logoProfile.png')}
         />
@@ -42,7 +42,7 @@ const TabNavi = createMaterialBottomTabNavigator({
   Museums: {
     screen: MuseumsFinder,
     navigationOptions: ({
-      tabBarIcon: (tintColor) => (
+      tabBarIcon: () => (
         <Image
           source={require('../assets/findmuseum.png')}
         />

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
 import Firebase from '../Firebase';
 import WebViewLink from '../../utils/WebViewLink';
-import Toaster, { ToastStyles } from 'react-native-toaster';
-import { connect } from 'react-redux';
-import { addToast } from '../../utils/redux/actions';
-const mapDispatchToProps = { addToast }
+import Toast, {DURATION} from 'react-native-easy-toast'
+//import { connect } from 'react-redux';
+//import { addToast } from '../../utils/redux/actions';
+//const mapDispatchToProps = { addToast }
 //export default connect(null, mapDispatchToProps)(NewsFeedArtItem)
 export default class NewsFeedArtItem extends Component {
     progress = new Animated.Value(0);
@@ -45,10 +45,6 @@ export default class NewsFeedArtItem extends Component {
         ref.push(JSON.parse(JSON.stringify(objToSave)))
             .then((result) => {
                 console.log('result', result);
-                debugger;
-                this.props.addToast({
-                    text: 'Succesfully added to your collection'
-                })
 
             }).catch(function (error) {
                 var errorCode = error.code;
@@ -66,6 +62,7 @@ export default class NewsFeedArtItem extends Component {
             //   this.props.addedToCollectionNew(this.state);
             this.saveTopersonalCollection();
             console.log(this.props.event);
+
         }
 
         this.setState({
@@ -75,7 +72,6 @@ export default class NewsFeedArtItem extends Component {
 
 
     render() {
-        debugger
         let opacity = this.progress.interpolate({
             inputRange: [0, 1],
             outputRange: [0, 1],

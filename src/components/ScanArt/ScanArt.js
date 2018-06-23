@@ -18,12 +18,20 @@ export default class ScanArt extends Component {
             url: "",
             imageFile: null,
             labels: [],
-            result: null,
+            result: [
+                {
+                    "tagName": "oawwwna",
+                    "probability": "ddd"
+                },
+                {
+                    "tagName": "oana",
+                    "probability": "ddd"
+                }
+            ],
             notFoundMessage: "",
             camEnabled: true
         }
         this.classifyImageURL = this.classifyImageURL.bind(this);
-        //    this.classifyImageFile = this.classifyImageFile.bind(this);
         this.initializeLabels = this.initializeLabels.bind(this);
         this.validateResponse = this.validateResponse.bind(this);
         this.setModalVisible = this.setModalVisible.bind(this);
@@ -46,6 +54,43 @@ export default class ScanArt extends Component {
 
     }
 
+
+    async classifyImageFile(url) {
+        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
+        RNFetchBlob.fetch('POST', baseUrl, {
+            'Content-Type': 'application/octet-stream',
+            'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
+
+        }, RNFetchBlob.wrap(url)).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+                this.setState({
+                    response: responseJson
+                })
+            }).catch(function (error) {
+                console.log(error.code)
+                console.log(error.message)
+            });
+    }
+
+    async searchImageOnWeb(url) {
+        baseUrl = "";
+        RNFetchBlob.fetch('POST', baseUrl, {
+            'Content-Type': 'application/octet-stream',
+            'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
+
+        }, RNFetchBlob.wrap(url)).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+                this.setState({
+                    response: responseJson
+                })
+            }).catch(function (error) {
+                console.log(error.code)
+                console.log(error.message)
+            });
+
+    }
 
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
@@ -75,15 +120,21 @@ export default class ScanArt extends Component {
         this.state.labels = labels;
     }
 
-   
+    _toggleModal = () =>
+        this.setState({ modalVisible: !this.state.modalVisible });
+
 
     displayResponseModal() {
         if (this.state.modalVisible)
-            return <ScanResponseModal modalVisible={this.state.modalVisible} labels={this.state.labels} notFoundMessage={this.state.notFoundMessage}></ScanResponseModal>;
+            // return null;
+            return <ScanResponseModal hasResults={true} modalVisible={this.state.modalVisible} labels={this.state.result} notFoundMessage={this.state.notFoundMessage}></ScanResponseModal>;
     }
 
-    handleScanResponse= (langValue) => {
-        this.setState({result: langValue});
+    handleScanResponse = (langValue) => {
+        this.setState({ url: langValue });
+        this.setState({
+            modalVisible: true
+        })
     }
 
 
@@ -125,8 +176,46 @@ export default class ScanArt extends Component {
             });
     }
 
+    async searchWebReferences(url) {
+        debugger
+        objtosend = {
+            "requests": [
+                {
+                    "image": {
+                        "content": this.state.url
+                    },
+                    "features": [
+                        {
+                            "type": "WEB_DETECTION"
+                        }
+                    ]
+                }
+            ]
+        }
+        var baseUrl = `POST https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD669FCzMq4x7B7H9xSb5AYlfSpUP6x8Ls`;
+        fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
+            },
+            body: JSON.stringify(objtosend)
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+                this.validateResponse(responseJson);
+            }).catch(function (error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(error.code)
+                console.log(error.message)
+            });
+    }
+
+
     async savePictureToCollection() {
         const uid = Firebase.registrationInfo.UID;
+
     }
 
     async takePicture() {
@@ -142,14 +231,6 @@ export default class ScanArt extends Component {
                 console.log(e)
             }
         }
-        /* Alert(data.uri)
-         this.setState({
-             url: data.uri,
-             imageFile: data
-         })
-         this.classifyImageFile();*/
-        // uploadImage(this.state.url,"test");
-
     }
 
 }

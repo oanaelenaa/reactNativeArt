@@ -9,7 +9,7 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View, TextInput, Keyboard, Button, TouchableOpacity, PixelRatio, StatusBar, Image
+  View, TextInput, Keyboard, Button, TouchableOpacity, AsyncStorage, PixelRatio, StatusBar, Image
 } from 'react-native';
 import Firebase from './Firebase';
 
@@ -24,8 +24,10 @@ export default class Login extends Component {
     super(props)
     this.state = {
       email: "",
+      name: "",
       password: "",
       error: "", loading: false, showErrorMessage: false,
+      createA: false
     }
     this.goToHomeScreen = this.goToHomeScreen.bind(this);
 
@@ -36,14 +38,11 @@ export default class Login extends Component {
   }
 
   async logIn() {
-    Firebase.auth//createUserWithEmailAndPassword
-      //.setPersistance(Firebase.persistanceLevel)
+    Firebase.auth
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then((result) => {
-        Firebase.registrationInfo.email = result.user.email;
-        Firebase.registrationInfo.isAuthenticated = true;
-        Firebase.registrationInfo.refreshToken = result.user.refreshToken;
-        Firebase.registrationInfo.UID = result.user.uid;
+        Firebase.updateFirebaseService(result);
+        AsyncStorage.setItem('userToken', result.user.uid);
         this.goToHomeScreen();
       }).catch(function (error) {
         var errorCode = error.code;
@@ -51,6 +50,35 @@ export default class Login extends Component {
         console.log(error.code)
         console.log(error.message)
       });
+  }
+
+
+  async createAccount() {
+    this.setState({
+      createA: true
+    });
+    Firebase.auth//createUserWithEmailAndPassword
+      //.setPersistance(Firebase.persistanceLevel)
+      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then((result) => {
+        Firebase.updateFirebaseService(result,this.state.name);
+        this.writeUserData(result.user.uid,this.state.name);
+        AsyncStorage.setItem('userToken', result.user.uid);
+        this.goToHomeScreen();
+      }).catch(function (error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(error.code)
+        console.log(error.message)
+      });
+  }
+
+
+  writeUserData(uid, name) {
+    // the_uid can also come from let userId = firebaseApp.auth().currentUser.uid;
+    Firebase.database.ref('users/' + uid + '/').set({
+      name: name,
+    });
   }
 
   goToHomeScreen() {
@@ -66,16 +94,25 @@ export default class Login extends Component {
           source={require("../assets/logoFinal.png")}
         />
         <View style={styles.formContainer}>
+          {
+            this.state.createA ? <TextInput style={styles.input} placeholder="name"  value={this.state.name} onChangeText={(name) => this.setState({ name })} /> : null
+          }
           <TextInput style={styles.input} placeholder="username" keyboardTyppe="email-address" value={this.state.email} onChangeText={(email) => this.setState({ email })} />
 
           <TextInput style={styles.input} placeholder="password" secureTextEntry value={this.state.password} onChangeText={(password) => this.setState({ password })} />
-          <TouchableOpacity onPress={this.logIn.bind(this)} style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>take me to my account</Text>
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity onPress={this.logIn.bind(this)} style={styles.buttonContainer}>
+              <Text style={styles.buttonText}>take me to my account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.createAccount.bind(this)} style={styles.buttonContainer}>
+              <Text style={styles.buttonText}>create an account</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.buttonContainer} onPress={() => this.goToHomeScreen()} style={styles.buttonContainer}>
+              <Text style={styles.buttonText}>I'll do it later on</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.goToHomeScreen()} style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>I'll do it later on</Text>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -87,7 +124,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF"
   },
   formContainer: {
-    padding: 20
+    /// paddingVertical: 20
+    //  marginLeft: 20,
+    // marginRight: 20
   },
   input: {
     height: 40,
@@ -105,7 +144,7 @@ const styles = StyleSheet.create({
     width: 350,
     height: 300,
     //flex:1,
-    marginTop: 20,
+    marginTop: 0,
     justifyContent: 'center',
     //  marginLeft: 
   },

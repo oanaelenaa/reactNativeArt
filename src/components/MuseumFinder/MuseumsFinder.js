@@ -73,6 +73,7 @@ export default class MuseumsFinder extends Component {
 
     loadPlaces() {
         // debugger;
+        //new key:AIzaSyCMgNuq4LRHAM0q7qrew9EPuqkWtV8vIOQ
         /// var url='https://maps.googleapis.com/maps/api/place/radarsearch/json';
         var location = "46.7666872,23.5996782"
         params = { location: location, type: "museum", key: "AIzaSyCWU8IjM7VbjRw37ZXX5GwLnZPddQRw4lU", radius: "5000" }

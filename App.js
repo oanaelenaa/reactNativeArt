@@ -8,15 +8,16 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,ActivityIndicator
 } from 'react-native';
 import Firebase from './src/components/Firebase'; 
 import AppNavigator from './src/components/AppNavigator';
+const navigationPersistenceKey = __DEV__ ? "NavigationStateDEV" : null;
 export default class App extends Component {
 
   state = {
-    isAutheticated: false,
-    loading:true,
+    isAuthenticated: false,
+    checkedSignIn:false
   };
 
   componentDidMount() {
@@ -24,11 +25,13 @@ export default class App extends Component {
   }
 
   render() {
-   // const { isAutheticated } = this.state;
-    //const { onNavigationStateChange } = this;
+    const { checkedSignIn, isAuthenticated } = this.state;
+
     return (
      // <View style={styles.container}>
-        <AppNavigator></AppNavigator>
+        <AppNavigator  persistenceKey={navigationPersistenceKey}
+           // renderLoadingExperimental={() => <ActivityIndicator />}
+        ></AppNavigator>
      /// </View>
     );
   }

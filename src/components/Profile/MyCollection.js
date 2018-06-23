@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableWithoutFeedback, TouchableHighlight, Image, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, TouchableHighlight, Image, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Firebase from '../Firebase';
 import SavedNewsList from './News/SavedNewsList';
@@ -9,7 +9,7 @@ export default class MyCollection extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: "",
+            name: "",
             refreshing: false,
             savedNewsFeedCollection: [],
             showNewsFeed: false,
@@ -29,7 +29,7 @@ export default class MyCollection extends Component {
 
     componentDidMount() {
         this.setState({ email: Firebase.registrationInfo.email });
-       // this.showScans();
+        // this.showScans();
         ///this.onRefresh();
     }
 
@@ -50,9 +50,12 @@ export default class MyCollection extends Component {
 
     async logOut() {
         try {
-            if (Firebase.registrationInfo.isAutheticated == true) {
+           // if (Firebase.registrationInfo.isAutheticated == true) {
+                await AsyncStorage.clear();
                 await Firebase.auth.signOut();
-            }
+           // } 
+            debugger
+       ///     console.log(AsyncStorage);
             this.props.navigation.navigate('Login');
         } catch (e) {
             console.log(e);
@@ -86,7 +89,7 @@ export default class MyCollection extends Component {
 
                     </TouchableOpacity>
 
-                    <Text>{this.state.email}</Text>
+                    <Text>{this.state.name}</Text>
                     <TouchableHighlight style={styles.logOutButton}
                         onLongPress={() => {
                             alert("we are logging out");

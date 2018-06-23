@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, TextInput, StyleSheet, Button, FlatList, ActivityIndicator } from 'react-native';
 import NewsFeedArtItem from './NewsFeedArtItem';
-import { SearchBar } from 'react-native-elements';
-import Toaster from 'react-native-toaster';
-import { connect } from 'react-redux';
+//import { SearchBar } from 'react-native-elements';
+//import Toaster from 'react-native-toaster';
+//import { connect } from 'react-redux';
 const categories = ['object', 'person', 'exhibition', 'publication', 'gallery', 'spectrum', 'place', 'period'];
-const mapStateToProps = ({ toastMessage }) => ({ toastMessage })
+//const mapStateToProps = ({ toastMessage }) => ({ toastMessage })
 //<Toaster message={this.props.toastMessage} />
 //export default connect(mapStateToProps)(ArtCollection)
+//import Toast from 'react-native-toast-native';
 export default class ArtCollection extends Component {
 
     constructor() {
@@ -30,6 +31,7 @@ export default class ArtCollection extends Component {
 
     componentDidMount() {
 
+
     }
 
 
@@ -42,11 +44,11 @@ export default class ArtCollection extends Component {
                     visible: !this.state.visible,
                     loaded: true
                 })
+               /// Toast.show();
             })
     }
 
     loadSearchData() {
-        debugger;
         var result = [];
         fetch(`https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&keyword=${encodeURIComponent(this.state.searchTerm)}&size=200`)
             .then(response => response.json())
@@ -71,7 +73,6 @@ export default class ArtCollection extends Component {
 
 
     renderItem(item) {
-        debugger;
         return (
             <NewsFeedArtItem event={item} />
         )
@@ -87,7 +88,7 @@ export default class ArtCollection extends Component {
         }
         return (
             <View style={styles.container}>
-            <Toaster message={this.props.toastMessage} />
+                <Toast ref="toast" />
                 <TextInput
                     style={styles.TextInputStyleClass}
                     onChangeText={(text) => this.smartSearch(text)}

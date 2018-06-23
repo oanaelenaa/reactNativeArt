@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import RNFetchBlob from 'react-native-fetch-blob';
+//import RNFetchBlob from 'react-native-fetch-blob';
 console.log(RNCamera);
+/*const tfImageRecognition = new tfImageRecognition({
+	model: require('./../../utils/tenserflow/model.pb'),
+	labels: require('./../../utils/tensorflow_labels.txt'),
+});*/
 export default class CameraView extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			response: ""
+			response: "",
+			imageUrl: "",
 		}
 	}
 
@@ -16,41 +21,26 @@ export default class CameraView extends Component {
 		try {
 			const cameraData = await this.camera.takePictureAsync(options);
 			console.log(cameraData.uri);
-			this.classifyImageFile2(cameraData.uri)
-
+			this.setState({
+				imageUrl: cameraData.uri
+			});
+			this.handleScanResponseChange();
 		} catch (e) {
 			// This logs the error
 			console.log(e)
 		}
 	}
 
-	handleScanResponseChange = () => {
-		var response = this.state.response;
-		this.props.onGetResponseScan(response);
+	handleScanResponseChange() {
+		var imageURI = this.state.imageUrl;
+		this.props.onGetResponseScan(imageURI);
 	}
 
-
-	async classifyImageFile(url) {
-		debugger
-		var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
-		RNFetchBlob.fetch('POST', baseUrl, {
-			'Content-Type': 'application/octet-stream',
-			'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
-
-		}, RNFetchBlob.wrap(url)).then((response) => response.json())
-			.then((responseJson) => {
-				console.log(responseJson)
-				this.setState({
-					response: responseJson
-				})
-			}).catch(function (error) {
-				var errorCode = error.code;
-				var errorMessage = error.message;
-				console.log(error.code)
-				console.log(error.message)
-			});
-	}
-
+	/*	tenserflowCladd(){
+			const results = await ifImageRecognition.recognize({
+				///image: ,
+			  });
+		}*/
 
 	render() {
 		if (!this.props.enabled) {
@@ -58,7 +48,6 @@ export default class CameraView extends Component {
 				<View style={{ flex: 1, flexDirection: 'column' }} />
 			)
 		}
-
 		return (
 			<View>
 				<RNCamera
@@ -77,6 +66,14 @@ export default class CameraView extends Component {
 					style={styles.capture}
 				>
 					<Text style={styles.scanButtonText}> SNAP </Text>
+
+				</TouchableOpacity>
+
+				<TouchableOpacity
+					onPress={this.capture.bind(this)}
+					style={styles.capture}
+				>
+					<Text style={styles.scanButtonText}> SEARCH ON WEB </Text>
 				</TouchableOpacity>
 			</View>
 		);
