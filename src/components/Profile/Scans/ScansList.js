@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, ActivityIndicator, Button, FlatList, Modal, Alert } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Firebase from '../../Firebase';
+import Firebase from '../../../utils/authentication/Firebase';
 import PersonalCollectionArtItem from './PersonalCollectionArtItem';
 export default class Scanslist extends Component {
 

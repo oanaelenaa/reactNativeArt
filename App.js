@@ -8,16 +8,16 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View,ActivityIndicator
+  View, ActivityIndicator
 } from 'react-native';
-import Firebase from './src/components/Firebase'; 
+import Firebase from './src/utils/authentication/Firebase';
 import AppNavigator from './src/components/AppNavigator';
 const navigationPersistenceKey = __DEV__ ? "NavigationStateDEV" : null;
 export default class App extends Component {
 
   state = {
     isAuthenticated: false,
-    checkedSignIn:false
+    checkedSignIn: false
   };
 
   componentDidMount() {
@@ -28,11 +28,11 @@ export default class App extends Component {
     const { checkedSignIn, isAuthenticated } = this.state;
 
     return (
-     // <View style={styles.container}>
-        <AppNavigator  persistenceKey={navigationPersistenceKey}
-           // renderLoadingExperimental={() => <ActivityIndicator />}
+      <View style={styles.container}>
+        <AppNavigator persistenceKey={navigationPersistenceKey}
+        // renderLoadingExperimental={() => <ActivityIndicator />}
         ></AppNavigator>
-     /// </View>
+      </View>
     );
   }
 }
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
 
 
 
-//        <TabNavigator screenProps={{ unreadMessagesCount: 8 , email:"",password:"" }}/>
 
 
 /*

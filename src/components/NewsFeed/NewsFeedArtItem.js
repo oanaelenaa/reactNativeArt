@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
-import Firebase from '../Firebase';
+import Firebase from '../../utils/authentication/Firebase';
 import WebViewLink from '../../utils/WebViewLink';
-import Toast, {DURATION} from 'react-native-easy-toast'
+import Toast, { DURATION } from 'react-native-easy-toast'
 //import { connect } from 'react-redux';
 //import { addToast } from '../../utils/redux/actions';
 //const mapDispatchToProps = { addToast }
@@ -28,11 +28,12 @@ export default class NewsFeedArtItem extends Component {
     }
 
     async saveTopersonalCollection() {
+        var isSuccessful = false;
         let uid = Firebase.registrationInfo.UID;
         var objToSave = ({
             department: this.props.event.department,
             title: this.props.event.title,
-           /// people=this.props.event.people,
+            /// people=this.props.event.people,
             creditline: this.props.event.creditline,
             culture: this.props.event.culture,
             accessionyear: this.props.event.accessionyear,
@@ -41,6 +42,7 @@ export default class NewsFeedArtItem extends Component {
             id: this.props.event.id
         });
         console.log("obj", objToSave);
+        isSuccessful = true;
         var ref = Firebase.database.ref(`/SavedNewsFeedItems/${uid}`);
         ref.push(JSON.parse(JSON.stringify(objToSave)))
             .then((result) => {
@@ -52,6 +54,7 @@ export default class NewsFeedArtItem extends Component {
                 console.log(error.code)
                 console.log(error.message)
             });
+        this.handleSaveChange(isSuccessful);
     }
 
     onPress() {
@@ -64,11 +67,15 @@ export default class NewsFeedArtItem extends Component {
             console.log(this.props.event);
 
         }
-
         this.setState({
             lastPress: new Date().getTime()
         })
     }
+
+    handleSaveChange(success) {
+        this.props.onSaveItem(success);
+    }
+
 
 
     render() {

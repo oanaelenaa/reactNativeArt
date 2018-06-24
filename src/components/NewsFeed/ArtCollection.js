@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, TextInput, StyleSheet, Button, FlatList, ActivityIndicator } from 'react-native';
 import NewsFeedArtItem from './NewsFeedArtItem';
 //import { SearchBar } from 'react-native-elements';
-//import Toaster from 'react-native-toaster';
 //import { connect } from 'react-redux';
 const categories = ['object', 'person', 'exhibition', 'publication', 'gallery', 'spectrum', 'place', 'period'];
 //const mapStateToProps = ({ toastMessage }) => ({ toastMessage })
 //<Toaster message={this.props.toastMessage} />
 //export default connect(mapStateToProps)(ArtCollection)
-//import Toast from 'react-native-toast-native';
+import Toast from 'react-native-toast-native';
 export default class ArtCollection extends Component {
 
     constructor() {
@@ -31,9 +30,18 @@ export default class ArtCollection extends Component {
 
     componentDidMount() {
 
-
     }
 
+    showToastMessage = (isSuccessful) => {
+        if (isSuccessful) {
+            const toastStyle = {
+                backgroundColor: "#29AB87",
+                color: "#FFFFFF"
+            }
+            Toast.show('Successfully added to your collection', toastStyle);
+
+        }
+    }
 
     loadData() {
         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&size=100')
@@ -44,7 +52,6 @@ export default class ArtCollection extends Component {
                     visible: !this.state.visible,
                     loaded: true
                 })
-               /// Toast.show();
             })
     }
 
@@ -74,7 +81,7 @@ export default class ArtCollection extends Component {
 
     renderItem(item) {
         return (
-            <NewsFeedArtItem event={item} />
+            <NewsFeedArtItem event={item} onSaveItem={this.showToastMessage} />
         )
     }
 
@@ -88,11 +95,9 @@ export default class ArtCollection extends Component {
         }
         return (
             <View style={styles.container}>
-                <Toast ref="toast" />
                 <TextInput
                     style={styles.TextInputStyleClass}
                     onChangeText={(text) => this.smartSearch(text)}
-                    //  value={this.state.searchTerm}
                     underlineColorAndroid='transparent'
                     placeholder="Search Here"
                     onSubmitEditing={this.loadSearchData}
@@ -150,5 +155,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         alignSelf: 'center',
         margin: 20
+    },
+    toastStyle: {
+        backgroundColor: '#29AB87',
+        color: '#FFFFFF'
     }
 })

@@ -7,7 +7,9 @@ export default class ScanResponseModal extends Component {
         this.state = {
             modalVisible: true
         }
+        this.searchonWebReferences = this.searchonWebReferences.bind(this);
     }
+
     _toggleModal = () =>
         this.setState({ modalVisible: !this.state.modalVisible });
 
@@ -15,28 +17,41 @@ export default class ScanResponseModal extends Component {
 
     }
 
+    searchonWebReferences() {
+
+    }
+
     render() {
         const hasResults = this.props.hasResults;
         const imageURI = this.props.url;
+        console.log(imageURI);
         return (
             <Modal isVisible={this.state.modalVisible}
                 animationType="slide"
                 transparent={false}>
+                {this.searchonWebReferences()}
 
-                <TouchableHighlight
+                <TouchableHighlight style={styles.closeButton}
                     onPress={this._toggleModal}>
-                    <Text>Close</Text>
+                    <Image
+                        resizeMode="contain"
+                        source={require('./../../assets/closeIcon.png')} />
 
                 </TouchableHighlight>
                 <View>
                     <Image style={styles.pictureStyle}
                         resizeMode="contain"
-                        source={{ uri: imageURI }}>
+                        source={{ uri: imageURI, isStatic: true }}>
                     </Image>
                     <Text>{this.props.errorMessage}</Text>
                     <FlatList
                         data={this.props.labels}
-                        renderItem={({ item }) => <Text style={styles.text} >Tag name:{item.tagName},Probability:{item.probability}</Text>}
+                        renderItem={
+                            ({ item }) => <View>
+                                <Text style={styles.text} >Tag name:{item.tagName}</Text>
+                                <Text style={styles.text} >Probability:{item.probability}</Text>
+                            </View>
+                        }
                     />
                     {
                         hasResults ? <Image style={styles.iconResponse} source={require('./../../assets/foundScan.png')} /> : <Image source={require('./../../assets/notFound.png')} />
@@ -56,11 +71,6 @@ const styles = StyleSheet.create({
         // padding: 10,
         borderBottomColor: '#cdcdcd',
         borderBottomWidth: 1
-    },
-    image: {
-        height: 250,
-        width: 250,
-        marginRight: 10
     },
     textContainer: {
         flex: 1,
@@ -83,11 +93,16 @@ const styles = StyleSheet.create({
         height: 100,
         justifyContent: 'center',
         alignItems: 'center',
+        marginLeft: 100
     },
     pictureStyle: {
-        marginTop: 0,
         justifyContent: 'center',
-        width: 200,
-        height: 200
+        width: 300,
+        height: 300
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 5,
+        right: 5
     }
 })

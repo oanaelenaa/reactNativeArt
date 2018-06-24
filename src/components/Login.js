@@ -11,12 +11,7 @@ import {
   Text,
   View, TextInput, Keyboard, Button, TouchableOpacity, AsyncStorage, PixelRatio, StatusBar, Image
 } from 'react-native';
-import Firebase from './Firebase';
-
-/*var LoginState={
-  email:string,
-  password:string,
-}*/
+import Firebase from '../utils/authentication/Firebase';
 export default class Login extends Component {
   static navigationOptions = { header: null }
 
@@ -100,7 +95,7 @@ export default class Login extends Component {
           <TextInput style={styles.input} placeholder="username" keyboardTyppe="email-address" value={this.state.email} onChangeText={(email) => this.setState({ email })} />
 
           <TextInput style={styles.input} placeholder="password" secureTextEntry value={this.state.password} onChangeText={(password) => this.setState({ password })} />
-          <View>
+          <View style={styles.buttonsView}>
             <TouchableOpacity onPress={this.logIn.bind(this)} style={styles.buttonContainer}>
               <Text style={styles.buttonText}>take me to my account</Text>
             </TouchableOpacity>
@@ -127,10 +122,11 @@ const styles = StyleSheet.create({
     /// paddingVertical: 20
     //  marginLeft: 20,
     // marginRight: 20
+    marginTop:0
   },
   input: {
     height: 40,
-    marginBottom: 20,
+    margin: 20,
     color: '#000000',
     paddingHorizontal: 10
   },
@@ -163,4 +159,7 @@ const styles = StyleSheet.create({
     color: "#8979B7",
     fontSize: 18
   },
+  buttonsView:{
+    marginLeft:45
+  }
 });

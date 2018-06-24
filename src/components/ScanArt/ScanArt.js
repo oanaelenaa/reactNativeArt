@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
-import Firebase from '../Firebase';
+import Firebase from '../../utils/authentication/Firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ScanResponseModal from './ScanResponseModal';
 import CameraView from './CameraView';
@@ -20,12 +20,12 @@ export default class ScanArt extends Component {
             labels: [],
             result: [
                 {
-                    "tagName": "oawwwna",
-                    "probability": "ddd"
+                    "tagName": "Gioconda",
+                    "probability": "99%"
                 },
                 {
-                    "tagName": "oana",
-                    "probability": "ddd"
+                    "tagName": "leonardo da Vinci",
+                    "probability": "98%"
                 }
             ],
             notFoundMessage: "",
@@ -127,7 +127,7 @@ export default class ScanArt extends Component {
     displayResponseModal() {
         if (this.state.modalVisible)
             // return null;
-            return <ScanResponseModal hasResults={true} modalVisible={this.state.modalVisible} labels={this.state.result} notFoundMessage={this.state.notFoundMessage}></ScanResponseModal>;
+            return <ScanResponseModal hasResults={true} url={this.state.url} modalVisible={this.state.modalVisible} labels={this.state.result} notFoundMessage={this.state.notFoundMessage}></ScanResponseModal>;
     }
 
     handleScanResponse = (langValue) => {

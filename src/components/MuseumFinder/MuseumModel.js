@@ -5,7 +5,7 @@ export default class MuseumModel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          
+
         }
     }
 
@@ -13,10 +13,10 @@ export default class MuseumModel extends Component {
         Animated.timing(this.progress, { toValue: 1, duration: 500 }).start();
     }
 
-
     onPress() {
-      
+
     }
+
 
     render() {
         let opacity = this.progress.interpolate({
@@ -28,17 +28,34 @@ export default class MuseumModel extends Component {
             inputRange: [0, 1],
             outputRange: [0, 1],
         });
-        const { name, formatted_address,pageURL,id } = this.props.event;
-
+        debugger;
+        const { name, formatted_address, rating, icon, opening_hours, id } = this.props.event;
+        const isOpenNow = opening_hours.open_now;
         return (
             <Animated.View style={[styles.container, { opacity, transform: [{ scale }] }]}>
                 <TouchableOpacity style={styles.buttonLove} onPress={() => this.onPress()}>
-                   
+                    <Image
+                        resizeMode="contain"
+                        style={styles.image}
+                        source={{ uri: icon }}
+                    />
 
                 </TouchableOpacity>
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>{name}</Text>
-                    <Text style={styles.text} numberOfLines={2}>{formatted_address}</Text>
+                    <View style={styles.showStatus}>
+                        {
+                            isOpenNow ? <Image source={require('./../../assets/open.png')} /> :
+
+                                <Image source={require('./../../assets/open.png')} />
+                        }
+                    </View>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={styles.title}>Rating: {rating}</Text>
+                        <Image style={styles.iconRating} source={require('./../../assets/iconStar.png')} />
+                    </View>
+                    <Text style={styles.text} numberOfLines={2}>Address: {formatted_address}</Text>
+
                 </View>
             </Animated.View>
         );
@@ -64,7 +81,7 @@ const styles = StyleSheet.create({
         paddingRight: 10
     },
     title: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold'
     },
     text: {
@@ -72,5 +89,11 @@ const styles = StyleSheet.create({
     },
     buttonLove: {
 
+    },
+    iconRating: {
+
+    },
+    showStatus: {
+        position: 'absolute', top: 5, right: 5
     }
 })

@@ -27,12 +27,18 @@ export default class NewsDetailsModal extends Component {
                     {
                         this.state.openURL ? <WebViewLink link={pageURL} /> : null
                     }
-                    <TouchableHighlight onPress={this._toggleModal}>
-                        <Text>Hide Modal</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight onPress={this._openUrl}>
-                        <Text style={styles.text}>OPEN URL</Text>
-                    </TouchableHighlight>
+
+                    <TouchableOpacity onPress={this._openUrl}>
+                        <Image
+                            resizeMode="contain"
+                            ///  style={styles.image}
+                            source={require('./../../../assets/openPage.png')} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.closeButton} onPress={this._toggleModal}>
+                        <Image
+                            resizeMode="contain"
+                            source={require('./../../../assets/closeIcon.png')} />
+                    </TouchableOpacity>
                     <View>
                         <Image
                             resizeMode="contain"
@@ -81,5 +87,8 @@ const styles = StyleSheet.create({
     },
     buttonLove: {
 
+    },
+    closeButton: {
+        position: 'absolute', top: 5, right: 5
     }
 })

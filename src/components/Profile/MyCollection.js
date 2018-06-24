@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, Image, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Firebase from '../Firebase';
+import Firebase from '../../utils/authentication/Firebase';
 import SavedNewsList from './News/SavedNewsList';
 import ScansList from './Scans/ScansList';
 export default class MyCollection extends Component {
@@ -9,7 +9,7 @@ export default class MyCollection extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
+            name: "Oana",
             refreshing: false,
             savedNewsFeedCollection: [],
             showNewsFeed: false,
@@ -50,12 +50,12 @@ export default class MyCollection extends Component {
 
     async logOut() {
         try {
-           // if (Firebase.registrationInfo.isAutheticated == true) {
-                await AsyncStorage.clear();
-                await Firebase.auth.signOut();
-           // } 
+            // if (Firebase.registrationInfo.isAutheticated == true) {
+            await AsyncStorage.clear();
+            await Firebase.auth.signOut();
+            // } 
             debugger
-       ///     console.log(AsyncStorage);
+            ///     console.log(AsyncStorage);
             this.props.navigation.navigate('Login');
         } catch (e) {
             console.log(e);
@@ -88,8 +88,7 @@ export default class MyCollection extends Component {
                         <Icon name={"user"} size={60} color="#01a699" />
 
                     </TouchableOpacity>
-
-                    <Text>{this.state.name}</Text>
+                    <Text style={styles.label}>{this.state.name}</Text>
                     <TouchableHighlight style={styles.logOutButton}
                         onLongPress={() => {
                             alert("we are logging out");
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
     logOutButton: {
         top: 10,
         right: 0,
-        paddingLeft: 150
+        paddingLeft: 180
     },
     lineStyle: {
         borderWidth: 0.5,
@@ -183,18 +182,15 @@ const styles = StyleSheet.create({
         fontSize: 14,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    label: {
+        fontSize: 18,
+        color: "#8979B7",
+        marginTop:50
     }
 
 })
-/*
- <FlatList style={styles.containerList}
-                    data={this.savedNewsFeedCollection}
-                    renderItem={({ item }) => this.renderItemNF(item)}
-                    keyExtractor={(item) => item.id}
-                />
 
-
-*/
 /*
  <TouchableOpacity
                     style={{

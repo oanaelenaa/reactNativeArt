@@ -21,6 +21,7 @@ export default class CameraView extends Component {
 		try {
 			const cameraData = await this.camera.takePictureAsync(options);
 			console.log(cameraData.uri);
+			//this.classifyImageFile2(cameraData.uri)
 			this.setState({
 				imageUrl: cameraData.uri
 			});
@@ -57,22 +58,19 @@ export default class CameraView extends Component {
 					style={styles.preview}
 					type={RNCamera.Constants.Type.back}
 					value={this.props.url}
-					//flashMode={RNCamera.Constants.FlashMode.on}
 					permissionDialogTitle={'Permission to use camera'}
 					permissionDialogMessage={'We need your permission to use your camera phone'}
 				/>
 				<TouchableOpacity
 					onPress={this.capture.bind(this)}
-					style={styles.capture}
-				>
-					<Text style={styles.scanButtonText}> SNAP </Text>
+					style={styles.capture}>
+					<Text style={styles.scanButtonText}> SCAN </Text>
 
 				</TouchableOpacity>
 
 				<TouchableOpacity
 					onPress={this.capture.bind(this)}
-					style={styles.capture}
-				>
+					style={styles.capture}>
 					<Text style={styles.scanButtonText}> SEARCH ON WEB </Text>
 				</TouchableOpacity>
 			</View>

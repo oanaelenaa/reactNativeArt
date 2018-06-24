@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, ActivityIndicator, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
-import Firebase from '../../Firebase';
+import Firebase from '../../../utils/authentication/Firebase';
 import SavedNewsItem from './SavedNewsItem';
 import GridView from 'react-native-super-grid';
 export default class SavedNewsList extends Component {
