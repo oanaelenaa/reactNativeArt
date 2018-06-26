@@ -4,6 +4,8 @@ import MapView from 'react-native-maps';
 import MuseumModel from './MuseumModel';
 //import GooglePlacesInput from './MuseumFinder/searchGoogle';
 //var GooglePlacesInput=require('../components/MuseumFinder/searchGoogle');
+//import { Popup } from 'react-native-map-link';
+import GmapsDirections from '../../utils/GmapsDirections';
 export default class MuseumsFinder extends Component {
     constructor(props) {
         super(props);
@@ -12,12 +14,15 @@ export default class MuseumsFinder extends Component {
             latitude: null,
             longitude: null,
             isModalVisible: true,
-            loaded: false,
-            museumsDetailsList: []
+            loaded: true,
+            museumsDetailsList: [],
+            showMaps: false
         }
         this.showLocationsDetails = this.showLocationsDetails.bind(this);
         this.loadPlaces = this.loadPlaces.bind(this);
         this.orderMuseumsByRating = this.orderMuseumsByRating.bind(this);
+        this.displayResponseModal = this.displayResponseModal.bind(this);
+        this.getCoordinates = this.getCoordinates.bind(this);
     }
 
     componentWillMount() {
@@ -31,10 +36,13 @@ export default class MuseumsFinder extends Component {
     }
 
     componentDidMount() {
-        this.loadPlaces();
+        //  this.loadPlaces();
+    ///    this.displayResponseModal();
+        this.getCoordinates();
     }
 
     getCoordinates() {
+        debugger;
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 console.log(position);
@@ -48,6 +56,23 @@ export default class MuseumsFinder extends Component {
             { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
         );
     }
+
+
+
+    _toggleModal = () =>
+        this.setState({ showMaps: !this.state.showMaps });
+
+
+    displayResponseModal() {
+        debugger
+        if (this.state.showMaps) {
+            // return null;
+            return (<GmapsDirections />);
+        }
+    }
+
+
+
 
     loadPlaces() {
         //new key:AIzaSyCMgNuq4LRHAM0q7qrew9EPuqkWtV8vIOQ
@@ -93,7 +118,7 @@ export default class MuseumsFinder extends Component {
     }
 
     orderMuseumsByRating(list1) {
-        if(list1.length=0)
+        if (list1.length = 0)
             return [];
         var list = list1
             .filter(item => item.rating != null)
@@ -107,22 +132,26 @@ export default class MuseumsFinder extends Component {
     }
 
     render() {
-        if (this.state.loaded == false) {
-            return (
-                <View>
-                    <ActivityIndicator size="large" color='#8979B7' />
-                </View>
-            )
-        }
-        return (
-            <View style={styles.container}>
-                <FlatList
-                    data={this.orderMuseumsByRating(this.state.museumsDetailsList)}
-                    renderItem={({ item }) => this.renderItem(item)}
-                    keyExtractor={(item) => item.id}
-                />
-            </View>
-        );
+        ///this._toggleModal;
+        ///  this.displayResponseModal;
+        ///      { this.displayResponseModal(); }
+       
+         if (this.state.loaded == false) {
+              return (
+                  <View>
+                      <ActivityIndicator size="large" color='#8979B7' />
+                  </View>
+              )
+          }
+          return (
+              <View style={styles.container}>
+                  <FlatList
+                      data={this.orderMuseumsByRating(this.state.museumsDetailsList)}
+                      renderItem={({ item }) => this.renderItem(item)}
+                      keyExtractor={(item) => item.id}
+                  />
+              </View>
+          );
     }
 }
 

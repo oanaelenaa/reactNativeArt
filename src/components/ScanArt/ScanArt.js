@@ -54,6 +54,32 @@ export default class ScanArt extends Component {
 
     }
 
+    async searchWebReferences(url){
+        var fs=require(url);
+        var imageFile=fs.readFileSync('./output.txt');
+        // Covert the image data to a Buffer and base64 encode it.
+        var encoded = new Buffer(imageFile).toString('base64');
+        var apiKey='AIzaSyD_bnBI4l5RZEOCVfyrUhIFgw7okT2TRoM';
+        var url=`https://vision.googleapis.com/v1/images:annotate=${encodeURIComponent(apiKey)}`;
+        var requestList={
+            "requests":[
+              {
+                "image":{
+                  "content":encoded
+                },
+                "features":[
+                  {
+                    "type":"LABEL_DETECTION",
+                    "maxResults":1
+                  }
+                ]
+              }
+            ]
+          };
+
+
+    }
+
 
     async classifyImageFile(url) {
         var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"

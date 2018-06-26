@@ -33,6 +33,7 @@ export default class Firebase {
         Firebase.storageRef = firebase.storage();
     }
     static updateFirebaseService(val,name) {
+        debugger;
         Firebase.registrationInfo.email = val.user.email;
         Firebase.registrationInfo.isAutheticated = true;
         Firebase.registrationInfo.refreshToken = val.user.refreshToken;
