@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, TextInput, StyleSheet, Button, FlatList, ActivityIndicator } from 'react-native';
 import NewsFeedArtItem from './NewsFeedArtItem';
-//import { SearchBar } from 'react-native-elements';
-//import { connect } from 'react-redux';
 const categories = ['object', 'person', 'exhibition', 'publication', 'gallery', 'spectrum', 'place', 'period'];
-//const mapStateToProps = ({ toastMessage }) => ({ toastMessage })
-//<Toaster message={this.props.toastMessage} />
-//export default connect(mapStateToProps)(ArtCollection)
 import Toast from 'react-native-toast-native';
 export default class ArtCollection extends Component {
 
@@ -44,7 +39,7 @@ export default class ArtCollection extends Component {
     }
 
     loadData() {
-        fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&size=100')
+        fetch('https://api.harvardartmuseums.org/object?apikey=  &size=100')
             .then(response => response.json())
             .then(data => {
                 this.setState({

@@ -7,34 +7,43 @@ console.log(RNCamera);
 	model: require('./../../utils/tenserflow/model.pb'),
 	labels: require('./../../utils/tensorflow_labels.txt'),
 });*/
+
 export default class CameraView extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			response: "",
 			imageUrl: "",
+			base64: "",
+			useClassify:false
 		}
+		this.capture = this.capture.bind(this);
 	}
 
 	async capture() {
 		const options = { quality: 0.5, base64: true };
 		try {
-			const cameraData = await this.camera.takePictureAsync(options);
-			console.log(cameraData.uri);
-			//this.classifyImageFile2(cameraData.uri)
-			this.setState({
-				imageUrl: cameraData.uri
-			});
-			this.handleScanResponseChange();
+			if (this.camera) {
+				const cameraData = await this.camera.takePictureAsync(options);
+				console.log(cameraData.uri);
+				this.setState({
+					imageUrl: cameraData.uri,
+					base64: cameraData.base64
+				});
+				this.handleScanResponseChange();
+			}
 		} catch (e) {
-			// This logs the error
 			console.log(e)
 		}
 	}
 
 	handleScanResponseChange() {
 		var imageURI = this.state.imageUrl;
-		this.props.onGetResponseScan(imageURI);
+		var base64 = this.state.base64;
+		if (this.state.useClassify) {
+			this.props.onGetResponseScan(imageURI, base64, true);
+		}
+		this.props.onGetResponseScan(imageURI, base64, false);
 	}
 
 	/*	tenserflowCladd(){
@@ -62,14 +71,21 @@ export default class CameraView extends Component {
 					permissionDialogMessage={'We need your permission to use your camera phone'}
 				/>
 				<TouchableOpacity
-					onPress={this.capture.bind(this)}
+					onPress={() => {
+						this.setState({ useClassify: true })
+						this.capture();
+					}}
 					style={styles.capture}>
 					<Text style={styles.scanButtonText}> SCAN </Text>
 
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					onPress={this.capture.bind(this)}
+					onPress={() => {
+						this.setState({ useClassify: false })
+						this.capture();
+					}}
+
 					style={styles.capture}>
 					<Text style={styles.scanButtonText}> SEARCH ON WEB </Text>
 				</TouchableOpacity>

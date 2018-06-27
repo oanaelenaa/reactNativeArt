@@ -4,13 +4,17 @@ import Firebase from '../../utils/authentication/Firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ScanResponseModal from './ScanResponseModal';
 import CameraView from './CameraView';
+import config from './../../../config';
+//const vision = require('@google-cloud/vision');
+//const client = new vision.ImageAnnotatorClient();
+
 function FoundLabel() {
     this.probability = 0;
     this.tagId = 0;
     this.tagName = "";
 }
-export default class ScanArt extends Component {
 
+export default class ScanArt extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,7 +40,9 @@ export default class ScanArt extends Component {
         this.validateResponse = this.validateResponse.bind(this);
         this.setModalVisible = this.setModalVisible.bind(this);
         this.displayResponseModal = this.displayResponseModal.bind(this);
+        this.searchWebReferences = this.searchWebReferences.bind(this);
     }
+
     onNavigation() {
         this.setState({ camEnabled: false })
     }
@@ -51,60 +57,96 @@ export default class ScanArt extends Component {
     }
 
     componentWillUnmount() {
-
     }
 
-    async searchWebReferences(url){
-        var fs=require(url);
-        var imageFile=fs.readFileSync('./output.txt');
+    async searchWebReferences(base64) {
+        debugger
+        return await
+            fetch(config.googleCloud.api + config.googleCloud.apiKey, {
+                method: 'POST',
+                body: JSON.stringify({
+                    "requests": [
+                        {
+                            "image": {
+                                "content": base64
+                            },
+                            "features": [
+                                {
+                                    "type": "LABEL_DETECTION"
+                                }
+                            ]
+                        }
+                    ]
+                })
+            }).then((response) => {
+                return response.json();
+            }, (err) => {
+                console.error('promise rejected')
+                console.error(err)
+            });
+    }
+    /*async searchWebReferences(url) {
+        var fs = require(url);
+        var imageFile = fs.readFileSync('./output.txt');
         // Covert the image data to a Buffer and base64 encode it.
         var encoded = new Buffer(imageFile).toString('base64');
-        var apiKey='AIzaSyD_bnBI4l5RZEOCVfyrUhIFgw7okT2TRoM';
-        var url=`https://vision.googleapis.com/v1/images:annotate=${encodeURIComponent(apiKey)}`;
-        var requestList={
-            "requests":[
-              {
-                "image":{
-                  "content":encoded
-                },
-                "features":[
-                  {
-                    "type":"LABEL_DETECTION",
-                    "maxResults":1
-                  }
-                ]
-              }
+        var apiKey = 'AIzaSyBOi8uZx9f8518IlWIQPK-5MXX2u-2BMU0';
+        var url = `https://vision.googleapis.com/v1/images:annotate=${encodeURIComponent(apiKey)}`;
+        var requestList = {
+            "requests": [
+                {
+                    "image": {
+                        "content": encoded
+                    },
+                    "features": [
+                        {
+                            "type": "LABEL_DETECTION",
+                            "maxResults": 1
+                        }
+                    ]
+                }
             ]
-          };
-
-
-    }
-
-
-    async classifyImageFile(url) {
-        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
-        RNFetchBlob.fetch('POST', baseUrl, {
-            'Content-Type': 'application/octet-stream',
-            'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
-
-        }, RNFetchBlob.wrap(url)).then((response) => response.json())
+        };
+    }*/
+    /*async searchWebReferences(url) {
+        debugger
+        objtosend = {
+            "requests": [
+                {
+                    "image": {
+                        "content": this.state.url
+                    },
+                    "features": [
+                        {
+                            "type": "WEB_DETECTION"
+                        }
+                    ]
+                }
+            ]
+        }
+        var baseUrl = `POST https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD669FCzMq4x7B7H9xSb5AYlfSpUP6x8Ls`;
+        fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
+            },
+            body: JSON.stringify(objtosend)
+        }).then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson)
-                this.setState({
-                    response: responseJson
-                })
+                this.validateResponse(responseJson);
             }).catch(function (error) {
                 console.log(error.code)
                 console.log(error.message)
             });
-    }
+    }*/
 
     async searchImageOnWeb(url) {
         baseUrl = "";
         RNFetchBlob.fetch('POST', baseUrl, {
             'Content-Type': 'application/octet-stream',
             'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
-
         }, RNFetchBlob.wrap(url)).then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson)
@@ -151,13 +193,21 @@ export default class ScanArt extends Component {
 
 
     displayResponseModal() {
-        if (this.state.modalVisible)
-            // return null;
+        if (this.state.modalVisible) {
             return <ScanResponseModal hasResults={true} url={this.state.url} modalVisible={this.state.modalVisible} labels={this.state.result} notFoundMessage={this.state.notFoundMessage}></ScanResponseModal>;
+        }
     }
 
-    handleScanResponse = (langValue) => {
+    handleScanResponse = (langValue, base64, action) => {
         this.setState({ url: langValue });
+        this.setState({ base64: base64 });
+
+        if (action == 'classify') {
+            this.classifyImageFile(langValue);
+        }
+        else {
+            console.log(this.searchWebReferences(base64));
+        }
         this.setState({
             modalVisible: true
         })
@@ -195,69 +245,46 @@ export default class ScanArt extends Component {
                 console.log(responseJson)
                 this.validateResponse(responseJson);
             }).catch(function (error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
                 console.log(error.code)
                 console.log(error.message)
             });
     }
-
-    async searchWebReferences(url) {
-        debugger
-        objtosend = {
-            "requests": [
-                {
-                    "image": {
-                        "content": this.state.url
-                    },
-                    "features": [
-                        {
-                            "type": "WEB_DETECTION"
-                        }
-                    ]
-                }
-            ]
-        }
-        var baseUrl = `POST https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD669FCzMq4x7B7H9xSb5AYlfSpUP6x8Ls`;
-        fetch(baseUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
-            },
-            body: JSON.stringify(objtosend)
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson)
-                this.validateResponse(responseJson);
-            }).catch(function (error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(error.code)
-                console.log(error.message)
-            });
-    }
-
 
     async savePictureToCollection() {
         const uid = Firebase.registrationInfo.UID;
-
     }
 
-    async takePicture() {
-        debugger;
-        if (this.camera) {
-            const options = { quality: 0.5, base64: true };
-            //const data = await this.camera.takePictureAsync(options)
-            try {
-                const cameraData = await this.camera.takePictureAsync()
-                console.log(cameraData.uri);
-            } catch (e) {
-                // This logs the error
-                console.log(e)
-            }
-        }
+    async classifyImageFile(url) {
+        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
+        RNFetchBlob.fetch('POST', baseUrl, {
+            'Content-Type': 'application/octet-stream',
+            'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
+
+        }, RNFetchBlob.wrap(url)).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+                this.setState({
+                    response: responseJson
+                })
+            }).catch(function (error) {
+                console.log(error.code)
+                console.log(error.message)
+            });
     }
+
+    /* async takePicture() {
+         if (this.camera) {
+             const options = { quality: 0.5, base64: true };
+             //const data = await this.camera.takePictureAsync(options)
+             try {
+                 const cameraData = await this.camera.takePictureAsync()
+                 console.log(cameraData.uri);
+             } catch (e) {
+                 // This logs the error
+                 console.log(e)
+             }
+         }
+     }*/
 
 }
 

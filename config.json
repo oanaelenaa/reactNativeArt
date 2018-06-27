@@ -1,0 +1,14 @@
+{
+    "googleCloud": {
+        "api": "https://vision.googleapis.com/v1/images:annotate?key=",
+        "apiKey": "AIzaSyBOi8uZx9f8518IlWIQPK-5MXX2u-2BMU0"
+    },
+    "customVision": {
+        "api":"",
+        "apiKey":"e55e3d08cfae46768f86aba72e051021"
+    },
+    "harvardArtMuseum": {
+        "api":"",
+        "apiKey":"3c32a450-65e8-11e8-85de-6b944c9ddaed"
+    }
+}
