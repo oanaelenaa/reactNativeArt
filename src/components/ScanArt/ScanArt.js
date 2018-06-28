@@ -5,6 +5,7 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import ScanResponseModal from './ScanResponseModal';
 import CameraView from './CameraView';
 import config from './../../../config';
+import WebReferencesResponseModal from './WebReferencesResponseModal';
 //const vision = require('@google-cloud/vision');
 //const client = new vision.ImageAnnotatorClient();
 
@@ -21,17 +22,16 @@ export default class ScanArt extends Component {
             modalVisible: false,
             url: "",
             imageFile: null,
-            labels: [],
-            result: [
-                {
-                    "tagName": "Gioconda",
-                    "probability": "99%"
-                },
-                {
-                    "tagName": "leonardo da Vinci",
-                    "probability": "98%"
-                }
-            ],
+            result: [],
+            /* {
+                 "tagName": "Gioconda",
+                 "probability": "99%"
+             },
+             {
+                 "tagName": "leonardo da Vinci",
+                 "probability": "98%"
+             }
+         ],*/
             notFoundMessage: "",
             camEnabled: true
         }
@@ -60,7 +60,6 @@ export default class ScanArt extends Component {
     }
 
     async searchWebReferences(base64) {
-        debugger
         return await
             fetch(config.googleCloud.api + config.googleCloud.apiKey, {
                 method: 'POST',
@@ -72,7 +71,7 @@ export default class ScanArt extends Component {
                             },
                             "features": [
                                 {
-                                    "type": "LABEL_DETECTION"
+                                    "type": "WEB_DETECTION"
                                 }
                             ]
                         }
@@ -85,62 +84,6 @@ export default class ScanArt extends Component {
                 console.error(err)
             });
     }
-    /*async searchWebReferences(url) {
-        var fs = require(url);
-        var imageFile = fs.readFileSync('./output.txt');
-        // Covert the image data to a Buffer and base64 encode it.
-        var encoded = new Buffer(imageFile).toString('base64');
-        var apiKey = 'AIzaSyBOi8uZx9f8518IlWIQPK-5MXX2u-2BMU0';
-        var url = `https://vision.googleapis.com/v1/images:annotate=${encodeURIComponent(apiKey)}`;
-        var requestList = {
-            "requests": [
-                {
-                    "image": {
-                        "content": encoded
-                    },
-                    "features": [
-                        {
-                            "type": "LABEL_DETECTION",
-                            "maxResults": 1
-                        }
-                    ]
-                }
-            ]
-        };
-    }*/
-    /*async searchWebReferences(url) {
-        debugger
-        objtosend = {
-            "requests": [
-                {
-                    "image": {
-                        "content": this.state.url
-                    },
-                    "features": [
-                        {
-                            "type": "WEB_DETECTION"
-                        }
-                    ]
-                }
-            ]
-        }
-        var baseUrl = `POST https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD669FCzMq4x7B7H9xSb5AYlfSpUP6x8Ls`;
-        fetch(baseUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
-            },
-            body: JSON.stringify(objtosend)
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson)
-                this.validateResponse(responseJson);
-            }).catch(function (error) {
-                console.log(error.code)
-                console.log(error.message)
-            });
-    }*/
 
     async searchImageOnWeb(url) {
         baseUrl = "";
@@ -185,7 +128,7 @@ export default class ScanArt extends Component {
             z.probability = x.probability;
             labels.push(z);
         }
-        this.state.labels = labels;
+        this.state.result = labels;
     }
 
     _toggleModal = () =>
@@ -193,20 +136,34 @@ export default class ScanArt extends Component {
 
 
     displayResponseModal() {
+        console.log(this.state.url, "url");
         if (this.state.modalVisible) {
-            return <ScanResponseModal hasResults={true} url={this.state.url} modalVisible={this.state.modalVisible} labels={this.state.result} notFoundMessage={this.state.notFoundMessage}></ScanResponseModal>;
+            if (this.state.openClassifierModal) {
+                return (<ScanResponseModal hasResults={true} url={this.state.url} modalVisible={this.state.modalVisible}
+                    labels={this.state.result} notFoundMessage={this.state.notFoundMessage}></ScanResponseModal>);
+            }
+            else {
+                return (<WebReferencesResponseModal url={this.state.url} modalVisible={this.state.modalVisible}
+                    responseWeb={this.state.result}></WebReferencesResponseModal>);
+            }
         }
     }
 
     handleScanResponse = (langValue, base64, action) => {
         this.setState({ url: langValue });
         this.setState({ base64: base64 });
-
+        this.setState.openClassifierModal = action;
         if (action == 'classify') {
             this.classifyImageFile(langValue);
         }
         else {
-            console.log(this.searchWebReferences(base64));
+            var labelsAnnotations = this.searchWebReferences(base64);
+            if (labelsAnnotations != null) {
+                this.setState({
+                    result: labelsAnnotations.resposes.webDetection
+                });
+                console.log(labelsAnnotations);
+            }
         }
         this.setState({
             modalVisible: true
@@ -271,21 +228,6 @@ export default class ScanArt extends Component {
                 console.log(error.message)
             });
     }
-
-    /* async takePicture() {
-         if (this.camera) {
-             const options = { quality: 0.5, base64: true };
-             //const data = await this.camera.takePictureAsync(options)
-             try {
-                 const cameraData = await this.camera.takePictureAsync()
-                 console.log(cameraData.uri);
-             } catch (e) {
-                 // This logs the error
-                 console.log(e)
-             }
-         }
-     }*/
-
 }
 
 const styles = StyleSheet.create({

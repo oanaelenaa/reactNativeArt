@@ -1,37 +1,36 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import Modal from "react-native-modal";
-export default class ScanResponseModal extends Component {
-    constructor() {
-        super();
+
+
+
+export default class WebReferencesResponseModal extends Component {
+    constructor(props) {
+        super(props);
         this.state = {
-            modalVisible: true
+            modalVisible: true,
+            imageUri: this.props.url,
+            responseWeb: this.props.results
         }
-        this.searchonWebReferences = this.searchonWebReferences.bind(this);
     }
 
     _toggleModal = () =>
         this.setState({ modalVisible: !this.state.modalVisible });
 
-    searchWebReferences() {
 
-    }
-
-    searchonWebReferences() {
-
+    componentDidMount() {
+       console.log(this.state.imageUri);
+       console.log(this.state.responseWeb,"fff");
     }
 
     render() {
-        const hasResults = this.props.hasResults;
-        const imageURI = this.props.url;
-        console.log(imageURI);
+        //        console.log(imageURI);
         return (
             <Modal isVisible={this.state.modalVisible}
                 swipeDirection="up"
 
                 animationType="slide"
                 transparent={false}>
-                {this.searchonWebReferences()}
 
                 <TouchableHighlight style={styles.closeButton}
                     onPress={this._toggleModal}>
@@ -41,23 +40,12 @@ export default class ScanResponseModal extends Component {
 
                 </TouchableHighlight>
                 <View>
-                    <Image style={styles.pictureStyle}
+                <Image style={styles.pictureStyle}
                         resizeMode="contain"
-                        source={{ uri: imageURI, isStatic: true }}>
-                    </Image>
-                    <Text>{this.props.errorMessage}</Text>
-                    <FlatList
-                        data={this.props.labels}
-                        renderItem={
-                            ({ item }) => <View>
-                                <Text style={styles.text} >Tag name:{item.tagName}</Text>
-                                <Text style={styles.text} >Probability:{item.probability}</Text>
-                            </View>
-                        }
-                    />
-                    {
-                        hasResults ? <Image style={styles.iconResponse} source={require('./../../assets/foundScan.png')} /> : <Image source={require('./../../assets/notFound.png')} />
-                    }
+                        source={{ uri: this.state.imageUri, isStatic: true }}>
+                </Image>
+
+
 
                 </View>
             </Modal>
@@ -65,6 +53,29 @@ export default class ScanResponseModal extends Component {
     }
 }
 
+
+/**
+ * <Image style={styles.pictureStyle}
+                        resizeMode="contain"
+                        source={{ uri: this.state.imageUri, isStatic: true }}>
+                    </Image>
+                    <Text>{this.props.errorMessage}</Text>
+                    <FlatList
+                        data={this.state.labelAnnotations}
+                        renderItem={
+                            ({ item }) => <View>
+                                <Text style={styles.text} >Tag name:{item.description}</Text>
+                            </View>
+                        }
+                    />
+                    
+                        <Image style={styles.iconResponse} source={require('./../../assets/foundScan.png')} /> : <Image source={require('./../../assets/notFound.png')} />
+                    
+
+ * 
+ * 
+ * 
+ */
 
 const styles = StyleSheet.create({
     container: {

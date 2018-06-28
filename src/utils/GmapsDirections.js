@@ -12,7 +12,7 @@ export default class GmapsDirection extends Component {
     }
 
     componentDidMount(){
-        debugger
+        debugger;
     }
     /*  handleGetDirections = () => {
           const data = {
@@ -40,7 +40,7 @@ export default class GmapsDirection extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+         ///   <View style={styles.container}>
                 <Popup
                     isVisible={this.state.isVisible}
                     onCancelPressed={() => this.setState({ isVisible: false })}
@@ -58,7 +58,7 @@ export default class GmapsDirection extends Component {
                     appsWhiteList={'google-maps'}
 
                 />
-            </View>
+          ///  </View>
         )
     }
 

@@ -13,14 +13,6 @@ export default class ScanResponseModal extends Component {
     _toggleModal = () =>
         this.setState({ modalVisible: !this.state.modalVisible });
 
-    searchWebReferences() {
-
-    }
-
-    searchonWebReferences() {
-
-    }
-
     render() {
         const hasResults = this.props.hasResults;
         const imageURI = this.props.url;
@@ -31,8 +23,6 @@ export default class ScanResponseModal extends Component {
 
                 animationType="slide"
                 transparent={false}>
-                {this.searchonWebReferences()}
-
                 <TouchableHighlight style={styles.closeButton}
                     onPress={this._toggleModal}>
                     <Image

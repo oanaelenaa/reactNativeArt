@@ -27,7 +27,7 @@ export default class SearchOnWeb extends Component {
     }
 
     searchImageOnWeb() {
-            client
+        client
             .labelDetection(this.state.surl)
             .then(results => {
                 const labels = results[0].labelAnnotations;
@@ -40,7 +40,7 @@ export default class SearchOnWeb extends Component {
     }
 
     async searchWebReferences(url) {
-     ///   var fs = require(url);
+        ///   var fs = require(url);
         ////var imageFile = fs.readFileSync('./output.txt');
         // Covert the image data to a Buffer and base64 encode it.
         var encoded = new Buffer(url).toString('base64');
@@ -64,7 +64,6 @@ export default class SearchOnWeb extends Component {
     }
 
     async searchWebReferences(url) {
-        debugger
         objtosend = {
             "requests": [
                 {
