@@ -38,15 +38,14 @@ export default class MyCollection extends Component {
             showScans: true,
             showNews: false
         });
-
     }
+
     showSavedNews() {
         this.setState({
             showScans: false,
             showNews: true
         });
     }
-
 
     async logOut() {
         try {
@@ -61,7 +60,6 @@ export default class MyCollection extends Component {
             console.log(e);
         }
     }
-
 
     colorText() {
         this.setState({ textColored: true });
@@ -81,13 +79,11 @@ export default class MyCollection extends Component {
         return (
             <View style={styles.container}>
                 <View style={{ flexDirection: "row" }}>
-
-                    <TouchableOpacity
-                        style={styles.profileIcon}
-                    >
-                        <Icon name={"user"} size={60} color="#01a699" />
-
-                    </TouchableOpacity>
+                    <View
+                        style={styles.profileIcon}>
+                        <Image style={styles.profilePicStyle}
+                            source={require('../../assets/profile.jpg')} />
+                    </View>
                     <Text style={styles.label}>{this.state.name}</Text>
                     <TouchableHighlight style={styles.logOutButton}
                         onLongPress={() => {
@@ -135,6 +131,9 @@ const styles = StyleSheet.create({
         paddingTop: 50,
         width: '100%'
     },
+    profilePicStyle: {
+
+    },
     title: {
         fontSize: 25,
         fontWeight: 'bold',
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
     },
     logOutButton: {
         top: 10,
-        right: 0,
+        right: 10,
         paddingLeft: 180
     },
     lineStyle: {
@@ -186,7 +185,13 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 18,
         color: "#8979B7",
-        marginTop:50
+        marginTop: 50,
+        paddingLeft: 10
+    },
+    profilePicStyle: {
+        height: 100,
+        width: 100,
+        borderRadius: 64
     }
 
 })

@@ -55,10 +55,13 @@ const TabNavi = createMaterialBottomTabNavigator({
       backgroundColor: '#8979B7'
     }
   });
-
+//white text color 
 TabNavi.navigationOptions = {
   // Hide the header from AppNavigator stack
   header: null,
+  style: {
+    color: '#FFFFFF',
+},
 };
 
 export default AppNavigator = createStackNavigator({
@@ -67,3 +70,7 @@ export default AppNavigator = createStackNavigator({
 });
 
 
+//butoane pt scan 
+//scos rating 
+// visit website si open in maps separate + program expand collapse 
+//

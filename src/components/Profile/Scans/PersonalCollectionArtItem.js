@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     text: {
-        fontSize: 13
+        fontSize: 13,
+        color:'#FFFFFF'
     },
     buttonLove: {
 

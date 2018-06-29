@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+
 export default class MuseumModel extends Component {
     progress = new Animated.Value(0);
     constructor(props) {
         super(props);
         this.state = {
-
+            museum: this.props.event
         }
+        this.openInMaps = this.openInMaps.bind(this);
+        this.visitWebsite = this.visitWebsite.bind(this);
     }
 
     componentDidMount() {
@@ -17,8 +20,22 @@ export default class MuseumModel extends Component {
 
     }
 
+    openInMaps() {
+        debugger;
+        console.log(this.state.museum);
+        const latitude = museum.geometry.lat;
+        const longitude = museum.geometry.lng;
+        const name = museum.name;
+        this.props.onOpenInMaps(latitude, longitude, name);
+    }
+
+    visitWebsite() {
+
+    }
+
 
     render() {
+        debugger
         let opacity = this.progress.interpolate({
             inputRange: [0, 1],
             outputRange: [0, 1],
@@ -28,7 +45,6 @@ export default class MuseumModel extends Component {
             inputRange: [0, 1],
             outputRange: [0, 1],
         });
-        debugger;
         const { name, formatted_address, rating, icon, opening_hours, id } = this.props.event;
         const isOpenNow = opening_hours.open_now;
         return (
@@ -47,15 +63,26 @@ export default class MuseumModel extends Component {
                         {
                             isOpenNow ? <Image source={require('./../../assets/open.png')} /> :
 
-                                <Image source={require('./../../assets/open.png')} />
+                                <Image source={require('./../../assets/closed.png')} />
                         }
                     </View>
                     <View style={{ flexDirection: 'row' }}>
-                        <Text style={styles.title}>Rating: {rating}</Text>
+                        <Text style={styles.title}>{rating}</Text>
                         <Image style={styles.iconRating} source={require('./../../assets/iconStar.png')} />
                     </View>
                     <Text style={styles.text} numberOfLines={2}>Address: {formatted_address}</Text>
-
+                </View>
+                <View style={styles.actionButtons}>
+                    <TouchableOpacity
+                        style={styles.actionsB}
+                        onPress={this.visitWebsite} >
+                        <Text style={styles.textActions}>visit website </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.actionsB}
+                        onPress={this.openInMaps}>
+                        <Text style={styles.textActions}>directions</Text>
+                    </TouchableOpacity>
                 </View>
             </Animated.View>
         );
@@ -95,5 +122,18 @@ const styles = StyleSheet.create({
     },
     showStatus: {
         position: 'absolute', top: 5, right: 5
+    },
+    actionButtons: {
+     //   flexDirection: 'row',
+      //  justifyContent: 'center',
+      //  alignItems: 'center'
+    },
+    actionsB: {
+        height: 50,
+        width: 50
+    },
+    textActions: {
+        color: "#8979B7",
+        fontSize: 13
     }
 })

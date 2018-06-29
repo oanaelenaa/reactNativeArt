@@ -17,7 +17,6 @@ export default class SavedNewsItem extends Component {
     }
 
     onPress() {
-        console.log("dd");
         this.setState({
             showDetails: !this.state.showDetails
         })

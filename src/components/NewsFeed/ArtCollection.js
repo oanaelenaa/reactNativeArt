@@ -3,6 +3,8 @@ import { TouchableOpacity, TouchableHighlight, View, Text, TextInput, StyleSheet
 import NewsFeedArtItem from './NewsFeedArtItem';
 const categories = ['object', 'person', 'exhibition', 'publication', 'gallery', 'spectrum', 'place', 'period'];
 import Toast from 'react-native-toast-native';
+import config from './../../../config';
+
 export default class ArtCollection extends Component {
 
     constructor() {
@@ -28,18 +30,27 @@ export default class ArtCollection extends Component {
     }
 
     showToastMessage = (isSuccessful) => {
+        var message = null;
+        var toastStyle = null;
         if (isSuccessful) {
-            const toastStyle = {
+            toastStyle = {
                 backgroundColor: "#29AB87",
                 color: "#FFFFFF"
             }
-            Toast.show('Successfully added to your collection', toastStyle);
-
+            message = 'Successfully added to your collection';
+        } else {
+            toastStyle = {
+                backgroundColor: "#29AB87",
+                color: "#FFFFFF"
+            }
+            message = 'Something went wrong, please check your internet connection';
         }
+        Toast.show(message, toastStyle);
     }
 
     loadData() {
-        fetch('https://api.harvardartmuseums.org/object?apikey=  &size=100')
+        //  fetch('https://api.harvardartmuseums.org/object?apikey=&size=100')
+        fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&size=100')
             .then(response => response.json())
             .then(data => {
                 this.setState({

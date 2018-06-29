@@ -7,10 +7,7 @@ var height = Dimensions.get('window').height;
 
 export default class WebViewLink extends Component {
   render() {
-    console.log(width, height);
-    debugger;// this.props.link;
-    const uri = 'http://hmnh.harvard.edu/africa-gallery';
-    //this.props.link;
+    const uri = this.props.link;
     //'http://stackoverflow.com/questions/35531679/react-native-open-links-in-browser';
     /// console.log(this.state.uri);
     return (
@@ -27,12 +24,6 @@ export default class WebViewLink extends Component {
           }
         }}
       />
-      /* <View>
-            <WebView
-              source={{ uri: uri }}
-              style={{ marginTop: 20 }}
-            />
-          </View>*/
     );
   }
 }

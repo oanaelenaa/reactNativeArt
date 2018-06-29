@@ -59,7 +59,7 @@ export default class CameraView extends Component {
 			)
 		}
 		return (
-			<View>
+			<View style={styles.container}>
 				<RNCamera
 					ref={ref => {
 						this.camera = ref;
@@ -76,7 +76,7 @@ export default class CameraView extends Component {
 						this.capture();
 					}}
 					style={styles.capture}>
-					<Text style={styles.scanButtonText}> SCAN </Text>
+					<Text style={styles.scanButtonText}> Scan Art </Text>
 
 				</TouchableOpacity>
 
@@ -84,10 +84,8 @@ export default class CameraView extends Component {
 					onPress={() => {
 						this.setState({ useClassify: false })
 						this.capture();
-					}}
-
-					style={styles.capture}>
-					<Text style={styles.scanButtonText}> SEARCH ON WEB </Text>
+					}}>
+					<Text style={styles.SEARCHwEBText}> Search on Web </Text>
 				</TouchableOpacity>
 			</View>
 		);
@@ -100,6 +98,9 @@ const styles = StyleSheet.create({
 	preview: {
 		height: 300,
 	},
+	container:{
+		backgroundColor:"#FAFAFA"
+	},
 	capture: {
 		flex: 0,
 		backgroundColor: '#fff',
@@ -110,7 +111,22 @@ const styles = StyleSheet.create({
 		margin: 20
 	},
 	scanButtonText: {
+		backgroundColor: "#8979B7",
+		padding:0,
+		fontSize: 17,
+		height:48,
+		width:315,
+		color:"#FFFFFF",
+		borderRadius:2,
+		textAlign: 'center',
+		paddingTop:10
+	},
+	SEARCHwEBText:{
 		color: "#8979B7",
-		fontSize: 24
+		fontSize:17,
+		textAlign: 'center'
 	}
 })
+
+// after press button show loading and empty screen with nav bar
+// and on done open modal 

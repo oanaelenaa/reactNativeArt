@@ -7,7 +7,6 @@ export default class ScanResponseModal extends Component {
         this.state = {
             modalVisible: true
         }
-        this.searchonWebReferences = this.searchonWebReferences.bind(this);
     }
 
     _toggleModal = () =>

@@ -19,12 +19,10 @@ export default class WebReferencesResponseModal extends Component {
 
 
     componentDidMount() {
-       console.log(this.state.imageUri);
        console.log(this.state.responseWeb,"fff");
     }
 
     render() {
-        //        console.log(imageURI);
         return (
             <Modal isVisible={this.state.modalVisible}
                 swipeDirection="up"
@@ -44,9 +42,6 @@ export default class WebReferencesResponseModal extends Component {
                         resizeMode="contain"
                         source={{ uri: this.state.imageUri, isStatic: true }}>
                 </Image>
-
-
-
                 </View>
             </Modal>
         );
@@ -79,9 +74,7 @@ export default class WebReferencesResponseModal extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        // alignItems: 'center',
         flexDirection: 'row',
-        // padding: 10,
         borderBottomColor: '#cdcdcd',
         borderBottomWidth: 1
     },

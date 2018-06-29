@@ -1,29 +1,26 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, AsyncStorage, View, ActivityIndicator, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
-///import MapView from 'react-native-maps';
 import MuseumModel from './MuseumModel';
-//import GooglePlacesInput from './MuseumFinder/searchGoogle';
-//var GooglePlacesInput=require('../components/MuseumFinder/searchGoogle');
 import { Popup } from 'react-native-map-link';
-//import GmapsDirections from '../../utils/GmapsDirections';
 export default class MuseumsFinder extends Component {
     constructor(props) {
         super(props);
         this.museumsRef = [];
         this.state = {
-            latitude: null,
-            longitude: null,
-            isModalVisible: true,
-            loaded: true,
+            latitude: "46.770439",
+            longitude: "23.591423",
+            destinationLatitude: "",
+            destinationLongitude: "",
+            loaded: false,
             museumsDetailsList: [],
-            showMaps: false,
-            isMapsModalVisible: false
+            isMapsModalVisible: false,
+            destinationTitle: "Museum"
         }
         this.showLocationsDetails = this.showLocationsDetails.bind(this);
         this.loadPlaces = this.loadPlaces.bind(this);
         this.orderMuseumsByRating = this.orderMuseumsByRating.bind(this);
         this.getCoordinates = this.getCoordinates.bind(this);
-        this.openMaps = this.openMaps.bind(this);
+        this.handleOpenInMaps = this.handleOpenInMaps.bind(this);
     }
 
     componentWillMount() {
@@ -32,15 +29,20 @@ export default class MuseumsFinder extends Component {
         // debugger;
         //this.museumsDetailsList = AsyncStorage.getItem('locatii');
         //console.log(this.museumsDetailsList);
-
         //   this.getMuseumsEU();
     }
 
     componentDidMount() {
-        //  this.loadPlaces();
+        this.loadPlaces();
         ///    this.displayResponseModal();
-        //  this.getCoordinates();
+        // this.getCoordinates();
     }
+
+    /* displayMapsPopup() {
+         if (this.state.isMapsModalVisible) {
+             return (<GmapsDirections></GmapsDirections>);
+         }
+     }*/
 
     getCoordinates() {
         debugger;
@@ -59,29 +61,9 @@ export default class MuseumsFinder extends Component {
     }
 
 
-
-    _toggleModal = () =>
-        this.setState({ showMaps: !this.state.showMaps });
-
-
-    openMaps() {
-        debugger
-        this.setState({
-            isMapsModalVisible: true
-        })
-        // if (this.state.showMaps) {
-        // return null;
-        ///return (<GmapsDirections />);
-        //}
-    }
-
-
-
-
     loadPlaces() {
-        //new key:AIzaSyCMgNuq4LRHAM0q7qrew9EPuqkWtV8vIOQ
         var location = "46.7666872,23.5996782"
-        params = { location: location, type: "museum", key: "AIzaSyCWU8IjM7VbjRw37ZXX5GwLnZPddQRw4lU", radius: "1000" }
+        params = { location: location, type: "museum", key: "AIzaSyCWU8IjM7VbjRw37ZXX5GwLnZPddQRw4lU", radius: "500" }
         var url2 = `https://maps.googleapis.com/maps/api/place/radarsearch/json?key=${encodeURIComponent(params.key)}&location=${encodeURIComponent(params.location)}&radius=${encodeURIComponent(params.radius)}&type=${encodeURIComponent(params.type)}`
         console.log(url2);
         fetch(url2)
@@ -90,11 +72,12 @@ export default class MuseumsFinder extends Component {
                 console.log("Dataa", data);
                 this.museumsRef = data.results;
                 this.showLocationsDetails();
-                this.state.loaded = true;
+                /// this.state.loaded = true;
             })
     }
 
     showLocationsDetails() {
+        debugger
         var result = [];
         this.museumsRef.map(function (x, i) {
             var place_id = x.place_id;
@@ -114,9 +97,21 @@ export default class MuseumsFinder extends Component {
 
     }
 
+    handleOpenInMaps = (latitude, longitude, name) => {
+        debugger;
+        this.setState({
+            destinationLatitude: latitude,
+            destinationLongitude: longitude,
+            destinationTitle: name,
+            isMapsModalVisible: true
+        })
+    }
+
+
     renderItem(item) {
+        debugger
         return (
-            <MuseumModel event={item} />
+            <MuseumModel onOpenInMaps={this.handleOpenInMaps} event={item} />
         )
     }
 
@@ -134,49 +129,43 @@ export default class MuseumsFinder extends Component {
     }
 
     render() {
-        ///this._toggleModal;
-        ///  this.displayResponseModal;
-        ///      { this.displayResponseModal(); }
-
-        /*  if (this.state.loaded == false) {
-               return (
-                   <View>
-                       <ActivityIndicator size="large" color='#8979B7' />
-                   </View>
-               )
-           }
-           return (
-               <View style={styles.container}>
-                   <FlatList
-                       data={this.orderMuseumsByRating(this.state.museumsDetailsList)}
-                       renderItem={({ item }) => this.renderItem(item)}
-                       keyExtractor={(item) => item.id}
-                   />
-               </View>
-           );*/
-
-
-        return (
-            <View style={styles.container}>
-                <Popup
-                    isVisible={this.state.isMapsModalVisible}
-                    onCancelPressed={() => this.setState({ isMapsModalVisible: false })}
-                    onAppPressed={() => this.setState({ isMapsModalVisible: false })}
-                    onBackButtonPressed={() => this.setState({ isMapsModalVisible: false })}
-                    options={{
-                        latitude: 38.8976763,
-                        longitude: -77.0387185,
-                        title: 'The White House',
-                        dialogTitle: 'This is the dialog Title',
-                        dialogMessage: 'This is the amazing dialog Message',
-                        cancelText: 'This is the cancel button text'
-                    }}
-                />
-                <TouchableOpacity onPress={() => this.openMaps()}>
-                    <Text > open maps </Text>
-                </TouchableOpacity>
-            </View>
-        );
+        if (this.state.loaded == false) {
+            return (
+                <View>
+                    <ActivityIndicator size="large" color='#8979B7' />
+                </View>
+            );
+        } else {
+            return (
+                <View style={styles.container}>
+                    <FlatList
+                        data={this.state.museumsDetailsList}
+                        renderItem={({ item }) => this.renderItem(item)}
+                        keyExtractor={(item) => item.id}
+                    />
+                    <Popup
+                        isVisible={this.state.isMapsModalVisible}
+                        onCancelPressed={() => this.setState({ isMapsModalVisible: false })}
+                        onAppPressed={() => this.setState({ isMapsModalVisible: false })}
+                        onBackButtonPressed={() => this.setState({ isMapsModalVisible: false })}
+                        options={{
+                            latitude: this.state.destinationLatitude,
+                            longitude: this.state.destinationLatitude,
+                            sourceLatitude: this.state.latitude,  // optionally specify starting location for directions
+                            sourceLongitude: this.state.longitude,  // not optional if sourceLatitude is specified
+                            title: this.state.destinationTitle,
+                            dialogTitle: 'Choose an app to get direction',
+                            dialogMessage: 'This is the amazing dialog Message',
+                            cancelText: 'Cancel'
+                        }}
+                        modalProps={{ // you can put all react-native-modal props inside.
+                            animationIn: 'slideInUp'
+                        }}
+                        appsWhiteList={['google-maps']}
+                    />
+                </View>
+            );
+        }
     }
 }
 
@@ -187,5 +176,13 @@ const styles = StyleSheet.create({
         paddingTop: 0,
         width: '100%'
     },
+    spinnerStyle:{
+      //  size:"large",
+        color:'#8979B7',
+        flex: 1,
+        marginTop:240,
+        justifyContent: 'center',
+        alignItems:'center'
+    }
 
 });

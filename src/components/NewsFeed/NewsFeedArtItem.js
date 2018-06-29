@@ -2,11 +2,6 @@ import React, { Component } from 'react';
 import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
 import Firebase from '../../utils/authentication/Firebase';
 import WebViewLink from '../../utils/WebViewLink';
-import Toast, { DURATION } from 'react-native-easy-toast'
-//import { connect } from 'react-redux';
-//import { addToast } from '../../utils/redux/actions';
-//const mapDispatchToProps = { addToast }
-//export default connect(null, mapDispatchToProps)(NewsFeedArtItem)
 export default class NewsFeedArtItem extends Component {
     progress = new Animated.Value(0);
     constructor(props) {
@@ -61,8 +56,6 @@ export default class NewsFeedArtItem extends Component {
         var delta = new Date().getTime() - this.state.lastPress;
         if (delta < 200) {
             // double tap happend
-            // if (typeof this.props.addedToCollectionNew === 'function') {
-            //   this.props.addedToCollectionNew(this.state);
             this.saveTopersonalCollection();
             console.log(this.props.event);
 
@@ -88,7 +81,6 @@ export default class NewsFeedArtItem extends Component {
             inputRange: [0, 1],
             outputRange: [0, 1],
         });
-        //                <Toaster message={this.state.message} />
         const { department, creditline, culture, accessionyear, title, primaryimageurl, url, id } = this.props.event;
         return (
             <Animated.View style={[styles.container, { opacity, transform: [{ scale }] }]}>
@@ -136,13 +128,19 @@ const styles = StyleSheet.create({
         paddingRight: 10
     },
     title: {
-        fontSize: 20,
+        fontSize: 17,
         fontWeight: 'bold'
     },
     text: {
-        fontSize: 13
+        fontSize: 13,
+        color:'#8A8A8F'
+    },
+    label:{
+
     },
     buttonLove: {
 
     }
 })
+//semibold labels
+//change to tab

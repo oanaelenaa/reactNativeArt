@@ -6,8 +6,6 @@ import ScanResponseModal from './ScanResponseModal';
 import CameraView from './CameraView';
 import config from './../../../config';
 import WebReferencesResponseModal from './WebReferencesResponseModal';
-//const vision = require('@google-cloud/vision');
-//const client = new vision.ImageAnnotatorClient();
 
 function FoundLabel() {
     this.probability = 0;
@@ -23,15 +21,7 @@ export default class ScanArt extends Component {
             url: "",
             imageFile: null,
             result: [],
-            /* {
-                 "tagName": "Gioconda",
-                 "probability": "99%"
-             },
-             {
-                 "tagName": "leonardo da Vinci",
-                 "probability": "98%"
-             }
-         ],*/
+            loaded: true,
             notFoundMessage: "",
             camEnabled: true
         }
@@ -41,6 +31,7 @@ export default class ScanArt extends Component {
         this.setModalVisible = this.setModalVisible.bind(this);
         this.displayResponseModal = this.displayResponseModal.bind(this);
         this.searchWebReferences = this.searchWebReferences.bind(this);
+        this.savePictureToCollection = this.savePictureToCollection.bind(this);
     }
 
     onNavigation() {
@@ -100,7 +91,6 @@ export default class ScanArt extends Component {
                 console.log(error.code)
                 console.log(error.message)
             });
-
     }
 
     setModalVisible(visible) {
@@ -152,19 +142,22 @@ export default class ScanArt extends Component {
     handleScanResponse = (langValue, base64, action) => {
         this.setState({ url: langValue });
         this.setState({ base64: base64 });
-        this.setState.openClassifierModal = action;
-        if (action == 'classify') {
-            this.classifyImageFile(langValue);
-        }
-        else {
+        this.setState({
+            openClassifierModal: true
+        });
+
+       // if (action == 'classify') {
+        this.classifyImageFile(langValue);
+        //}
+      /*  else {
             var labelsAnnotations = this.searchWebReferences(base64);
             if (labelsAnnotations != null) {
                 this.setState({
-                    result: labelsAnnotations.resposes.webDetection
+                    result: labelsAnnotations
                 });
                 console.log(labelsAnnotations);
             }
-        }
+        }*/
         this.setState({
             modalVisible: true
         })
@@ -209,6 +202,24 @@ export default class ScanArt extends Component {
 
     async savePictureToCollection() {
         const uid = Firebase.registrationInfo.UID;
+        var objToSave = ({
+
+        });
+        console.log("obj", objToSave);
+        isSuccessful = true;
+        var ref = Firebase.database.ref(`/SavedScans/${uid}`);
+        ref.push(JSON.parse(JSON.stringify(objToSave)))
+            .then((result) => {
+                console.log('result', result);
+
+            }).catch(function (error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(error.code)
+                console.log(error.message)
+            });
+        this.handleSaveChange(isSuccessful);
+
     }
 
     async classifyImageFile(url) {
@@ -235,7 +246,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 0,
         width: '100%',
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FAFAFA"
     },
     modal: {
         paddingTop: 20,
