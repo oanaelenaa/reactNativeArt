@@ -1,25 +1,41 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { Animated, View, Text, Image, StyleSheet, Linking, TouchableHighlight, TouchableOpacity, Modal } from 'react-native';
 import Firebase from '../../utils/authentication/Firebase';
-import WebViewLink from '../../utils/WebViewLink';
+//import WebViewLink from '../../utils/WebViewLink';
+//import Lightbox from 'react-native-lightbox';
+//import { WebView } from 'react-native';
+import ImagePreview from 'react-native-image-preview';
+
 export default class NewsFeedArtItem extends Component {
     progress = new Animated.Value(0);
     constructor(props) {
         super(props);
         this.state = {
-            lastPress: 0,
-            lastIdPressed: 0,
-            message: "succesfully added!"
+            openPreviewImage: false,
+            visible: false,
+            imageUrl: props.event.primaryimageurl,
+            itemUrl: props.event.pageURL
         }
         this.saveTopersonalCollection = this.saveTopersonalCollection.bind(this);
+        this.openPreviewImage = this.openPreviewImage.bind(this);
+        this.togglePreviewImage = this.togglePreviewImage.bind(this);
+        this.openUrl = this.openUrl.bind(this);
     }
 
     componentDidMount() {
         Animated.timing(this.progress, { toValue: 1, duration: 500 }).start();
     }
 
-    _openUrl = () => {
-        this.setState({ openURL: !this.state.openURL });
+    openUrl = (url) => {
+        /// Linking.openURL(url);
+    }
+    openWebSite() {
+        if (this.state.openURL) {
+            return <WebView
+                source={{ uri: 'https://github.com/facebook/react-native' }}
+                style={{ marginTop: 20 }}
+            />
+        }
     }
 
     async saveTopersonalCollection() {
@@ -37,36 +53,42 @@ export default class NewsFeedArtItem extends Component {
             id: this.props.event.id
         });
         console.log("obj", objToSave);
-        isSuccessful = true;
         var ref = Firebase.database.ref(`/SavedNewsFeedItems/${uid}`);
         ref.push(JSON.parse(JSON.stringify(objToSave)))
             .then((result) => {
                 console.log('result', result);
+                isSuccessful = true;
 
             }).catch(function (error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
                 console.log(error.code)
                 console.log(error.message)
             });
-        this.handleSaveChange(isSuccessful);
+        this.handleSaveChange(true);
+    }
+
+    togglePreviewImage() {
+        const newVal = this.state.visible;
+        this.setState({
+            visible: !newVal
+        });
     }
 
     onPress() {
-        var delta = new Date().getTime() - this.state.lastPress;
-        if (delta < 200) {
-            // double tap happend
-            this.saveTopersonalCollection();
-            console.log(this.props.event);
-
-        }
-        this.setState({
-            lastPress: new Date().getTime()
-        })
+        this.saveTopersonalCollection();
+        console.log(this.props.event);
     }
 
     handleSaveChange(success) {
         this.props.onSaveItem(success);
+    }
+
+    openPreviewImage() {
+        if (this.state.visible) {
+            return (
+                <ImagePreview visible={this.state.visible} source={{ uri: this.state.imageUrl }} close={this.togglePreviewImage} />
+            );
+
+        }
     }
 
 
@@ -84,30 +106,40 @@ export default class NewsFeedArtItem extends Component {
         const { department, creditline, culture, accessionyear, title, primaryimageurl, url, id } = this.props.event;
         return (
             <Animated.View style={[styles.container, { opacity, transform: [{ scale }] }]}>
-                <TouchableOpacity style={styles.buttonLove} onPress={() => this.onPress()}>
+                < TouchableOpacity onPress={this.togglePreviewImage}>
                     <Image
                         resizeMode="contain"
                         style={styles.image}
                         source={{ uri: primaryimageurl }}
                     />
-
-                </TouchableOpacity>
+                </ TouchableOpacity>
                 <View style={styles.textContainer}>
-                    {
-                        this.state.openURL ? <WebViewLink link={url} /> : null
-                    }
-                    <TouchableOpacity onPress={this._openUrl}>
-                        <Text style={styles.title}>{title}</Text>
+
+                    <Text style={styles.title}>{title}</Text>
+
+                    <TouchableOpacity onPress={this.saveTopersonalCollection}>
+                        <Image source={require('./../../assets/like.png')} />
                     </TouchableOpacity>
                     <Text style={styles.text}>Culture: {culture}</Text>
                     <Text style={styles.text}>Accession year: {accessionyear}</Text>
                     <Text style={styles.text} numberOfLines={2}>{department}</Text>
                     <Text style={styles.text}>Credits: {creditline}</Text>
+                    <TouchableOpacity onPress={this.openUrl(url)}>
+                        <Text >visit website</Text>
+                    </TouchableOpacity>
+
                 </View>
+                {this.openPreviewImage()}
             </Animated.View>
         );
     }
 }
+
+/**
+ * 
+ *   {
+                        this.state.openURL ? <WebViewLink link={url} /> : null            }
+ */
 
 const styles = StyleSheet.create({
     container: {
@@ -120,7 +152,9 @@ const styles = StyleSheet.create({
     image: {
         height: 90,
         width: 100,
-        marginRight: 10
+        //  marginRight: 10
+        flex: 1,
+        //height: 150,
     },
     textContainer: {
         flex: 1,
@@ -133,9 +167,9 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 13,
-        color:'#8A8A8F'
+        color: '#8A8A8F'
     },
-    label:{
+    label: {
 
     },
     buttonLove: {
@@ -144,3 +178,15 @@ const styles = StyleSheet.create({
 })
 //semibold labels
 //change to tab
+
+
+/**
+ * 
+ *      <TouchableOpacity style={styles.buttonLove}
+                  onPress={() => this.onPress()}
+                   onLongPress={() => this.openPreviewImage()}
+               >
+             
+ * 
+ * 
+ */

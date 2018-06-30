@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, View, Text, TextInput, StyleSheet, Button, FlatList, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, RefreshControl, View, Text, TextInput, StyleSheet, Button, FlatList, ActivityIndicator } from 'react-native';
 import NewsFeedArtItem from './NewsFeedArtItem';
 const categories = ['object', 'person', 'exhibition', 'publication', 'gallery', 'spectrum', 'place', 'period'];
 import Toast from 'react-native-toast-native';
 import config from './../../../config';
+import { WebView } from 'react-native';
 
 export default class ArtCollection extends Component {
 
@@ -14,10 +15,13 @@ export default class ArtCollection extends Component {
             artItems: [],
             lastPress: 0,
             loaded: false,
-            searchTerm: ''
+            searchTerm: '',
+            refreshing: false,
         }
         this.smartSearch = this.smartSearch.bind(this);
         this.loadSearchData = this.loadSearchData.bind(this);
+        this.openWebSite = this.openWebSite.bind(this);
+        this.showToastMessage = this.showToastMessage.bind(this);
     }
 
     componentWillMount() {
@@ -25,31 +29,30 @@ export default class ArtCollection extends Component {
         //this.loadSearchData();
     }
 
+    _onRefresh = () => {
+        this.setState({ refreshing: true });
+        fetchData().then(() => {
+            this.setState({ refreshing: false });
+        });
+    }
+
     componentDidMount() {
 
     }
 
+    openWebSite() {
+
+    }
+
     showToastMessage = (isSuccessful) => {
-        var message = null;
-        var toastStyle = null;
         if (isSuccessful) {
-            toastStyle = {
-                backgroundColor: "#29AB87",
-                color: "#FFFFFF"
-            }
-            message = 'Successfully added to your collection';
+            Toast.show("Successfully added to your collection", styles.styleSuccess);
         } else {
-            toastStyle = {
-                backgroundColor: "#29AB87",
-                color: "#FFFFFF"
-            }
-            message = 'Something went wrong, please check your internet connection';
+            Toast.show("Something went wrong, please check your internet connection", styles.styleError);
         }
-        Toast.show(message, toastStyle);
     }
 
     loadData() {
-        //  fetch('https://api.harvardartmuseums.org/object?apikey=&size=100')
         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&size=100')
             .then(response => response.json())
             .then(data => {
@@ -91,6 +94,10 @@ export default class ArtCollection extends Component {
         )
     }
 
+    handleOpenUrl() {
+
+    }
+
     render() {
         if (this.state.loaded == false) {
             return (
@@ -112,12 +119,23 @@ export default class ArtCollection extends Component {
                     data={this.state.artItems}
                     renderItem={({ item }) => this.renderItem(item)}
                     keyExtractor={(item) => item.id.toString()}
+
                 />
+                {this.openWebSite()}
+
             </View>
         );
     }
 }
-
+/**
+ * 
+ * 
+ *   refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this._onRefresh}
+                        />}
+ */
 const styles = StyleSheet.create({
     /* activity: {
          ///size:large,
@@ -162,8 +180,12 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         margin: 20
     },
-    toastStyle: {
-        backgroundColor: '#29AB87',
-        color: '#FFFFFF'
+    styleSuccess: {
+        backgroundColor: "#29AB87",
+        color: "#FFFFFF"
+    },
+    styleError: {
+        backgroundColor: "#29AB87",
+        color: "#FFFFFF"
     }
 })

@@ -1,30 +1,32 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, ActivityIndicator, Button, FlatList, Modal, Alert } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
+import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
 import Firebase from '../../../utils/authentication/Firebase';
 import PersonalCollectionArtItem from './PersonalCollectionArtItem';
+import GridView from 'react-native-super-grid';
 export default class Scanslist extends Component {
 
     constructor() {
         super();
-        this.personalCollection = [],
-            this.state = {
-                visible: false,
-                lastPress: 0,
-                loaded: false,
-            }
+        this.state = {
+            visible: false,
+            lastPress: 0,
+            loaded: false,
+            personalCollection: []
+        }
         this.loadData = this.loadData.bind(this);
     }
 
     componentWillMount() {
+        this.loadData();
+
     }
 
     componentDidMount() {
-        this.loadData();
+        //    this.loadData();
     }
 
     loadData() {
-        ///debugger;
+        debugger;
         this.setState({ refreshing: true });
         const uid = Firebase.registrationInfo.UID;
         var list = [];
@@ -41,9 +43,11 @@ export default class Scanslist extends Component {
             });
         });
         this.setState({
-            refreshing: false, loaded: true
+            refreshing: false,
+            loaded: true,
+            personalCollection: list
         });
-        this.personalCollection = list;
+
     }
 
 
@@ -55,19 +59,22 @@ export default class Scanslist extends Component {
     }
 
     render() {
-        if (this.state.loaded == false) {
-            return (
-                <View style={styles.centerLoader}>
-                    <ActivityIndicator size="large" color='#8979B7' />
-                </View>
-            )
-        }
+        debugger;
+        var items = this.state.personalCollection;
+        /* if (this.state.loaded == false) {
+             return (
+                 <View>
+                     <ActivityIndicator size="large" color='#8979B7' />
+                 </View>
+             )
+         }*/
         return (
-            <View style={styles.container}>
-                <FlatList
-                    data={this.personalCollection}
-                    renderItem={({ item }) => this.renderItem(item)}
-                    keyExtractor={(item) => item.id.toString()}
+            <View>
+                <GridView
+                    itemDimension={130}
+                    items={items}
+                    renderItem={item => this.renderItem(item)}
+                //  keyExtractor={(item) => item.id}
                 />
             </View>
         );

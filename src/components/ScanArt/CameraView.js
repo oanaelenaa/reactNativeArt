@@ -15,7 +15,7 @@ export default class CameraView extends Component {
 			response: "",
 			imageUrl: "",
 			base64: "",
-			useClassify:false
+			useClassify: false
 		}
 		this.capture = this.capture.bind(this);
 	}
@@ -77,9 +77,7 @@ export default class CameraView extends Component {
 					}}
 					style={styles.capture}>
 					<Text style={styles.scanButtonText}> Scan Art </Text>
-
 				</TouchableOpacity>
-
 				<TouchableOpacity
 					onPress={() => {
 						this.setState({ useClassify: false })
@@ -98,8 +96,8 @@ const styles = StyleSheet.create({
 	preview: {
 		height: 300,
 	},
-	container:{
-		backgroundColor:"#FAFAFA"
+	container: {
+		backgroundColor: "#FAFAFA"
 	},
 	capture: {
 		flex: 0,
@@ -112,20 +110,20 @@ const styles = StyleSheet.create({
 	},
 	scanButtonText: {
 		backgroundColor: "#8979B7",
-		padding:0,
+		padding: 0,
 		fontSize: 17,
-		height:48,
-		width:315,
-		color:"#FFFFFF",
-		borderRadius:2,
+		height: 48,
+		width: 315,
+		color: "#FFFFFF",
+		borderRadius: 2,
 		textAlign: 'center',
-		paddingTop:10
+		paddingTop: 10
 	},
-	SEARCHwEBText:{
+	SEARCHwEBText: {
 		color: "#8979B7",
-		fontSize:17,
+		fontSize: 17,
 		textAlign: 'center'
-	}
+	},
 })
 
 // after press button show loading and empty screen with nav bar

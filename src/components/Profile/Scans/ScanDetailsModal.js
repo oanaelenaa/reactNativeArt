@@ -24,31 +24,31 @@ export default class ScanDetailsModal extends Component {
                 animationType="slide"
                 transparent={false}
             >
-                <View>
+                <View >
                     {
                         this.state.openURL ? <WebViewLink link={pageURL} /> : null
                     }
+                    <View style={styles.modalView} >
 
-                    <TouchableOpacity onPress={this._openUrl}>
-                        <Image
-                            resizeMode="contain"
-                            source={require('./../../../assets/openPage.png')} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.closeButton} onPress={this._toggleModal}>
-                        <Image
-                            resizeMode="contain"
-                            source={require('./../../../assets/closeIcon.png')} />
-                    </TouchableOpacity>
-                    <View>
-                        <Image
-                            resizeMode="contain"
-                            style={styles.image}
-                            source={{ uri: primaryimageURL }} />
+                        <TouchableOpacity onPress={this._openUrl}>
+                            <Text>Visit website</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.closeButton} onPress={this._toggleModal}>
+                            <Image
+                                resizeMode="contain"
+                                source={require('./../../../assets/closeIcon.png')} />
+                        </TouchableOpacity>
+                        <View>
+                            <Image
+                                resizeMode="contain"
+                                style={styles.image}
+                                source={{ uri: primaryimageURL }} />
+                        </View>
+                        <ScrollView>
+                            <Text style={styles.title}>Title: {title}</Text>
+                            <Text style={styles.text}>Author: {author}</Text>
+                        </ScrollView>
                     </View>
-                    <ScrollView>
-                        <Text style={styles.title}>Title: {title}</Text>
-                        <Text style={styles.text}>Author: {author}</Text>
-                    </ScrollView>
                 </View>
             </Modal>
         );
@@ -63,6 +63,10 @@ const styles = StyleSheet.create({
         // padding: 10,
         borderBottomColor: '#cdcdcd',
         borderBottomWidth: 1
+    },
+    modalView: {
+        backgroundColor: '#FAFAFA',
+        margin: 40,
     },
     image: {
         height: 250,
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 13,
-        color:'#FFFFFF'
+        color: '#FFFFFF'
     },
     buttonLove: {
 

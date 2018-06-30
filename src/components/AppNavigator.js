@@ -6,7 +6,8 @@ import { createStackNavigator } from 'react-navigation';
 import Login from './Login';
 import MuseumsFinder from './MuseumFinder/MuseumsFinder';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import {Image} from 'react-native';
+import { Image } from 'react-native';
+
 
 const TabNavi = createMaterialBottomTabNavigator({
   ScanArt: {
@@ -61,7 +62,7 @@ TabNavi.navigationOptions = {
   header: null,
   style: {
     color: '#FFFFFF',
-},
+  },
 };
 
 export default AppNavigator = createStackNavigator({

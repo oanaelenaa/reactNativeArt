@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, Image, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { TouchableOpacity, TouchableHighlight, Image, ScrollView, GridView, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
 import Firebase from '../../utils/authentication/Firebase';
 import SavedNewsList from './News/SavedNewsList';
 import ScansList from './Scans/ScansList';
+import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
+
 export default class MyCollection extends Component {
 
     constructor(props) {
@@ -11,17 +12,10 @@ export default class MyCollection extends Component {
         this.state = {
             name: "Oana",
             refreshing: false,
-            savedNewsFeedCollection: [],
-            showNewsFeed: false,
-            showScans: true,
-            changeList: false,
-            textColored: true
         }
-        this.showScans = this.showScans.bind(this);
-        this.showSavedNews = this.showSavedNews.bind(this);
+
         this.logOut = this.logOut.bind(this);
-        this.colorText = this.colorText.bind(this);
-        this.resetText = this.resetText.bind(this);
+
     }
 
     componentWillMount() {
@@ -33,19 +27,6 @@ export default class MyCollection extends Component {
         ///this.onRefresh();
     }
 
-    showScans() {
-        this.setState({
-            showScans: true,
-            showNews: false
-        });
-    }
-
-    showSavedNews() {
-        this.setState({
-            showScans: false,
-            showNews: true
-        });
-    }
 
     async logOut() {
         try {
@@ -58,20 +39,6 @@ export default class MyCollection extends Component {
             this.props.navigation.navigate('Login');
         } catch (e) {
             console.log(e);
-        }
-    }
-
-    colorText() {
-        this.setState({ textColored: true });
-    }
-    resetText() {
-        this.setState({ textColored: false });
-    }
-    textColored() {
-        if (this.state.textColored) {
-            return styles.textColored;
-        } else {
-            return styles.textNormal;
         }
     }
 
@@ -95,35 +62,52 @@ export default class MyCollection extends Component {
                             source={require('../../assets/logout.png')} />
                     </TouchableHighlight>
                 </View>
-                <View style={styles.listsButtons}>
 
-                    <TouchableOpacity onPressIn={this.colorText} onPressOut={this.resetText}
-                        style={styles.capture}
-                        onPress={this.showScans.bind(this)}
-                    >
-                        <Text style={styles.ListsButtonText}>SCANS </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPressIn={this.colorText} onPressOut={this.resetText}
-                        style={styles.capture}
-                        onPress={this.showSavedNews.bind(this)}
-                    >
-                        <Text style={styles.ListsButtonText}>SAVED NEWS</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.lineStyle} />
-                {
-                    this.state.showScans ? <ScansList /> : <SavedNewsList />
-                }
+                <ScrollableTabView
+                    style={{ marginTop: 20, }}
+                    renderTabBar={() => <ScrollableTabBar />} initialPage={0}>
+                    <View tabLabel="React" />
+                    <Text>dfgresdfre</Text>
+
+                    <View tabLabel="dddd" />
+                    <Text>dfgresdfre</Text>
+
+                </ScrollableTabView>
+
             </View>
+
         );
     }
 }
+//                    <ScansList tabLabel="React" />
+
+// tabLabel='Scanned Arts'
+// tabLabel='NewsFeed Saves'
+// <ScrollableTabView
+//style={{ marginTop: 20, }}
+//renderTabBar={() => <ScrollableTabBar />}   initialPage={0}>
+//                        <RefreshControlExample />
+//                        <RefreshControlExample />
+
+///    renderTabBar={() => <ScrollableTabBar />}>
+
+/**<ScrollableTabView
+                        tabBarUnderlineColor="#fff"
+                        tabBarUnderlineStyle={{ backgroundColor: "#fff" }}
+                        tabBarBackgroundColor="#075e54"
+                        tabBarActiveTextColor="#fff"
+                        tabBarInactiveTextColor="#88b0ac"
+                        initialPage={0}>
+ *    
+ *                     </ScrollableTabView>
+
+ * 
+ * 
+ */
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         paddingTop: 10,
-        paddingLeft: 0.5,
         width: '100%'
     },
     containerList: {
@@ -195,6 +179,12 @@ const styles = StyleSheet.create({
     }
 
 })
+
+
+
+
+
+
 
 /*
  <TouchableOpacity

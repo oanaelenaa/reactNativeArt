@@ -14,13 +14,14 @@ export default class MuseumsFinder extends Component {
             loaded: false,
             museumsDetailsList: [],
             isMapsModalVisible: false,
-            destinationTitle: "Museum"
+            destinationTitle: ""
         }
         this.showLocationsDetails = this.showLocationsDetails.bind(this);
         this.loadPlaces = this.loadPlaces.bind(this);
         this.orderMuseumsByRating = this.orderMuseumsByRating.bind(this);
         this.getCoordinates = this.getCoordinates.bind(this);
         this.handleOpenInMaps = this.handleOpenInMaps.bind(this);
+        this.displayMapsPopup = this.displayMapsPopup.bind(this);
     }
 
     componentWillMount() {
@@ -38,14 +39,35 @@ export default class MuseumsFinder extends Component {
         // this.getCoordinates();
     }
 
-    /* displayMapsPopup() {
-         if (this.state.isMapsModalVisible) {
-             return (<GmapsDirections></GmapsDirections>);
-         }
-     }*/
+    displayMapsPopup() {
+        if (this.state.isMapsModalVisible) {
+            const title2 = this.state.destinationTitle;
+            return (
+                <Popup
+                    isVisible={this.state.isMapsModalVisible}
+                    onCancelPressed={() => this.setState({ isMapsModalVisible: false })}
+                    onAppPressed={() => this.setState({ isMapsModalVisible: false })}
+                    onBackButtonPressed={() => this.setState({ isMapsModalVisible: false })}
+                    options={{
+                        latitude: this.state.destinationLatitude,
+                        longitude: this.state.destinationLatitude,
+                        sourceLatitude: this.state.latitude,  // optionally specify starting location for directions
+                        sourceLongitude: this.state.longitude,  // not optional if sourceLatitude is specified
+                        title: title2,
+                        dialogTitle: title2,
+                        dialogMessage: 'Choose an app to get direction',
+                        cancelText: 'Cancel'
+                    }}
+                    modalProps={{ // you can put all react-native-modal props inside.
+                        animationIn: 'slideInUp'
+                    }}
+                    appsWhiteList={['google-maps']}
+                />
+            );
+        }
+    }
 
     getCoordinates() {
-        debugger;
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 console.log(position);
@@ -77,7 +99,6 @@ export default class MuseumsFinder extends Component {
     }
 
     showLocationsDetails() {
-        debugger
         var result = [];
         this.museumsRef.map(function (x, i) {
             var place_id = x.place_id;
@@ -109,8 +130,7 @@ export default class MuseumsFinder extends Component {
 
 
     renderItem(item) {
-        debugger
-        return (
+        return (//onOpenInMaps={this.handleOpenInMaps}
             <MuseumModel onOpenInMaps={this.handleOpenInMaps} event={item} />
         )
     }
@@ -143,26 +163,7 @@ export default class MuseumsFinder extends Component {
                         renderItem={({ item }) => this.renderItem(item)}
                         keyExtractor={(item) => item.id}
                     />
-                    <Popup
-                        isVisible={this.state.isMapsModalVisible}
-                        onCancelPressed={() => this.setState({ isMapsModalVisible: false })}
-                        onAppPressed={() => this.setState({ isMapsModalVisible: false })}
-                        onBackButtonPressed={() => this.setState({ isMapsModalVisible: false })}
-                        options={{
-                            latitude: this.state.destinationLatitude,
-                            longitude: this.state.destinationLatitude,
-                            sourceLatitude: this.state.latitude,  // optionally specify starting location for directions
-                            sourceLongitude: this.state.longitude,  // not optional if sourceLatitude is specified
-                            title: this.state.destinationTitle,
-                            dialogTitle: 'Choose an app to get direction',
-                            dialogMessage: 'This is the amazing dialog Message',
-                            cancelText: 'Cancel'
-                        }}
-                        modalProps={{ // you can put all react-native-modal props inside.
-                            animationIn: 'slideInUp'
-                        }}
-                        appsWhiteList={['google-maps']}
-                    />
+                    {this.displayMapsPopup()}
                 </View>
             );
         }
@@ -176,13 +177,13 @@ const styles = StyleSheet.create({
         paddingTop: 0,
         width: '100%'
     },
-    spinnerStyle:{
-      //  size:"large",
-        color:'#8979B7',
+    spinnerStyle: {
+        //  size:"large",
+        color: '#8979B7',
         flex: 1,
-        marginTop:240,
+        marginTop: 240,
         justifyContent: 'center',
-        alignItems:'center'
+        alignItems: 'center'
     }
 
 });

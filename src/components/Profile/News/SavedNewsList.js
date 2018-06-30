@@ -64,23 +64,22 @@ export default class SavedNewsList extends Component {
     }
 
     render() {
-        if (this.state.loaded == false) {
+        debugger;
+        var items = this.savedNewsFeedCollection;
+      /*  if (this.state.loaded == false) {
             return (
-                <View style={styles.centerLoader}>
+                <View>
                     <ActivityIndicator size="large" color='#8979B7' />
                 </View>
             )
-        }
-        var items = this.savedNewsFeedCollection;
+        }*/
         return (
-            <View style={styles.container}>
                 <GridView
                     itemDimension={130}
                     items={items}
                     renderItem={item => this.renderItem(item)}
                 // keyExtractor={(item) => item.id.toString()}
                 />
-            </View>
         );
     }
 }

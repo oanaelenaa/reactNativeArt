@@ -27,12 +27,8 @@ export default class NewsDetailsModal extends Component {
                     {
                         this.state.openURL ? <WebViewLink link={pageURL} /> : null
                     }
-
                     <TouchableOpacity onPress={this._openUrl}>
-                        <Image
-                            resizeMode="contain"
-                            ///  style={styles.image}
-                            source={require('./../../../assets/openPage.png')} />
+                        <Text>Visit website</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.closeButton} onPress={this._toggleModal}>
                         <Image
