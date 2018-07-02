@@ -25,7 +25,7 @@ export default class ArtCollection extends Component {
     }
 
     componentWillMount() {
-        this.loadData();
+       // this.loadData();
         //this.loadSearchData();
     }
 

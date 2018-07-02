@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, ScrollView, View, Text, StyleSheet, Button, Linking, FlatList, TextInput, Alert, Image } from 'react-native';
+import { TouchableOpacity,ActivityIndicator, TouchableHighlight, ScrollView, View, Text, StyleSheet, Button, Linking, FlatList, TextInput, Alert, Image } from 'react-native';
 import config from './../../../config';
 import Modal from "react-native-modal";
 import Carousel from 'react-native-snap-carousel';
@@ -114,8 +114,8 @@ export default class WebReferencesResponseModal extends Component {
         return (
             <Modal isVisible={this.state.modalVisible}
                 animationType="slide"
-                transparent={false}>
-                <View>
+                transparent={true}>
+                <View style={styles.modalView}>
                     <TouchableHighlight style={styles.closeButton}
                         onPress={this._toggleModal}>
                         <Image
@@ -129,10 +129,25 @@ export default class WebReferencesResponseModal extends Component {
                             source={{ uri: this.state.imageUri, isStatic: true }}>
                         </Image>
                         {
-                            this.state.done ? <Text>done</Text> : <Text>loading</Text>
+                            this.state.done ?
+
+                                <View>
+                                    <Text style={styles.userMessage}>done</Text>
+                                    <Image
+                                        resizeMode="contain"
+                                        source={require('./../../assets/foundScan.png')} />
+                                </View>
+
+                                :
+
+                                <View>
+                                    <Text>Please wait</Text>
+                                    <ActivityIndicator size="large" color='#8979B7' />
+                                </View>
                         }
+
                         <Text style={styles.title}> Matching labels: </Text>
-                        
+
                         <FlatList
                             data={this.state.bestGuessLabels}
                             renderItem={
@@ -240,6 +255,10 @@ const styles = StyleSheet.create({
     },
     buttonLove: {
 
+    },
+    modalView: {
+        backgroundColor: '#FAFAFA',
+        //    margin: 5,
     },
     iconResponse: {
         width: 100,

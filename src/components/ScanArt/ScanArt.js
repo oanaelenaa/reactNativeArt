@@ -77,17 +77,20 @@ export default class ScanArt extends Component {
 
 
 
-    handleScanResponse = (langValue, base64, action) => {
+    handleScanResponse = (langValue, base64, action=true) => {
+       // debugger;
         this.setState({
             url: langValue,
             base64: base64,
-            openClassifierModal: action
+            openClassifierModal: action,
+            modalVisibleWeb:false,
+            modalVisibleScans:false
         });
         if (action) {
             this._toggleModalScans();
         }
         else {
-     //       this._toggleModalWeb();
+            this._toggleModalWeb();
         }
     }
 
@@ -101,6 +104,8 @@ export default class ScanArt extends Component {
                     onGetResponseScan={this.handleScanResponse}
                 />
                 {this.displayScansResponseModal()}
+                {this.displayWebResponseModal()}
+
             </View>
         );
     }

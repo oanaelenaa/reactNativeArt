@@ -22,13 +22,13 @@ export default class ScanDetailsModal extends Component {
 
             <Modal isVisible={this.state.isModalVisible}
                 animationType="slide"
-                transparent={false}
+                transparent={true}
             >
-                <View >
+                <View  style={styles.modalView}>
                     {
                         this.state.openURL ? <WebViewLink link={pageURL} /> : null
                     }
-                    <View style={styles.modalView} >
+                    <View >
 
                         <TouchableOpacity onPress={this._openUrl}>
                             <Text>Visit website</Text>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         backgroundColor: '#FAFAFA',
-        margin: 40,
+    //    margin: 5,
     },
     image: {
         height: 250,

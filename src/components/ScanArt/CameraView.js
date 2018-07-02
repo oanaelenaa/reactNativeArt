@@ -15,7 +15,8 @@ export default class CameraView extends Component {
 			response: "",
 			imageUrl: "",
 			base64: "",
-			useClassify: false
+			useClassify: false,
+			useWeb: false
 		}
 		this.capture = this.capture.bind(this);
 	}
@@ -42,8 +43,9 @@ export default class CameraView extends Component {
 		var base64 = this.state.base64;
 		if (this.state.useClassify) {
 			this.props.onGetResponseScan(imageURI, base64, true);
+		} else if (this.state.useWeb) {
+			this.props.onGetResponseScan(imageURI, base64, false);
 		}
-		this.props.onGetResponseScan(imageURI, base64, false);
 	}
 
 	/*	tenserflowCladd(){
@@ -72,7 +74,7 @@ export default class CameraView extends Component {
 				/>
 				<TouchableOpacity
 					onPress={() => {
-						this.setState({ useClassify: true })
+						this.setState({ useClassify: true, useWeb: false })
 						this.capture();
 					}}
 					style={styles.capture}>
@@ -80,7 +82,7 @@ export default class CameraView extends Component {
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
-						this.setState({ useClassify: false })
+						this.setState({ useWeb: true, useClassify: false })
 						this.capture();
 					}}>
 					<Text style={styles.SEARCHwEBText}> Search on Web </Text>

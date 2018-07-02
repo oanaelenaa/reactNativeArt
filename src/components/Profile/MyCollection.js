@@ -42,10 +42,24 @@ export default class MyCollection extends Component {
         }
     }
 
+    //  <View style={{ flexDirection: "row" }}>
     render() {
         return (
-            <View style={styles.container}>
-                <View style={{ flexDirection: "row" }}>
+
+            <ScrollableTabView
+                style={{ marginTop: 20, }}
+                renderTabBar={() => <ScrollableTabBar />} initialPage={0}>
+                <ScansList tabLabel="Scans" />
+                <SavedNewsList tabLabel="NewsFeedSaves" />
+            </ScrollableTabView>
+        );
+    }
+}
+
+
+
+/**
+ *  <View style={styles.container}>
                     <View
                         style={styles.profileIcon}>
                         <Image style={styles.profilePicStyle}
@@ -61,24 +75,35 @@ export default class MyCollection extends Component {
                         <Image
                             source={require('../../assets/logout.png')} />
                     </TouchableHighlight>
-                </View>
+            <ScrollableTabView
+                style={{ marginTop: 20, }}
+                renderTabBar={() => <ScrollableTabBar />} initialPage={0}>
+                <View tabLabel="React" />
+                <Text>dfgresdfre</Text>
 
-                <ScrollableTabView
-                    style={{ marginTop: 20, }}
-                    renderTabBar={() => <ScrollableTabBar />} initialPage={0}>
-                    <View tabLabel="React" />
-                    <Text>dfgresdfre</Text>
+                <View tabLabel="dddd" />
+                <Text>dfgresdfre</Text>
 
-                    <View tabLabel="dddd" />
-                    <Text>dfgresdfre</Text>
-
-                </ScrollableTabView>
-
+            </ScrollableTabView>
             </View>
+ * 
+ * 
+ */
 
-        );
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //                    <ScansList tabLabel="React" />
 
 // tabLabel='Scanned Arts'
@@ -104,7 +129,23 @@ export default class MyCollection extends Component {
  * 
  * 
  */
+/**
+ *    <ScrollableTabView
+                    style={{ marginTop: 20, }}
+                    renderTabBar={() => <ScrollableTabBar />} initialPage={0}>
+                    <View tabLabel="React" />
+                    <Text>dfgresdfre</Text>
 
+                    <View tabLabel="dddd" />
+                    <Text>dfgresdfre</Text>
+
+                </ScrollableTabView>
+
+ * 
+ * 
+ * 
+ * 
+ */
 const styles = StyleSheet.create({
     container: {
         paddingTop: 10,

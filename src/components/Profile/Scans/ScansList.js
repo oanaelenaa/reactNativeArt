@@ -26,7 +26,6 @@ export default class Scanslist extends Component {
     }
 
     loadData() {
-        debugger;
         this.setState({ refreshing: true });
         const uid = Firebase.registrationInfo.UID;
         var list = [];
@@ -59,15 +58,14 @@ export default class Scanslist extends Component {
     }
 
     render() {
-        debugger;
         var items = this.state.personalCollection;
-        /* if (this.state.loaded == false) {
+         if (this.state.loaded == false) {
              return (
                  <View>
                      <ActivityIndicator size="large" color='#8979B7' />
                  </View>
              )
-         }*/
+         }
         return (
             <View>
                 <GridView

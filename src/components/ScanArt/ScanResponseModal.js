@@ -3,6 +3,8 @@ import { TouchableOpacity, ActivityIndicator, TouchableHighlight, View, Text, St
 import Modal from "react-native-modal";
 import RNFetchBlob from 'react-native-fetch-blob';
 import Firebase from '../../utils/authentication/Firebase';
+import authors from './../../utils/authors';
+import paintings from './../../utils/paintings';
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
@@ -21,6 +23,8 @@ export default class ScanResponseModal extends Component {
             response: null,
             done: false,
             uploadedURL: null,
+            title: "",
+            author: ""
         }
         this.classifyImageFile = this.classifyImageFile.bind(this);
         this.validateResponse = this.validateResponse.bind(this);
@@ -31,7 +35,7 @@ export default class ScanResponseModal extends Component {
     }
 
     uploadToFirebase(uri, mime = 'application/octet-stream') {
-        debugger
+        ///  debugger
         return new Promise((resolve, reject) => {
             let uploadBlob = null
             const imageRef = Firebase.storageRef.ref('images').child('image_003')
@@ -57,13 +61,14 @@ export default class ScanResponseModal extends Component {
     }
 
     componentDidMount() {
-        this.uploadToFirebase(this.state.uri)
+       /* this.uploadToFirebase(this.state.uri)
             .then(url => {
-                alert('uploaded');
                 this.setState({ uploadedURL: url })
                 this.classifyImageFile();
             })
-            .catch(error => console.log(error))
+            .catch(error => console.log(error))*/
+            console.log(paintings);
+            console.log(paintings.indexOf('starrynight'));
     }
 
 
@@ -84,12 +89,12 @@ export default class ScanResponseModal extends Component {
     async savePictureToCollection() {
         const uid = Firebase.registrationInfo.UID;
         //process image file to be saved
-        const title = this.state.processedLabels[0].tagName;
-        const author = this.state.processedLabels[1].tagName;
+        //onst title = this.state.processedLabels[0].tagName;
+        //const author = this.state.processedLabels[1].tagName;
         const pictureURL = this.state.uploadedURL;
         var objToSave = ({
-            "title": title,
-            "author": author,
+            "title": this.state.title,
+            "author": this.state.author,
             "imageURL": pictureURL
         });
         console.log("obj", objToSave);
@@ -111,6 +116,19 @@ export default class ScanResponseModal extends Component {
             processedLabels: data,
             done: true
         })
+        var title = "";
+        var author = "";
+        if (paintings.find(this.state.processedLabels[0].tagName) != null) {
+            title = this.state.processedLabels[0].tagName;
+            author = this.state.processedLabels[1].tagName;
+        } else {
+            title = this.state.processedLabels[1].tagName;
+            author = this.state.processedLabels[0].tagName
+        }
+        this.setState({
+            title: title,
+            author: author
+        })
         this.savePictureToCollection();
     }
 
@@ -126,7 +144,7 @@ export default class ScanResponseModal extends Component {
     }
 
     async classifyImageFile() {
-        debugger;
+        //  debugger;
         const url = this.state.uri;
         var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
         RNFetchBlob.fetch('POST', baseUrl, {
@@ -154,50 +172,51 @@ export default class ScanResponseModal extends Component {
         return (
             <Modal isVisible={this.state.modalVisible}
                 animationType="slide"
-                transparent={false}>
-                <TouchableHighlight style={styles.closeButton}
-                    onPress={this._toggleModal}>
-                    <Image
-                        resizeMode="contain"
-                        source={require('./../../assets/closeIcon.png')} />
+                transparent={true}>
 
-                </TouchableHighlight>
-                <View>
-                    <Image style={styles.pictureStyle}
-                        resizeMode="contain"
-                        source={{ uri: this.state.uri, isStatic: true }}>
-                    </Image>
-                    <Text>{this.props.errorMessage}</Text>
-                    {
-                        this.state.done ?
+                <View style={styles.modalView}>
+                    <TouchableHighlight style={styles.closeButton}
+                        onPress={this._toggleModal}>
+                        <Image
+                            resizeMode="contain"
+                            source={require('./../../assets/closeIcon.png')} />
 
-                            <View>
-                                <Text style={styles.userMessage}>done</Text>
-                                <Image
-                                    resizeMode="contain"
-                                    source={require('./../../assets/foundScan.png')} />
-                            </View>
+                    </TouchableHighlight>
+                    <View>
+                        <Image style={styles.pictureStyle}
+                            resizeMode="contain"
+                            source={{ uri: this.state.uri, isStatic: true }}>
+                        </Image>
+                        <Text>{this.props.errorMessage}</Text>
+                        {
+                            this.state.done ?
 
+                                <View>
+                                    <Text style={styles.userMessage}>done</Text>
+                                    <Image
+                                        resizeMode="contain"
+                                        source={require('./../../assets/foundScan.png')} />
+                                </View>
 
+                                :
 
-                            :
-
-                            <View>
-                                <Text>Please wait</Text>
-                                <ActivityIndicator size="large" color='#8979B7' />
-                            </View>
-                    }
-                    <FlatList
-                        data={this.state.processedLabels}
-                        renderItem={
-                            ({ item }) => <View>
-                                <Text style={styles.text} >Tag name:{item.tagName}</Text>
-                                <Text style={styles.text} >Probability:{item.probability}</Text>
-                            </View>
+                                <View>
+                                    <Text>Please wait</Text>
+                                    <ActivityIndicator size="large" color='#8979B7' />
+                                </View>
                         }
-                    />
+                        <FlatList
+                            data={this.state.processedLabels}
+                            renderItem={
+                                ({ item }) => <View>
+                                    <Text style={styles.text} >Tag name:{item.tagName}</Text>
+                                    <Text style={styles.text} >Probability:{item.probability}</Text>
+                                </View>
+                            }
+                        />
 
 
+                    </View>
                 </View>
             </Modal>
         );
@@ -224,13 +243,17 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 17,
-        color: '#FFFFFF'
+        //  color: '#FFFFFF'
     },
     userMessage: {
         fontSize: 17,
     },
     buttonLove: {
 
+    },
+    modalView: {
+        backgroundColor: '#FAFAFA',
+        //    margin: 5,
     },
     iconResponse: {
         width: 100,

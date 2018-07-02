@@ -18,12 +18,13 @@ export default class NewsDetailsModal extends Component {
 
     render() {
         const { department, creditline, culture, accessionyear, title, people, primaryimageurl, pageURL, id } = this.props.event;
+        console.log(primaryimageurl);
         return (
             <Modal isVisible={this.state.isModalVisible}
                 animationType="slide"
-                transparent={false}
+                transparent={true} 
             >
-                <View>
+                <View  style={styles.modalView}>
                     {
                         this.state.openURL ? <WebViewLink link={pageURL} /> : null
                     }
@@ -48,8 +49,7 @@ export default class NewsDetailsModal extends Component {
                         <Text style={styles.text}>Culture: {culture}</Text>
                         <Text style={styles.text}>Accession year: {accessionyear}</Text>
                     </ScrollView>
-
-                </View>
+            </View>
             </Modal>
         );
     }
@@ -73,6 +73,10 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft: 10,
         paddingRight: 10
+    },
+    modalView: {
+        backgroundColor: '#FAFAFA',
+        margin: 5,
     },
     title: {
         fontSize: 13,

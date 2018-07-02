@@ -34,7 +34,7 @@ export default class MuseumsFinder extends Component {
     }
 
     componentDidMount() {
-        this.loadPlaces();
+       /// this.loadPlaces();
         ///    this.displayResponseModal();
         // this.getCoordinates();
     }

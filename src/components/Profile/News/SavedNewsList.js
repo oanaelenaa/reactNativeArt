@@ -17,10 +17,11 @@ export default class SavedNewsList extends Component {
     }
 
     componentWillMount() {
+        this.loadData();
+
     }
 
     componentDidMount() {
-        this.loadData();
 
     }
 
@@ -30,7 +31,7 @@ export default class SavedNewsList extends Component {
         var list = [];//databaseRef.
         Firebase.databaseRef.child(`/SavedNewsFeedItems/${uid}`).on('value', (childSnapshot) => {
             childSnapshot.forEach((doc) => {
-                // debugger;
+               // debugger
                 var artItem = {
                     department: doc.toJSON().department,
                     people:doc.toJSON().people,
@@ -64,15 +65,14 @@ export default class SavedNewsList extends Component {
     }
 
     render() {
-        debugger;
         var items = this.savedNewsFeedCollection;
-      /*  if (this.state.loaded == false) {
+        if (this.state.loaded == false) {
             return (
                 <View>
                     <ActivityIndicator size="large" color='#8979B7' />
                 </View>
             )
-        }*/
+        }
         return (
                 <GridView
                     itemDimension={130}
