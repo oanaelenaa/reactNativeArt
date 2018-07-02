@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import Firebase from '../../utils/authentication/Firebase';
-import RNFetchBlob from 'react-native-fetch-blob';
 import ScanResponseModal from './ScanResponseModal';
 import CameraView from './CameraView';
-import config from './../../../config';
 import WebReferencesResponseModal from './WebReferencesResponseModal';
 
 export default class ScanArt extends Component {
@@ -21,7 +19,6 @@ export default class ScanArt extends Component {
 
         this.displayScansResponseModal = this.displayScansResponseModal.bind(this);
         this.displayWebResponseModal = this.displayWebResponseModal.bind(this);
-        this.savePictureToCollection = this.savePictureToCollection.bind(this);
     }
 
     onNavigation() {
@@ -86,10 +83,12 @@ export default class ScanArt extends Component {
             base64: base64,
             openClassifierModal: action
         });
-        if (action)
+        if (action) {
             this._toggleModalScans();
-        else
-            this._toggleModalWeb();
+        }
+        else {
+     //       this._toggleModalWeb();
+        }
     }
 
 
@@ -102,10 +101,11 @@ export default class ScanArt extends Component {
                     onGetResponseScan={this.handleScanResponse}
                 />
                 {this.displayScansResponseModal()}
-                {this.displayWebResponseModal()}
             </View>
         );
     }
+    //                {this.displayWebResponseModal()}
+
 
     /*  async classifyImageURL() {
           var objtosend = {
@@ -131,30 +131,6 @@ export default class ScanArt extends Component {
               });
           return null;
       }*/
-
-    async savePictureToCollection() {
-        const uid = Firebase.registrationInfo.UID;
-        //process image file to be saved
-        var objToSave = ({
-
-
-        });
-        console.log("obj", objToSave);
-        isSuccessful = true;
-        var ref = Firebase.database.ref(`/SavedScans/${uid}`);
-        ref.push(JSON.parse(JSON.stringify(objToSave)))
-            .then((result) => {
-                console.log('result', result);
-
-            }).catch(function (error) {
-                console.log(error.code)
-                console.log(error.message)
-            });
-        this.handleSaveChange(isSuccessful);
-
-    }
-
-
 }
 
 const styles = StyleSheet.create({

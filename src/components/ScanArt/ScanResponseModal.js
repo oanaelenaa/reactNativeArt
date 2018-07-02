@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { TouchableOpacity, ActivityIndicator, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import Modal from "react-native-modal";
 import RNFetchBlob from 'react-native-fetch-blob';
+import Firebase from '../../utils/authentication/Firebase';
+const Blob = RNFetchBlob.polyfill.Blob
+const fs = RNFetchBlob.fs
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+window.Blob = Blob
 
-function FoundLabel() {
-    this.probability = 0;
-    this.tagId = 0;
-    this.tagName = "";
-}
 export default class ScanResponseModal extends Component {
 
     constructor(props) {
@@ -20,26 +20,89 @@ export default class ScanResponseModal extends Component {
             hasResults: true,
             response: null,
             done: false,
-
+            uploadedURL: null,
         }
-
         this.classifyImageFile = this.classifyImageFile.bind(this);
         this.validateResponse = this.validateResponse.bind(this);
         this.initializeLabels = this.initializeLabels.bind(this);
         this.checkForBadPredictions = this.checkForBadPredictions.bind(this);
+        this.savePictureToCollection = this.savePictureToCollection.bind(this);
+        this.uploadToFirebase = this.uploadToFirebase.bind(this);
+    }
+
+    uploadToFirebase(uri, mime = 'application/octet-stream') {
+        debugger
+        return new Promise((resolve, reject) => {
+            let uploadBlob = null
+            const imageRef = Firebase.storageRef.ref('images').child('image_003')
+            fs.readFile(uri, 'base64')
+                .then((data) => {
+                    return Blob.build(data, { type: `${mime};BASE64` })
+                })
+                .then((blob) => {
+                    uploadBlob = blob
+                    return imageRef.put(blob, { contentType: mime })
+                })
+                .then(() => {
+                    uploadBlob.close()
+                    return imageRef.getDownloadURL()
+                })
+                .then((url) => {
+                    resolve(url)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
     }
 
     componentDidMount() {
-        this.classifyImageFile();
+        this.uploadToFirebase(this.state.uri)
+            .then(url => {
+                alert('uploaded');
+                this.setState({ uploadedURL: url })
+                this.classifyImageFile();
+            })
+            .catch(error => console.log(error))
     }
+
+
+
 
     _toggleModal = () =>
         this.setState({ modalVisible: !this.state.modalVisible });
 
-
     checkForBadPredictions() {
 
+    }
 
+    componentWillUnmount() {
+        ///   this.savePictureToCollection();
+
+    }
+
+    async savePictureToCollection() {
+        const uid = Firebase.registrationInfo.UID;
+        //process image file to be saved
+        const title = this.state.processedLabels[0].tagName;
+        const author = this.state.processedLabels[1].tagName;
+        const pictureURL = this.state.uploadedURL;
+        var objToSave = ({
+            "title": title,
+            "author": author,
+            "imageURL": pictureURL
+        });
+        console.log("obj", objToSave);
+        isSuccessful = true;
+        var ref = Firebase.database.ref(`/SavedArtItems/${uid}`);
+        ref.push(JSON.parse(JSON.stringify(objToSave)))
+            .then((result) => {
+                console.log('result', result);
+
+            }).catch(function (error) {
+                console.log(error.code)
+                console.log(error.message)
+            });
     }
 
     initializeLabels(datas) {
@@ -48,6 +111,7 @@ export default class ScanResponseModal extends Component {
             processedLabels: data,
             done: true
         })
+        this.savePictureToCollection();
     }
 
 
@@ -62,6 +126,7 @@ export default class ScanResponseModal extends Component {
     }
 
     async classifyImageFile() {
+        debugger;
         const url = this.state.uri;
         var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
         RNFetchBlob.fetch('POST', baseUrl, {
@@ -104,7 +169,23 @@ export default class ScanResponseModal extends Component {
                     </Image>
                     <Text>{this.props.errorMessage}</Text>
                     {
-                        this.state.done ? <Text>done</Text> : <Text>loading</Text>
+                        this.state.done ?
+
+                            <View>
+                                <Text style={styles.userMessage}>done</Text>
+                                <Image
+                                    resizeMode="contain"
+                                    source={require('./../../assets/foundScan.png')} />
+                            </View>
+
+
+
+                            :
+
+                            <View>
+                                <Text>Please wait</Text>
+                                <ActivityIndicator size="large" color='#8979B7' />
+                            </View>
                     }
                     <FlatList
                         data={this.state.processedLabels}
@@ -142,8 +223,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     text: {
-        fontSize: 18,
+        fontSize: 17,
         color: '#FFFFFF'
+    },
+    userMessage: {
+        fontSize: 17,
     },
     buttonLove: {
 

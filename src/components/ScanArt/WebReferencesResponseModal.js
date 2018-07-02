@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, ScrollView, View, Text, StyleSheet, Button, Linking, FlatList, TextInput, Alert, Image } from 'react-native';
 import config from './../../../config';
 import Modal from "react-native-modal";
+import Carousel from 'react-native-snap-carousel';
 
 export default class WebReferencesResponseModal extends Component {
     constructor(props) {
@@ -21,6 +22,7 @@ export default class WebReferencesResponseModal extends Component {
         this.searchWebReferences = this.searchWebReferences.bind(this);
         /// this.processEntities.Entities = this.processEntities.bind.this(this);
         this.viewPage = this.viewPage.bind(this);
+        this.renderCarousel = this.renderCarousel.bind(this);
     }
 
     _toggleModal = () => {
@@ -65,12 +67,11 @@ export default class WebReferencesResponseModal extends Component {
             }).then((response) => response.json())
                 .then((responseJson) => {
                     var results = responseJson.responses;
-                    console.log(results);
                     var guessedLabels = results[0].webDetection.bestGuessLabels;
                     var webE = results[0].webDetection.webEntities;
                     var similarImg = results[0].webDetection.visuallySimilarImages;
+                    console.log(similarImg)
                     var pages = results[0].webDetection.pagesWithMatchingImages;
-                    console.log(pages);
                     this.setState({
                         response: results,
                         done: true,
@@ -79,14 +80,36 @@ export default class WebReferencesResponseModal extends Component {
                         visuallySimilarImages: similarImg,
                         pagesWithMatchingImages: pages
                     });
-                    console.log(this.state.bestGuesslabels)
-                    console.log(this.state.webEntities)
                 }, (err) => {
                     console.error('promise rejected')
                     console.error(err)
                 });
     }
 
+    renderCarousel() {
+        if (this.state.visuallySimilarImages != null && this.state.visuallySimilarImages.length != 0) {
+            const dataS = this.state.visuallySimilarImages;
+            return (
+                <Carousel
+                    ref={(c) => { this._carousel = c; }}
+                    data={dataS}
+                    renderItem={
+                        ({ item }) => <View>
+                            <Image style={styles.pictureStyle}
+                                resizeMode="contain"
+                                source={{ uri: item.url, isStatic: true }}>
+                            </Image>
+                        </View>
+                    }
+                    layout={'default'}
+                    sliderWidth={300}
+                    itemWidth={250}
+                />
+
+
+            );
+        }
+    }
     render() {
         return (
             <Modal isVisible={this.state.modalVisible}
@@ -109,6 +132,7 @@ export default class WebReferencesResponseModal extends Component {
                             this.state.done ? <Text>done</Text> : <Text>loading</Text>
                         }
                         <Text style={styles.title}> Matching labels: </Text>
+                        
                         <FlatList
                             data={this.state.bestGuessLabels}
                             renderItem={
@@ -126,7 +150,11 @@ export default class WebReferencesResponseModal extends Component {
                                 </View>
                             }
                         />
-                        
+
+                        <Text style={styles.title}> Matching images: </Text>
+
+
+                        {this.renderCarousel()}
 
                         <Text style={styles.title}> Matching pages: </Text>
                         <FlatList
