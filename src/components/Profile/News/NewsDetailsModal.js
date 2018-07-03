@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, ScrollView, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
+import { TouchableOpacity, Linking, ScrollView, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import Modal from "react-native-modal";
-import WebViewLink from '../../../utils/WebViewLink';
 export default class NewsDetailsModal extends Component {
 
     state = {
         isModalVisible: true,
-        openURL: false,
     };
 
     _toggleModal = () =>
         this.setState({ isModalVisible: !this.state.isModalVisible });
 
-    _openUrl = () => {
-        this.setState({ openURL: !this.state.openURL });
+    visitWebsite(url) {
+        Linking.openURL(url);
     }
 
     render() {
@@ -24,16 +22,7 @@ export default class NewsDetailsModal extends Component {
                 transparent={false}
             >
                 <View>
-                    {
-                        this.state.openURL ? <WebViewLink link={pageURL} /> : null
-                    }
 
-                    <TouchableOpacity onPress={this._openUrl}>
-                        <Image
-                            resizeMode="contain"
-                            ///  style={styles.image}
-                            source={require('./../../../assets/openPage.png')} />
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.closeButton} onPress={this._toggleModal}>
                         <Image
                             resizeMode="contain"
@@ -52,6 +41,11 @@ export default class NewsDetailsModal extends Component {
                         <Text style={styles.text}>Culture: {culture}</Text>
                         <Text style={styles.text}>Accession year: {accessionyear}</Text>
                     </ScrollView>
+                    <TouchableOpacity onPress={() => {
+                        this.visitWebsite(pageURL);
+                    }} >
+                        <Text>Visit website</Text>
+                    </TouchableOpacity>
 
                 </View>
             </Modal>

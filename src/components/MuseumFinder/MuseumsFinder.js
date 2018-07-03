@@ -7,14 +7,14 @@ export default class MuseumsFinder extends Component {
         super(props);
         this.museumsRef = [];
         this.state = {
-            latitude: "46.770439",
-            longitude: "23.591423",
+            latitude: "",
+            longitude: "",
             destinationLatitude: "",
             destinationLongitude: "",
             loaded: false,
             museumsDetailsList: [],
             isMapsModalVisible: false,
-            destinationTitle: "Museum"
+            destinationTitle: ""
         }
         this.showLocationsDetails = this.showLocationsDetails.bind(this);
         this.loadPlaces = this.loadPlaces.bind(this);
@@ -30,12 +30,6 @@ export default class MuseumsFinder extends Component {
     componentDidMount() {
         this.getCoordinates();
     }
-
-    /* displayMapsPopup() {
-         if (this.state.isMapsModalVisible) {
-             return (<GmapsDirections></GmapsDirections>);
-         }
-     }*/
 
     getCoordinates() {
         navigator.geolocation.watchPosition(

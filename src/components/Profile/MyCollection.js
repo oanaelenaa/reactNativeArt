@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, Image, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, ScrollView, TouchableHighlight,AsyncStorage, Image, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
 import Firebase from '../../utils/authentication/Firebase';
 import SavedNewsList from './News/SavedNewsList';
 import ScansList from './Scans/ScansList';
@@ -10,14 +10,12 @@ export default class MyCollection extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "Oana",
             refreshing: false,
             scansList: [],
             savedList: [],
             loadedScans: false,
             loadedSaves: false
         }
-        this.logOut = this.logOut.bind(this);
         this.loadScans = this.loadScans.bind(this);
         this.loadSaved = this.loadSaved.bind(this);
     }
@@ -26,16 +24,14 @@ export default class MyCollection extends Component {
     }
 
     componentDidMount() {
-        this.setState({ email: Firebase.registrationInfo.email });
         this.loadScans();
         this.loadSaved();
-        // this.showScans();
-        ///this.onRefresh();
     }
 
     loadScans() {
         this.setState({ refreshing: true });
-        const uid = Firebase.registrationInfo.UID;
+        const uid =Firebase.registrationInfo.UID;// AsyncStorage.getItem('userToken');
+        debugger;
         var list = [];
         Firebase.databaseRef.child(`/SavedArtItems/${uid}`).on('value', (childSnapshot) => {
             childSnapshot.forEach((doc) => {
@@ -58,6 +54,7 @@ export default class MyCollection extends Component {
 
     loadSaved() {
         const uid = Firebase.registrationInfo.UID;
+        console.log(uid,"uid");
         var list = [];//databaseRef.
         Firebase.databaseRef.child(`/SavedNewsFeedItems/${uid}`).on('value', (childSnapshot) => {
             childSnapshot.forEach((doc) => {
@@ -81,28 +78,11 @@ export default class MyCollection extends Component {
                 savedList: list
             });
         });
-        ///console.log(this.savedNewsFeedCollection);
     }
 
-
-    async logOut() {
-        try {
-            // if (Firebase.registrationInfo.isAutheticated == true) {
-            await AsyncStorage.clear();
-            await Firebase.auth.signOut();
-            // } 
-            debugger
-            ///     console.log(AsyncStorage);
-            this.props.navigation.navigate('Login');
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
     render() {
         return (
-
-            /// {this.state.loadedSaves && this.state.loadedScans ?
 
             <ScrollableTabView
                 style={{ marginTop: 20, }}
@@ -111,41 +91,10 @@ export default class MyCollection extends Component {
                 <SavedNewsList saves={this.state.savedList} tabLabel="NewsFeedSaves" />
             </ScrollableTabView>
 
-            //   :
-
-            // <View>
-            //   <ActivityIndicator size="large" color='#8979B7' />
-            // </View>
-            //       }
         );
     }
 }
 
-
-
-/*
-
- <ScrollView>
-                <View style={styles.container}>
-                    <View
-                        style={styles.profileIcon}>
-                        <Image style={styles.profilePicStyle}
-                            source={require('../../assets/profile.jpg')} />
-                    </View>
-                    <Text style={styles.label}>{this.state.name}</Text>
-                    <TouchableHighlight style={styles.logOutButton}
-                        onLongPress={() => {
-                            alert("we are logging out");
-                            this.logOut();
-                            //  this.onRefresh();
-                        }}>
-                        <Image
-                            source={require('../../assets/logout.png')} />
-                    </TouchableHighlight>
-                </View>
-
-
-*/
 const styles = StyleSheet.create({
     container: {
         paddingTop: 10,

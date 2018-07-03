@@ -38,10 +38,9 @@ export default class Login extends Component {
       .then((result) => {
         Firebase.updateFirebaseService(result);
         AsyncStorage.setItem('userToken', result.user.uid);
+        AsyncStorage.setItem('userName', this.state.email);
         this.goToHomeScreen();
       }).catch(function (error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
         console.log(error.code)
         console.log(error.message)
       });
@@ -52,13 +51,13 @@ export default class Login extends Component {
     this.setState({
       createA: true
     });
-    Firebase.auth//createUserWithEmailAndPassword
-      //.setPersistance(Firebase.persistanceLevel)
+    Firebase.auth
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then((result) => {
         Firebase.updateFirebaseService(result, this.state.name);
         this.writeUserData(result.user.uid, this.state.name);
         AsyncStorage.setItem('userToken', result.user.uid);
+        AsyncStorage.setItem('userName', this.state.name);
         this.goToHomeScreen();
       }).catch(function (error) {
         var errorCode = error.code;
@@ -102,27 +101,23 @@ export default class Login extends Component {
               <Text style={styles.buttonText}>create an account</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.buttonContainer} onPress={() => this.goToHomeScreen()} style={styles.buttonContainer}>
-              <Text style={styles.buttonText}>I'll do it later on</Text>
+            <TouchableOpacity onPress={this.logIn.bind(this)} style={styles.buttonContainer}>
+              <Text style={styles.buttonText}>sign in to my account</Text>
             </TouchableOpacity>
+
+
           </View>
         </View>
       </View>
     );
   }
 }
-/* <TouchableOpacity onPress={this.logIn.bind(this)} style={styles.buttonContainer}>
-              <Text style={styles.buttonText}>take me to my account</Text>
-            </TouchableOpacity> */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF"
   },
   formContainer: {
-    /// paddingVertical: 20
-    //  marginLeft: 20,
-    // marginRight: 20
     marginTop: 0
   },
   input: {

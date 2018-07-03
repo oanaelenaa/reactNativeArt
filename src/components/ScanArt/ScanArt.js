@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
+import {TouchableHighlight, AsyncStorage, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import Firebase from '../../utils/authentication/Firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ScanResponseModal from './ScanResponseModal';
 import CameraView from './CameraView';
 import config from './../../../config';
 import WebReferencesResponseModal from './WebReferencesResponseModal';
+import LabelFinder from '../../utils/LabelFinder';
 
 function FoundLabel() {
     this.probability = 0;
@@ -23,7 +24,8 @@ export default class ScanArt extends Component {
             result: [],
             loaded: true,
             notFoundMessage: "",
-            camEnabled: true
+            camEnabled: true,
+            name: ""
         }
         this.classifyImageURL = this.classifyImageURL.bind(this);
         this.initializeLabels = this.initializeLabels.bind(this);
@@ -32,6 +34,17 @@ export default class ScanArt extends Component {
         this.displayResponseModal = this.displayResponseModal.bind(this);
         this.searchWebReferences = this.searchWebReferences.bind(this);
         this.savePictureToCollection = this.savePictureToCollection.bind(this);
+        this.logOut = this.logOut.bind(this);
+    }
+
+    async logOut() {
+        try {
+            await AsyncStorage.clear();
+            await Firebase.auth.signOut();
+            this.props.navigation.navigate('Login');
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     onNavigation() {
@@ -41,6 +54,11 @@ export default class ScanArt extends Component {
     componentDidMount() {
         requestAnimationFrame(() => {
             // update the camera state here or send a value to a function that changes the cameraEnabled state
+        })
+        ///console.log(LabelFinder.findLabels('starrynight', 'Leonardo da Vinci'));
+        //const name = AsyncStorage.getItem('userName');
+        this.setState({
+            name: "oana"
         })
     }
 
@@ -146,18 +164,18 @@ export default class ScanArt extends Component {
             openClassifierModal: true
         });
 
-       // if (action == 'classify') {
+        // if (action == 'classify') {
         this.classifyImageFile(langValue);
         //}
-      /*  else {
-            var labelsAnnotations = this.searchWebReferences(base64);
-            if (labelsAnnotations != null) {
-                this.setState({
-                    result: labelsAnnotations
-                });
-                console.log(labelsAnnotations);
-            }
-        }*/
+        /*  else {
+              var labelsAnnotations = this.searchWebReferences(base64);
+              if (labelsAnnotations != null) {
+                  this.setState({
+                      result: labelsAnnotations
+                  });
+                  console.log(labelsAnnotations);
+              }
+          }*/
         this.setState({
             modalVisible: true
         })
@@ -168,6 +186,21 @@ export default class ScanArt extends Component {
         return (
             <View style={styles.container}>
                 {this.displayResponseModal()}
+                <View style={styles.containerProfile}>
+                    <View
+                        style={styles.profileIcon}>
+                        <Image style={styles.profilePicStyle}
+                            source={require('./../../assets/profile.jpg')} />
+                    </View>
+                    <Text style={styles.label}>{this.state.name}</Text>
+                    <TouchableHighlight style={styles.logOutButton}
+                        onPress={() => {
+                            this.logOut();
+                        }}>
+                        <Image
+                            source={require('./../../assets/logout.png')} />
+                    </TouchableHighlight>
+                </View>
                 <CameraView
                     enabled={this.state.camEnabled}
                     ref={(cam) => { this.camera = cam }}
@@ -248,6 +281,11 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: "#FAFAFA"
     },
+    containerProfile: {
+        paddingTop: 10,
+        width: '100%',
+        flexDirection: "row"
+    },
     modal: {
         paddingTop: 20,
         flex: 1,
@@ -259,6 +297,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center'
     },
+    profileIcon: {
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.2)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 100,
+        height: 100,
+        backgroundColor: '#fff',
+        borderRadius: 100,
+
+    },
     input: {
         height: 40,
         marginBottom: 20,
@@ -267,6 +316,12 @@ const styles = StyleSheet.create({
     },
     preview: {
         height: 300,
+    },
+    label: {
+        fontSize: 18,
+        color: "#8979B7",
+        marginTop: 50,
+        paddingLeft: 10
     },
     capture: {
         flex: 0,
@@ -280,4 +335,14 @@ const styles = StyleSheet.create({
     buttonContainer: {
         paddingVertical: 15
     },
+    profilePicStyle: {
+        height: 100,
+        width: 100,
+        borderRadius: 64
+    },
+    logOutButton: {
+        top: 10,
+        right: 10,
+        paddingLeft: 180
+    }
 })

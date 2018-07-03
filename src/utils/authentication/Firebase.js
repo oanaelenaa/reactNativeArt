@@ -17,11 +17,11 @@ export default class Firebase {
     static persistanceLevel;
     static storageRef;
     static registrationInfo = {
-        email: "nomail",
-        name:"",
-        isAutheticated: true,
+        email: "",
+        name: "",
+        isAutheticated: false,
         refreshToken: "",
-        UID: "UyX1xi8HPKOtKktDLZXKyD2rzfu2",
+        UID: "4cYcDsiVE6cbe0e7cfybhVWcZcn2",
     }
 
     static init() {
@@ -32,13 +32,12 @@ export default class Firebase {
         Firebase.persistanceLevel = firebase.auth.Auth.Persistence.LOCAL;
         Firebase.storageRef = firebase.storage();
     }
-    static updateFirebaseService(val,name) {
-        debugger;
+    static updateFirebaseService(val, name) {
         Firebase.registrationInfo.email = val.user.email;
         Firebase.registrationInfo.isAutheticated = true;
         Firebase.registrationInfo.refreshToken = val.user.refreshToken;
         Firebase.registrationInfo.UID = val.user.uid;
-        Firebase.registrationInfo.name=name;
+        Firebase.registrationInfo.name = name;
     }
 
     static getDatabaseRefUser(path) {
