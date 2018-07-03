@@ -10,7 +10,8 @@ export default class CameraView extends Component {
 			response: "",
 			imageUrl: "",
 			base64: "",
-			useClassify:false
+			useClassify: false,
+			useWeb: false
 		}
 		this.capture = this.capture.bind(this);
 	}
@@ -37,15 +38,11 @@ export default class CameraView extends Component {
 		var base64 = this.state.base64;
 		if (this.state.useClassify) {
 			this.props.onGetResponseScan(imageURI, base64, true);
+		} else if (this.state.useWeb) {
+			this.props.onGetResponseScan(imageURI, base64, false);
 		}
-		this.props.onGetResponseScan(imageURI, base64, false);
 	}
 
-	/*	tenserflowCladd(){
-			const results = await ifImageRecognition.recognize({
-				///image: ,
-			  });
-		}*/
 
 	render() {
 		if (!this.props.enabled) {
@@ -67,7 +64,7 @@ export default class CameraView extends Component {
 				/>
 				<TouchableOpacity
 					onPress={() => {
-						this.setState({ useClassify: true })
+						this.setState({ useClassify: true, useWeb: false })
 						this.capture();
 					}}
 					style={styles.capture}>
@@ -77,7 +74,7 @@ export default class CameraView extends Component {
 
 				<TouchableOpacity
 					onPress={() => {
-						this.setState({ useClassify: false })
+						this.setState({ useClassify: false, useWeb: true })
 						this.capture();
 					}}>
 					<Text style={styles.SEARCHwEBText}> Search on Web </Text>
@@ -93,8 +90,8 @@ const styles = StyleSheet.create({
 	preview: {
 		height: 300,
 	},
-	container:{
-		backgroundColor:"#FAFAFA"
+	container: {
+		backgroundColor: "#FAFAFA"
 	},
 	capture: {
 		flex: 0,
@@ -107,18 +104,18 @@ const styles = StyleSheet.create({
 	},
 	scanButtonText: {
 		backgroundColor: "#8979B7",
-		padding:0,
+		padding: 0,
 		fontSize: 17,
-		height:48,
-		width:315,
-		color:"#FFFFFF",
-		borderRadius:2,
+		height: 48,
+		width: 315,
+		color: "#FFFFFF",
+		borderRadius: 2,
 		textAlign: 'center',
-		paddingTop:10
+		paddingTop: 10
 	},
-	SEARCHwEBText:{
+	SEARCHwEBText: {
 		color: "#8979B7",
-		fontSize:17,
+		fontSize: 17,
 		textAlign: 'center'
 	}
 })

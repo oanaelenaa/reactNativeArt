@@ -25,7 +25,6 @@ export default class App extends Component {
   }
 
   render() {
-    const { checkedSignIn, isAuthenticated } = this.state;
 
     return (
       <View style={styles.container}>

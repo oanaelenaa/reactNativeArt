@@ -1,6 +1,7 @@
 import  { Component } from 'react';
 export default class LabelFinder extends Component {
 
+    debugger
     static findLabels  = function (label1, label2) {
 
         if (paintings.indexOf(label1) != -1 && authors.indexOf(label2) != -1) {
@@ -31,6 +32,9 @@ const paintings = ["Self-portrait",
     "Pyramid of skulls",
     "The Card Players",
     "Persian Sibyl ",
+    "Guernica",
+    "Weeping Woman",
+    "Three musicians",
     "The Creation of Adam",
     "The last judgment",
     "Royal Red and Blue",

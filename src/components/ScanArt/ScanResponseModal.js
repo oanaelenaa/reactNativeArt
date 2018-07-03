@@ -1,25 +1,111 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
+import { TouchableOpacity, TouchableHighlight, View, ActivityIndicator, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import Modal from "react-native-modal";
+import LabelFinder from '../../utils/LabelFinder';
+import RNFetchBlob from 'react-native-fetch-blob';
+import Firebase from '../../utils/authentication/Firebase';
 export default class ScanResponseModal extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            modalVisible: true
+            modalVisible: true,
+            uri: props.uri,
+            processedLabels: [],
+            notFoundMessage: "",
+            hasResults: true,
+            response: null,
+            done: false,
+            uploadedURL: null,
+            title: "",
+            author: "",
+            authorPage: "",
+            paintingPage: ""
         }
+        this.classifyImageFile = this.classifyImageFile.bind(this);
+        this.validateResponse = this.validateResponse.bind(this);
+        this.initializeLabels = this.initializeLabels.bind(this);
+        this.getWikipediaContent = this.getWikipediaContent.bind(this);
+    }
+
+    initializeLabels(datas) {
+        debugger
+        data = datas.slice(0, 2);
+        this.setState({
+            processedLabels: data,
+            done: true
+        })
+        var title = "";
+        var author = "";
+        ///  var labels = LabelFinder.findLabels(data[0].tagName, data[1].tagName)
+        console.log(labels);
+        var urlPaintingPage = this.getFormatpageTitleLink(title);
+        var urlAuthorPage = this.getFormatpageTitleLink(author);
+        this.setState({
+            title: labels.title,
+            author: labels.author,
+            authorPage: urlAuthorPage,
+            paintingPage: urlPaintingPage
+        })
+        /// this.savePictureToCollection();
+    }
+
+    getFormatpageTitleLink(pageTitle) {
+
+        var formatted = pageTitle.replace(" ", "_");
+        return 'https://en.wikipedia.org/wiki/' + formatted;
+    }
+
+
+
+    componentDidMount() {
+        /* this.uploadToFirebase(this.state.uri)
+             .then(url => {
+                 this.setState({ uploadedURL: url })
+                 this.classifyImageFile();
+             })
+             .catch(error => console.log(error))*/
+        this.classifyImageFile();
+    }
+
+
+
+    validateResponse(data) {
+        console.log(data, "vali");
+        if (data.predictions != null && data.predictions.length > 0)
+            this.initializeLabels(data.predictions);
+        else
+            this.setState({ notFoundMessage: "no results were found for this art" });
+    }
+
+    async classifyImageFile() {
+        //  debugger;
+        const url = this.state.uri;
+        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
+        RNFetchBlob.fetch('POST', baseUrl, {
+            'Content-Type': 'application/octet-stream',
+            'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
+
+        }, RNFetchBlob.wrap(url)).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+                this.setState({
+                    response: responseJson
+                })
+                if (this.state.response != null) {
+                    this.validateResponse(this.state.response);
+                }
+            }).catch(function (error) {
+                console.log(error.code)
+                console.log(error.message)
+            });
     }
 
     _toggleModal = () =>
         this.setState({ modalVisible: !this.state.modalVisible });
 
     render() {
-        const hasResults = this.props.hasResults;
-        const imageURI = this.props.url;
-        console.log(imageURI);
         return (
             <Modal isVisible={this.state.modalVisible}
-                swipeDirection="up"
-
                 animationType="slide"
                 transparent={false}>
                 <TouchableHighlight style={styles.closeButton}
@@ -32,20 +118,35 @@ export default class ScanResponseModal extends Component {
                 <View>
                     <Image style={styles.pictureStyle}
                         resizeMode="contain"
-                        source={{ uri: imageURI, isStatic: true }}>
+                        source={{ uri: this.state.uri, isStatic: true }}>
                     </Image>
                     <Text>{this.props.errorMessage}</Text>
-                    <FlatList
-                        data={this.props.labels}
-                        renderItem={
-                            ({ item }) => <View>
-                                <Text style={styles.text} >Tag name:{item.tagName}</Text>
-                                <Text style={styles.text} >Probability:{item.probability}</Text>
-                            </View>
-                        }
-                    />
                     {
-                        hasResults ? <Image style={styles.iconResponse} source={require('./../../assets/foundScan.png')} /> : <Image source={require('./../../assets/notFound.png')} />
+                        this.state.done ?
+
+                            <View>
+                                <Text style={styles.userMessage}>We are done</Text>
+                                <Image
+                                    resizeMode="contain"
+                                    source={require('./../../assets/foundScan.png')} />
+
+                                <FlatList
+                                    data={this.props.labels}
+                                    renderItem={
+                                        ({ item }) => <View>
+                                            <Text style={styles.text} >Tag name:{item.tagName}</Text>
+                                            <Text style={styles.text} >Probability:{item.probability}</Text>
+                                        </View>
+                                    }
+                                />
+                            </View>
+
+                            :
+
+                            <View>
+                                <Text>Please wait while we processing the request</Text>
+                                <ActivityIndicator size="large" color='#8979B7' />
+                            </View>
                     }
 
                 </View>
