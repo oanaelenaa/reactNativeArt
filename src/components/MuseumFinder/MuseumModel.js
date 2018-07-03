@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { Animated, View, Text, Image,Linking,StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
 
 export default class MuseumModel extends Component {
     progress = new Animated.Value(0);
@@ -21,21 +21,19 @@ export default class MuseumModel extends Component {
     }
 
     openInMaps() {
-        debugger;
         console.log(this.state.museum);
-        const latitude = museum.geometry.lat;
-        const longitude = museum.geometry.lng;
-        const name = museum.name;
+        const latitude = this.state.museum.geometry.location.lat;
+        const longitude = this.state.museum.geometry.location.lng;
+        const name = this.state.museum.name;
         this.props.onOpenInMaps(latitude, longitude, name);
     }
 
     visitWebsite() {
-
+        Linking.openURL(this.state.museum.url);
     }
 
 
     render() {
-        debugger
         let opacity = this.progress.interpolate({
             inputRange: [0, 1],
             outputRange: [0, 1],
@@ -71,18 +69,22 @@ export default class MuseumModel extends Component {
                         <Image style={styles.iconRating} source={require('./../../assets/iconStar.png')} />
                     </View>
                     <Text style={styles.text} numberOfLines={2}>Address: {formatted_address}</Text>
-                </View>
-                <View style={styles.actionButtons}>
-                    <TouchableOpacity
-                        style={styles.actionsB}
-                        onPress={this.visitWebsite} >
-                        <Text style={styles.textActions}>visit website </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.actionsB}
-                        onPress={this.openInMaps}>
-                        <Text style={styles.textActions}>directions</Text>
-                    </TouchableOpacity>
+                    <View style={styles.actionButtons}>
+                        <TouchableOpacity
+                            style={styles.actionsB}
+                            onPress={() => {
+                                this.visitWebsite();
+                            }} >
+                            <Text style={styles.textActions}>visit website </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.actionsB}
+                            onPress={() => {
+                                this.openInMaps();
+                            }} >
+                            <Text style={styles.textActions}>directions</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </Animated.View>
         );
@@ -124,13 +126,14 @@ const styles = StyleSheet.create({
         position: 'absolute', top: 5, right: 5
     },
     actionButtons: {
-     //   flexDirection: 'row',
-      //  justifyContent: 'center',
-      //  alignItems: 'center'
+        marginTop: 10,
+        flexDirection: 'row',
+        //  justifyContent: 'center',
+        //   alignItems: 'center'
     },
     actionsB: {
         height: 50,
-        width: 50
+        width: 150
     },
     textActions: {
         color: "#8979B7",

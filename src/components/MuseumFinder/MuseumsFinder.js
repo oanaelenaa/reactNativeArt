@@ -24,18 +24,11 @@ export default class MuseumsFinder extends Component {
     }
 
     componentWillMount() {
-        //       this.getCoordinates();
-        //this.getCoordinates();
-        // debugger;
-        //this.museumsDetailsList = AsyncStorage.getItem('locatii');
-        //console.log(this.museumsDetailsList);
-        //   this.getMuseumsEU();
+     
     }
 
     componentDidMount() {
-        this.loadPlaces();
-        ///    this.displayResponseModal();
-        // this.getCoordinates();
+        this.getCoordinates();
     }
 
     /* displayMapsPopup() {
@@ -45,8 +38,7 @@ export default class MuseumsFinder extends Component {
      }*/
 
     getCoordinates() {
-        debugger;
-        navigator.geolocation.getCurrentPosition(
+        navigator.geolocation.watchPosition(
             (position) => {
                 console.log(position);
                 this.setState({
@@ -54,6 +46,7 @@ export default class MuseumsFinder extends Component {
                     longitude: position.coords.longitude,
                     error: null,
                 });
+                this.loadPlaces();
             },
             (error) => this.setState({ error: error.message }),
             { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
@@ -62,7 +55,8 @@ export default class MuseumsFinder extends Component {
 
 
     loadPlaces() {
-        var location = "46.7666872,23.5996782"
+    //    var location = "46.7666872,23.5996782"
+        var location = this.state.latitude + ',' + this.state.longitude;
         params = { location: location, type: "museum", key: "AIzaSyCWU8IjM7VbjRw37ZXX5GwLnZPddQRw4lU", radius: "500" }
         var url2 = `https://maps.googleapis.com/maps/api/place/radarsearch/json?key=${encodeURIComponent(params.key)}&location=${encodeURIComponent(params.location)}&radius=${encodeURIComponent(params.radius)}&type=${encodeURIComponent(params.type)}`
         console.log(url2);
@@ -77,7 +71,6 @@ export default class MuseumsFinder extends Component {
     }
 
     showLocationsDetails() {
-        debugger
         var result = [];
         this.museumsRef.map(function (x, i) {
             var place_id = x.place_id;
@@ -98,7 +91,7 @@ export default class MuseumsFinder extends Component {
     }
 
     handleOpenInMaps = (latitude, longitude, name) => {
-        debugger;
+        debugger
         this.setState({
             destinationLatitude: latitude,
             destinationLongitude: longitude,
@@ -109,7 +102,6 @@ export default class MuseumsFinder extends Component {
 
 
     renderItem(item) {
-        debugger
         return (
             <MuseumModel onOpenInMaps={this.handleOpenInMaps} event={item} />
         )
@@ -155,7 +147,7 @@ export default class MuseumsFinder extends Component {
                             sourceLongitude: this.state.longitude,  // not optional if sourceLatitude is specified
                             title: this.state.destinationTitle,
                             dialogTitle: 'Choose an app to get direction',
-                            dialogMessage: 'This is the amazing dialog Message',
+                            dialogMessage: this.state.destinationTitle,
                             cancelText: 'Cancel'
                         }}
                         modalProps={{ // you can put all react-native-modal props inside.

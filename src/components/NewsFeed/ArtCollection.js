@@ -18,6 +18,7 @@ export default class ArtCollection extends Component {
         }
         this.smartSearch = this.smartSearch.bind(this);
         this.loadSearchData = this.loadSearchData.bind(this);
+        this.showToastMessage = this.showToastMessage.bind(this);
     }
 
     componentWillMount() {
@@ -30,23 +31,13 @@ export default class ArtCollection extends Component {
     }
 
     showToastMessage = (isSuccessful) => {
-        var message = null;
-        var toastStyle = null;
         if (isSuccessful) {
-            toastStyle = {
-                backgroundColor: "#29AB87",
-                color: "#FFFFFF"
-            }
-            message = 'Successfully added to your collection';
+            Toast.show("Successfully added to your collection", styles.styleSuccess);
         } else {
-            toastStyle = {
-                backgroundColor: "#29AB87",
-                color: "#FFFFFF"
-            }
-            message = 'Something went wrong, please check your internet connection';
+            Toast.show("Something went wrong, please check your internet connection", styles.styleError);
         }
-        Toast.show(message, toastStyle);
     }
+
 
     loadData() {
         //  fetch('https://api.harvardartmuseums.org/object?apikey=&size=100')

@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-//import RNFetchBlob from 'react-native-fetch-blob';
 console.log(RNCamera);
-/*const tfImageRecognition = new tfImageRecognition({
-	model: require('./../../utils/tenserflow/model.pb'),
-	labels: require('./../../utils/tensorflow_labels.txt'),
-});*/
 
 export default class CameraView extends Component {
 	constructor(props) {
