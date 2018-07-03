@@ -1,52 +1,27 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, View, Text, StyleSheet, ActivityIndicator, Button, FlatList, Modal, Alert } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import Firebase from '../../../utils/authentication/Firebase';
 import PersonalCollectionArtItem from './PersonalCollectionArtItem';
+import GridView from 'react-native-super-grid';
+
 export default class Scanslist extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.personalCollection = [],
             this.state = {
                 visible: false,
                 lastPress: 0,
-                loaded: false,
+                loaded: true,
+                scansList: props.scans
             }
-        this.loadData = this.loadData.bind(this);
     }
 
     componentWillMount() {
     }
 
     componentDidMount() {
-        this.loadData();
     }
-
-    loadData() {
-        ///debugger;
-        this.setState({ refreshing: true });
-        const uid = Firebase.registrationInfo.UID;
-        var list = [];
-        Firebase.databaseRef.child(`/SavedArtItems/${uid}`).on('value', (childSnapshot) => {
-            childSnapshot.forEach((doc) => {
-                var artItem = {
-                    primaryimageURL: doc.toJSON().imageURL,
-                    title: doc.toJSON().title,
-                    author: doc.toJSON().author,
-                    pageURL: doc.toJSON().pageURL,
-                    id: doc.key,
-                }
-                list.push(artItem);
-            });
-        });
-        this.setState({
-            refreshing: false, loaded: true
-        });
-        this.personalCollection = list;
-    }
-
-
 
     renderItem(item) {
         return (
@@ -55,7 +30,8 @@ export default class Scanslist extends Component {
     }
 
     render() {
-        if (this.state.loaded == false) {
+        var items = this.props.scans
+        if (this.state.loaded == false || items==[]) {
             return (
                 <View style={styles.centerLoader}>
                     <ActivityIndicator size="large" color='#8979B7' />
@@ -63,11 +39,12 @@ export default class Scanslist extends Component {
             )
         }
         return (
-            <View style={styles.container}>
-                <FlatList
-                    data={this.personalCollection}
-                    renderItem={({ item }) => this.renderItem(item)}
-                    keyExtractor={(item) => item.id.toString()}
+            <View>
+                <GridView
+                    itemDimension={130}
+                    items={items}
+                    renderItem={item => this.renderItem(item)}
+                //  keyExtractor={(item) => item.id}
                 />
             </View>
         );
@@ -89,13 +66,4 @@ const styles = StyleSheet.create({
         height: 200,
         width: 200
     },
-    capture: {
-        flex: 0,
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        padding: 15,
-        paddingHorizontal: 20,
-        alignSelf: 'center',
-        margin: 20
-    }
 })

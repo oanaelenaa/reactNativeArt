@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, Image, View, Text, StyleSheet, Button, FlatList, Modal, Alert, ActivityIndicator } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Firebase from '../../utils/authentication/Firebase';
 import SavedNewsList from './News/SavedNewsList';
 import ScansList from './Scans/ScansList';
+import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
+
 export default class MyCollection extends Component {
 
     constructor(props) {
@@ -11,17 +12,14 @@ export default class MyCollection extends Component {
         this.state = {
             name: "Oana",
             refreshing: false,
-            savedNewsFeedCollection: [],
-            showNewsFeed: false,
-            showScans: true,
-            changeList: false,
-            textColored: true
+            scansList: [],
+            savedList: [],
+            loadedScans: false,
+            loadedSaves: false
         }
-        this.showScans = this.showScans.bind(this);
-        this.showSavedNews = this.showSavedNews.bind(this);
         this.logOut = this.logOut.bind(this);
-        this.colorText = this.colorText.bind(this);
-        this.resetText = this.resetText.bind(this);
+        this.loadScans = this.loadScans.bind(this);
+        this.loadSaved = this.loadSaved.bind(this);
     }
 
     componentWillMount() {
@@ -29,23 +27,63 @@ export default class MyCollection extends Component {
 
     componentDidMount() {
         this.setState({ email: Firebase.registrationInfo.email });
+        this.loadScans();
+        this.loadSaved();
         // this.showScans();
         ///this.onRefresh();
     }
 
-    showScans() {
-        this.setState({
-            showScans: true,
-            showNews: false
+    loadScans() {
+        this.setState({ refreshing: true });
+        const uid = Firebase.registrationInfo.UID;
+        var list = [];
+        Firebase.databaseRef.child(`/SavedArtItems/${uid}`).on('value', (childSnapshot) => {
+            childSnapshot.forEach((doc) => {
+                var artItem = {
+                    primaryimageURL: doc.toJSON().imageURL,
+                    title: doc.toJSON().title,
+                    author: doc.toJSON().author,
+                    pageURL: doc.toJSON().pageURL,
+                    id: doc.key,
+                }
+                list.push(artItem);
+            });
+            this.setState({
+                refreshing: false,
+                loadedScans: true,
+                scansList: list
+            });
         });
     }
 
-    showSavedNews() {
-        this.setState({
-            showScans: false,
-            showNews: true
+    loadSaved() {
+        const uid = Firebase.registrationInfo.UID;
+        var list = [];//databaseRef.
+        Firebase.databaseRef.child(`/SavedNewsFeedItems/${uid}`).on('value', (childSnapshot) => {
+            childSnapshot.forEach((doc) => {
+                // debugger
+                var artItem = {
+                    department: doc.toJSON().department,
+                    people: doc.toJSON().people,
+                    creditline: doc.toJSON().creditline,
+                    title: doc.toJSON().title,
+                    pageURL: doc.toJSON().pageURL,
+                    culture: doc.toJSON().culture,
+                    accessionyear: doc.toJSON().accessionyear,
+                    primaryimageurl: doc.toJSON().primaryimageURL,
+                    id: doc.key,
+                }
+                //   console.log(artItem);
+                list.push(artItem);
+            });
+            this.setState({
+                loadedSaves: true,
+                savedList: list
+            });
         });
+        ///console.log(this.savedNewsFeedCollection);
     }
+
 
     async logOut() {
         try {
@@ -61,24 +99,34 @@ export default class MyCollection extends Component {
         }
     }
 
-    colorText() {
-        this.setState({ textColored: true });
-    }
-    resetText() {
-        this.setState({ textColored: false });
-    }
-    textColored() {
-        if (this.state.textColored) {
-            return styles.textColored;
-        } else {
-            return styles.textNormal;
-        }
-    }
-
     render() {
         return (
-            <View style={styles.container}>
-                <View style={{ flexDirection: "row" }}>
+
+            /// {this.state.loadedSaves && this.state.loadedScans ?
+
+            <ScrollableTabView
+                style={{ marginTop: 20, }}
+                renderTabBar={() => <ScrollableTabBar />} initialPage={0}>
+                <ScansList scans={this.state.scansList} tabLabel="Scans" />
+                <SavedNewsList saves={this.state.savedList} tabLabel="NewsFeedSaves" />
+            </ScrollableTabView>
+
+            //   :
+
+            // <View>
+            //   <ActivityIndicator size="large" color='#8979B7' />
+            // </View>
+            //       }
+        );
+    }
+}
+
+
+
+/*
+
+ <ScrollView>
+                <View style={styles.container}>
                     <View
                         style={styles.profileIcon}>
                         <Image style={styles.profilePicStyle}
@@ -95,36 +143,14 @@ export default class MyCollection extends Component {
                             source={require('../../assets/logout.png')} />
                     </TouchableHighlight>
                 </View>
-                <View style={styles.listsButtons}>
 
-                    <TouchableOpacity onPressIn={this.colorText} onPressOut={this.resetText}
-                        style={styles.capture}
-                        onPress={this.showScans.bind(this)}
-                    >
-                        <Text style={styles.ListsButtonText}>SCANS </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPressIn={this.colorText} onPressOut={this.resetText}
-                        style={styles.capture}
-                        onPress={this.showSavedNews.bind(this)}
-                    >
-                        <Text style={styles.ListsButtonText}>SAVED NEWS</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.lineStyle} />
-                {
-                    this.state.showScans ? <ScansList /> : <SavedNewsList />
-                }
-            </View>
-        );
-    }
-}
 
+*/
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         paddingTop: 10,
-        paddingLeft: 0.5,
-        width: '100%'
+        width: '100%',
+        flexDirection: "row"
     },
     containerList: {
         flex: 1,
@@ -196,29 +222,3 @@ const styles = StyleSheet.create({
 
 })
 
-/*
- <TouchableOpacity
-                    style={{
-                        borderWidth: 1,
-                        borderColor: 'rgba(0,0,0,0.2)',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: 100,
-                        height: 100,
-                        backgroundColor: '#fff',
-                        borderRadius: 100,
-                    }}
-                >
-                    <Icon name={"user"} size={60} color="#01a699" />
-
-                </TouchableOpacity>
-                <Text>{this.state.email}</Text>
-                <TouchableOpacity
-                    style={styles.logOutButton}
-                    onPress={this.logOut.bind(this)}
-                >
-
-                    <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', }}>LOG OUT </Text>
-                </TouchableOpacity>
-                <View style={styles.lineStyle} />
- */

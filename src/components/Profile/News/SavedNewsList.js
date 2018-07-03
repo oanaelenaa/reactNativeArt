@@ -5,54 +5,21 @@ import SavedNewsItem from './SavedNewsItem';
 import GridView from 'react-native-super-grid';
 export default class SavedNewsList extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.savedNewsFeedCollection = [],
             this.state = {
                 visible: false,
-                lastPress: 0,
-                loaded: false,
+                savedList: props.saves
             }
-        this.loadData = this.loadData.bind(this);
     }
 
     componentWillMount() {
+
     }
 
     componentDidMount() {
-        this.loadData();
-
     }
-
-    loadData() {
-        //debugger;
-        const uid = Firebase.registrationInfo.UID;
-        var list = [];//databaseRef.
-        Firebase.databaseRef.child(`/SavedNewsFeedItems/${uid}`).on('value', (childSnapshot) => {
-            childSnapshot.forEach((doc) => {
-                // debugger;
-                var artItem = {
-                    department: doc.toJSON().department,
-                    people:doc.toJSON().people,
-                    creditline: doc.toJSON().creditline,
-                    title: doc.toJSON().title,
-                    pageURL: doc.toJSON().pageURL,
-                    culture: doc.toJSON().culture,
-                    accessionyear: doc.toJSON().accessionyear,
-                    primaryimageurl: doc.toJSON().primaryimageURL,
-                    id: doc.key,
-                }
-                //   console.log(artItem);
-                list.push(artItem);
-            });
-        });
-        this.setState({
-            refreshing: false, loaded: true
-        });
-        this.savedNewsFeedCollection = list;
-        console.log(this.savedNewsFeedCollection);
-    }
-
 
     smartSearch() {
     }
@@ -64,23 +31,21 @@ export default class SavedNewsList extends Component {
     }
 
     render() {
-        if (this.state.loaded == false) {
+        var items = this.props.saves;
+        if (this.state.loaded == false || items == []) {
             return (
-                <View style={styles.centerLoader}>
+                <View>
                     <ActivityIndicator size="large" color='#8979B7' />
                 </View>
             )
         }
-        var items = this.savedNewsFeedCollection;
         return (
-            <View style={styles.container}>
-                <GridView
-                    itemDimension={130}
-                    items={items}
-                    renderItem={item => this.renderItem(item)}
-                // keyExtractor={(item) => item.id.toString()}
-                />
-            </View>
+            <GridView
+                itemDimension={130}
+                items={items}
+                renderItem={item => this.renderItem(item)}
+            // keyExtractor={(item) => item.id.toString()}
+            />
         );
     }
 }
