@@ -126,7 +126,7 @@ export default class ScanResponseModal extends Component {
 
 
     componentDidMount() {
-        this.classifyImageFile();
+      ///  this.classifyImageFile();
     }
 
     validateResponse(data) {

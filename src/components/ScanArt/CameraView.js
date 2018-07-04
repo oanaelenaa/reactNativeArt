@@ -36,11 +36,9 @@ export default class CameraView extends Component {
 	handleScanResponseChange() {
 		var imageURI = this.state.imageUrl;
 		var base64 = this.state.base64;
-		if (this.state.useClassify) {
-			this.props.onGetResponseScan(imageURI, base64, true);
-		} else if (this.state.useWeb) {
-			this.props.onGetResponseScan(imageURI, base64, false);
-		}
+
+		this.props.onGetResponseScan(imageURI, base64, this.state.useClassify, this.state.useWeb);
+
 	}
 
 

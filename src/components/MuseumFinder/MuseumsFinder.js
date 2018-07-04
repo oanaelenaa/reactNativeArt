@@ -86,7 +86,7 @@ export default class MuseumsFinder extends Component {
     }
 
     handleOpenInMaps = (latitude, longitude, name) => {
-        debugger
+      ///  debugger
         this.setState({
             destinationLatitude: latitude,
             destinationLongitude: longitude,
@@ -97,7 +97,7 @@ export default class MuseumsFinder extends Component {
 
 
     renderItem(item) {
-        debugger
+     ///   debugger
         return (
             <MuseumModel onOpenInMaps={this.handleOpenInMaps} event={item} />
         )
@@ -117,7 +117,7 @@ export default class MuseumsFinder extends Component {
     }
 
     render() {
-        debugger
+      ///  debugger
         if (this.state.loaded == false) {
             return (
                 <View>

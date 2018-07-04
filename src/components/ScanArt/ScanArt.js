@@ -3,9 +3,8 @@ import { TouchableHighlight, AsyncStorage, View, Text, StyleSheet, Button, FlatL
 import Firebase from '../../utils/authentication/Firebase';
 import ScanResponseModal from './ScanResponseModal';
 import CameraView from './CameraView';
-import config from './../../../config';
 import WebReferencesResponseModal from './WebReferencesResponseModal';
-import LabelFinder from './../../utils/LabelFinder';
+import { RNCamera } from 'react-native-camera';
 
 export default class ScanArt extends Component {
     constructor(props) {
@@ -17,10 +16,11 @@ export default class ScanArt extends Component {
             imageFile: null,
             camEnabled: true,
             openClassifierModal: true,
-            name: ""
+            name: "",
+            base64: ""
         }
         this.displayScansResponseModal = this.displayScansResponseModal.bind(this);
-        this.displayWebResponseModal = this.displayWebResponseModal.bind(this);
+        /// this.displayWebResponseModal = this.displayWebResponseModal.bind(this);
         this.logOut = this.logOut.bind(this);
     }
 
@@ -68,27 +68,28 @@ export default class ScanArt extends Component {
         if (this.state.modalVisibleScans) {
             return (<ScanResponseModal hasResults={true} uri={this.state.url} modalVisible={this.state.modalVisibleScans}></ScanResponseModal>);
         }
-    }
-
-    displayWebResponseModal() {
         if (this.state.modalVisibleWeb) {
             return (<WebReferencesResponseModal url={this.state.url} modalVisible={this.state.modalVisibleScans} base64={this.state.base64}></WebReferencesResponseModal>);
         }
     }
 
-    handleScanResponse = (langValue, base64, action = true) => {
-        // debugger;
+    /* displayWebResponseModal() {
+         if (this.state.modalVisibleWeb) {
+             return (<WebReferencesResponseModal url={this.state.url} modalVisible={this.state.modalVisibleScans} base64={this.state.base64}></WebReferencesResponseModal>);
+         }
+     }*/
+
+    handleScanResponse = (langValue, base64, useClassify, useWeb) => {
         this.setState({
             url: langValue,
             base64: base64,
-            openClassifierModal: action,
-            modalVisibleWeb: false,
-            modalVisibleScans: false
+            //  modalVisibleWeb: useWeb,
+            // modalVisibleScans: useClassify
         });
-        if (action) {
+        if (useClassify) {
             this._toggleModalScans();
         }
-        else {
+        else if (useWeb) {
             this._toggleModalWeb();
         }
     }
@@ -116,7 +117,7 @@ export default class ScanArt extends Component {
                     ref={(cam) => { this.camera = cam }}
                     onGetResponseScan={this.handleScanResponse}
                 />
-              
+
                 {this.displayScansResponseModal()}
             </View>
         );

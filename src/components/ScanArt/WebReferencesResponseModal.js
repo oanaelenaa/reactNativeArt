@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, TouchableHighlight, ScrollView, ActivityIndicator, Linking, View, Text, StyleSheet, Button, FlatList, TextInput, Alert, Image } from 'react-native';
 import Modal from "react-native-modal";
+import Carousel from 'react-native-snap-carousel';
 
 export default class WebReferencesResponseModal extends Component {
     constructor(props) {
@@ -20,10 +21,14 @@ export default class WebReferencesResponseModal extends Component {
         this.searchWebReferences = this.searchWebReferences.bind(this);
         /// this.processEntities.Entities = this.processEntities.bind.this(this);
         this.viewPage = this.viewPage.bind(this);
+        this.renderCarousel = this.renderCarousel.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
     }
 
-    _toggleModal = () =>
-        this.setState({ modalVisible: !this.state.modalVisible });
+    toggleModal() {
+        debugger;
+        this.setState({ modalVisible: false });
+    }
 
 
     componentDidMount() {
@@ -34,10 +39,32 @@ export default class WebReferencesResponseModal extends Component {
         Linking.openURL(link)
     }
 
-    /**
-     *   "api": "https://vision.googleapis.com/v1/images:annotate?key=",
-            "apiKey": "AIzaSyBOi8uZx9f8518IlWIQPK-5MXX2u-2BMU0"
-     */
+    renderCarousel() {
+        if (this.state.visuallySimilarImages != null && this.state.visuallySimilarImages.length != 0) {
+            const dataS = this.state.visuallySimilarImages;
+            return (
+                <Carousel
+                    ref={(c) => { this._carousel = c; }}
+                    data={dataS}
+                    renderItem={
+                        ({ item }) => <View>
+                            <Image style={styles.pictureStyle}
+                                resizeMode="contain"
+                                source={{ uri: item.url, isStatic: true }}>
+                            </Image>
+                        </View>
+                    }
+                    layout={'default'}
+                    sliderWidth={300}
+                    itemWidth={250}
+                />
+
+
+            );
+        }
+    }
+
+
     async searchWebReferences() {
         return await
             fetch('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyBOi8uZx9f8518IlWIQPK-5MXX2u-2BMU0', {
@@ -84,14 +111,13 @@ export default class WebReferencesResponseModal extends Component {
             <Modal isVisible={this.state.modalVisible}
                 animationType="slide"
                 transparent={false}>
-
-                <TouchableHighlight style={styles.closeButton}
-                    onPress={this._toggleModal}>
-                    <Image
-                        resizeMode="contain"
-                        source={require('./../../assets/closeIcon.png')} />
-                </TouchableHighlight>
                 <ScrollView>
+                    <TouchableHighlight style={styles.closeButton}
+                        onPress={this.toggleModal}>
+                        <Image
+                            resizeMode="contain"
+                            source={require('./../../assets/closeIcon.png')} />
+                    </TouchableHighlight>
                     <Image style={styles.pictureStyle}
                         resizeMode="contain"
                         source={{ uri: this.state.imageUri, isStatic: true }}>
@@ -104,6 +130,42 @@ export default class WebReferencesResponseModal extends Component {
                                 <Image
                                     resizeMode="contain"
                                     source={require('./../../assets/foundScan.png')} />
+
+                                <Text style={styles.title}> Matching labels: </Text>
+
+                                <FlatList
+                                    data={this.state.bestGuessLabels}
+                                    renderItem={
+                                        ({ item }) => <View>
+                                            <Text style={styles.text} >Matching labels:{item.label}</Text>
+                                        </View>
+                                    }
+                                />
+
+                                <FlatList
+                                    data={this.state.webEntities}
+                                    renderItem={
+                                        ({ item }) => <View>
+                                            <Text style={styles.text}> {item.description}</Text>
+                                        </View>
+                                    }
+                                />
+
+                                <Text style={styles.title}> Matching images: </Text>
+                                {this.renderCarousel()}
+
+
+                                <Text style={styles.title}> Matching pages: </Text>
+                                <FlatList
+                                    data={this.state.pagesWithMatchingImages}
+                                    renderItem={
+                                        ({ item }) => <View>
+                                            <TouchableOpacity onPress={this.viewPage(item.url)}>
+                                                <Text style={styles.text} >{item.pageTitle}</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    }
+                                />
                             </View>
 
                             :
@@ -114,40 +176,7 @@ export default class WebReferencesResponseModal extends Component {
                             </View>
                     }
 
-                    <Text style={styles.title}> Matching labels: </Text>
 
-                    <FlatList
-                        data={this.state.bestGuessLabels}
-                        renderItem={
-                            ({ item }) => <View>
-                                <Text style={styles.text} >Matching labels:{item.label}</Text>
-                            </View>
-                        }
-                    />
-
-                    <FlatList
-                        data={this.state.webEntities}
-                        renderItem={
-                            ({ item }) => <View>
-                                <Text style={styles.text}> {item.description}</Text>
-                            </View>
-                        }
-                    />
-
-                    <Text style={styles.title}> Matching images: </Text>
-
-
-                    <Text style={styles.title}> Matching pages: </Text>
-                    <FlatList
-                        data={this.state.pagesWithMatchingImages}
-                        renderItem={
-                            ({ item }) => <View>
-                                <TouchableOpacity onPress={this.viewPage(item.url)}>
-                                    <Text style={styles.text} >{item.pageTitle}</Text>
-                                </TouchableOpacity>
-                            </View>
-                        }
-                    />
                 </ScrollView>
             </Modal>
         );
