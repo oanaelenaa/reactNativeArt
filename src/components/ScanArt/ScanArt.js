@@ -5,6 +5,7 @@ import ScanResponseModal from './ScanResponseModal';
 import CameraView from './CameraView';
 import config from './../../../config';
 import WebReferencesResponseModal from './WebReferencesResponseModal';
+import LabelFinder from './../../utils/LabelFinder';
 
 export default class ScanArt extends Component {
     constructor(props) {
@@ -46,17 +47,7 @@ export default class ScanArt extends Component {
         this.setState({
             name: "oana"  //!!to do update remove hardcoded data
         })
-
-
         //${encodeURIComponent(search)}
-        var search = 'Mona Lisa';
-        url = `http://en.wikipedia.org/w/api.php?action=query&prop=url&format=json&titles=${encodeURIComponent(search)}`;
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-
     }
 
     componentWillMount() {
@@ -125,12 +116,13 @@ export default class ScanArt extends Component {
                     ref={(cam) => { this.camera = cam }}
                     onGetResponseScan={this.handleScanResponse}
                 />
-                {this.displayWebResponseModal()}
+              
+                {this.displayScansResponseModal()}
             </View>
         );
     }
-}//                {this.displayScansResponseModal()}
-
+}//              {this.displayScansResponseModal()}
+//  {this.displayWebResponseModal()}
 const styles = StyleSheet.create({
     container: {
         flex: 1,

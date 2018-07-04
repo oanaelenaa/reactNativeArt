@@ -40,7 +40,7 @@ export default class ScanDetailsModal extends Component {
                     <TouchableOpacity onPress={() => {
                         this.visitWebsite(pageURL);
                     }} >
-                        <Text>Visit website</Text>
+                        <Text style={styles.web}>Visit website</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -61,6 +61,10 @@ const styles = StyleSheet.create({
         height: 250,
         width: 250,
         marginRight: 10
+    },
+    web:{
+        color:'#8979B7',
+        fontSize:17
     },
     textContainer: {
         flex: 1,

@@ -24,11 +24,9 @@ export default class ScanResponseModal extends Component {
         this.classifyImageFile = this.classifyImageFile.bind(this);
         this.validateResponse = this.validateResponse.bind(this);
         this.initializeLabels = this.initializeLabels.bind(this);
-        this.getWikipediaContent = this.getWikipediaContent.bind(this);
     }
 
     initializeLabels(datas) {
-        debugger
         data = datas.slice(0, 2);
         this.setState({
             processedLabels: data,
@@ -36,8 +34,11 @@ export default class ScanResponseModal extends Component {
         })
         var title = "";
         var author = "";
-        ///  var labels = LabelFinder.findLabels(data[0].tagName, data[1].tagName)
-        console.log(labels);
+        debugger;
+        var labels = LabelFinder.findLabels(data[0].tagName, data[1].tagName)
+        title = labels.title;
+        author = labels.author;
+        ///   console.log(labels);
         var urlPaintingPage = this.getFormatpageTitleLink(title);
         var urlAuthorPage = this.getFormatpageTitleLink(author);
         this.setState({
@@ -50,7 +51,6 @@ export default class ScanResponseModal extends Component {
     }
 
     getFormatpageTitleLink(pageTitle) {
-
         var formatted = pageTitle.replace(" ", "_");
         return 'https://en.wikipedia.org/wiki/' + formatted;
     }
@@ -71,10 +71,10 @@ export default class ScanResponseModal extends Component {
 
     validateResponse(data) {
         console.log(data, "vali");
-        if (data.predictions != null && data.predictions.length > 0)
+        if (data.predictions != null && data.predictions.length > 0 && data.predictions[0].probability >= 0.5)
             this.initializeLabels(data.predictions);
         else
-            this.setState({ notFoundMessage: "no results were found for this art" });
+            this.setState({ notFoundMessage: "Sorry,but no results were found for this art" });
     }
 
     async classifyImageFile() {
@@ -84,7 +84,6 @@ export default class ScanResponseModal extends Component {
         RNFetchBlob.fetch('POST', baseUrl, {
             'Content-Type': 'application/octet-stream',
             'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
-
         }, RNFetchBlob.wrap(url)).then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson)
@@ -130,19 +129,29 @@ export default class ScanResponseModal extends Component {
                                     resizeMode="contain"
                                     source={require('./../../assets/foundScan.png')} />
 
-                                <FlatList
-                                    data={this.props.labels}
-                                    renderItem={
-                                        ({ item }) => <View>
-                                            <Text style={styles.text} >Tag name:{item.tagName}</Text>
-                                            <Text style={styles.text} >Probability:{item.probability}</Text>
-                                        </View>
-                                    }
-                                />
+                                <View>
+                                    <Text style={styles.text} >Title:{this.state.title}</Text>
+                                    <Text style={styles.text} >Author:{this.state.author}</Text>
+                                </View>
+
+                                <View style={styles.actionButtons}>
+                                    <TouchableOpacity
+                                        style={styles.actionsB}
+                                        onPress={() => {
+                                            this.visitWebsite(this.state.authorPage);
+                                        }} >
+                                        <Text style={styles.textActions}>view author references </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.actionsB}
+                                        onPress={() => {
+                                            this.visitWebsite(this.state.pageTitle);
+                                        }} >
+                                        <Text style={styles.textActions}>view title references </Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-
                             :
-
                             <View>
                                 <Text>Please wait while we processing the request</Text>
                                 <ActivityIndicator size="large" color='#8979B7' />
@@ -179,6 +188,18 @@ const styles = StyleSheet.create({
     },
     buttonLove: {
 
+    },
+    actionButtons: {
+        marginTop: 10,
+        flexDirection: 'row',
+    },
+    textActions: {
+        color: "#8979B7",
+        fontSize: 13
+    },
+    actionsB: {
+        height: 50,
+        width: 150
     },
     iconResponse: {
         width: 100,

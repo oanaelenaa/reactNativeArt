@@ -44,7 +44,7 @@ export default class NewsDetailsModal extends Component {
                     <TouchableOpacity onPress={() => {
                         this.visitWebsite(pageURL);
                     }} >
-                        <Text>Visit website</Text>
+                        <Text style={styles.web}>Visit website</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -75,6 +75,10 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 13,
         fontWeight: 'bold'
+    },
+    web: {
+        color: '#8979B7',
+        fontSize: 17
     },
     text: {
         fontSize: 13

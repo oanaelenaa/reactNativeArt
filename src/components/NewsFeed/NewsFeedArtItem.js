@@ -10,20 +10,23 @@ export default class NewsFeedArtItem extends Component {
         this.state = {
             lastPress: 0,
             lastIdPressed: 0,
-            message: "succesfully added!"
+            message: "succesfully added!",
+            visible: false,
+            imageUrl:""
+            
         }
         this.saveTopersonalCollection = this.saveTopersonalCollection.bind(this);
         this.openPreviewImage = this.openPreviewImage.bind(this);
         this.togglePreviewImage = this.togglePreviewImage.bind(this);
-         this.openUrl = this.openUrl.bind(this);
+        this.openUrl = this.openUrl.bind(this);
     }
 
     componentDidMount() {
         Animated.timing(this.progress, { toValue: 1, duration: 500 }).start();
     }
 
-    openUrl(url){
-       
+    openUrl(url) {
+
     }
 
     async saveTopersonalCollection() {
@@ -73,7 +76,7 @@ export default class NewsFeedArtItem extends Component {
     openPreviewImage() {
         if (this.state.visible) {
             return (
-                <ImagePreview visible={this.state.visible} source={{ uri: this.state.imageUrl }} close={this.togglePreviewImage} />
+                <ImagePreview visible={this.state.visible} source={{ uri: this.props.event.primaryimageurl }} close={this.togglePreviewImage} />
             );
 
         }
@@ -112,7 +115,7 @@ export default class NewsFeedArtItem extends Component {
                     <Text style={styles.text} numberOfLines={2}>{department}</Text>
                     <Text style={styles.text}>Credits: {creditline}</Text>
                     <TouchableOpacity onPress={this.openUrl(url)}>
-                        <Text >visit website</Text>
+                        <Text style={styles.web} >visit website</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -122,11 +125,6 @@ export default class NewsFeedArtItem extends Component {
     }
 }
 
-/**
- * 
- *   {
-                        this.state.openURL ? <WebViewLink link={url} /> : null            }
- */
 
 const styles = StyleSheet.create({
     container: {
@@ -161,5 +159,9 @@ const styles = StyleSheet.create({
     },
     buttonLove: {
 
+    },
+    web: {
+        color: '#8979B7',
+        fontSize: 17
     }
 })
