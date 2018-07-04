@@ -4,6 +4,10 @@ import Modal from "react-native-modal";
 import LabelFinder from '../../utils/LabelFinder';
 import RNFetchBlob from 'react-native-fetch-blob';
 import Firebase from '../../utils/authentication/Firebase';
+var randomString = require('random-string');
+const Blob = RNFetchBlob.polyfill.Blob
+const fs = RNFetchBlob.fs
+window.Blob = Blob
 export default class ScanResponseModal extends Component {
     constructor(props) {
         super(props);
@@ -24,6 +28,7 @@ export default class ScanResponseModal extends Component {
         this.classifyImageFile = this.classifyImageFile.bind(this);
         this.validateResponse = this.validateResponse.bind(this);
         this.initializeLabels = this.initializeLabels.bind(this);
+        this.uploadToFirebase=this.uploadToFirebase.bind(this);
     }
 
     initializeLabels(datas) {
@@ -55,6 +60,34 @@ export default class ScanResponseModal extends Component {
         return 'https://en.wikipedia.org/wiki/' + formatted;
     }
 
+    uploadToFirebase(uri, mime = 'application/octet-stream') {
+        ///  debugger
+        var x = randomString({length: 6});
+        return new Promise((resolve, reject) => {
+            let uploadBlob = null
+            const imageRef = Firebase.storageRef.ref('images').child(x)
+            fs.readFile(uri, 'base64')
+                .then((data) => {
+                    return Blob.build(data, { type: `${mime};BASE64` })
+                })
+                .then((blob) => {
+                    uploadBlob = blob
+                    return imageRef.put(blob, { contentType: mime })
+                })
+                .then(() => {
+                    uploadBlob.close()
+                    return imageRef.getDownloadURL()
+                })
+                .then((url) => {
+                    resolve(url)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    }
+
+
 
 
     componentDidMount() {
@@ -72,7 +105,14 @@ export default class ScanResponseModal extends Component {
     validateResponse(data) {
         console.log(data, "vali");
         if (data.predictions != null && data.predictions.length > 0 && data.predictions[0].probability >= 0.5)
-            this.initializeLabels(data.predictions);
+        {  
+             this.initializeLabels(data.predictions);
+             this.uploadToFirebase(this.state.uri)
+            .then(url => {
+                this.setState({ uploadedURL: url })
+            })
+            .catch(error => console.log(error))
+        }
         else
             this.setState({ notFoundMessage: "Sorry,but no results were found for this art" });
     }
