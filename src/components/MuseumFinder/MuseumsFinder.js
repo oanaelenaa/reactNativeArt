@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, TouchableHighlight, AsyncStorage, View, ActivityIndicator, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
+import { View, ActivityIndicator, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
 import MuseumModel from './MuseumModel';
 import { Popup } from 'react-native-map-link';
 export default class MuseumsFinder extends Component {
@@ -24,7 +24,7 @@ export default class MuseumsFinder extends Component {
     }
 
     componentWillMount() {
-     
+
     }
 
     componentDidMount() {
@@ -49,7 +49,6 @@ export default class MuseumsFinder extends Component {
 
 
     loadPlaces() {
-    //    var location = "46.7666872,23.5996782"
         var location = this.state.latitude + ',' + this.state.longitude;
         params = { location: location, type: "museum", key: "AIzaSyCWU8IjM7VbjRw37ZXX5GwLnZPddQRw4lU", radius: "500" }
         var url2 = `https://maps.googleapis.com/maps/api/place/radarsearch/json?key=${encodeURIComponent(params.key)}&location=${encodeURIComponent(params.location)}&radius=${encodeURIComponent(params.radius)}&type=${encodeURIComponent(params.type)}`
@@ -66,6 +65,7 @@ export default class MuseumsFinder extends Component {
 
     showLocationsDetails() {
         var result = [];
+
         this.museumsRef.map(function (x, i) {
             var place_id = x.place_id;
             var url = `https://maps.googleapis.com/maps/api/place/details/json?key=${encodeURIComponent(params.key)}&placeid=${place_id}`;
@@ -73,13 +73,14 @@ export default class MuseumsFinder extends Component {
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-                    result.push(data.result);
+                    result.push(data);
                 });
-        })
+        });
         this.setState({
             loaded: true,
             museumsDetailsList: result
         })
+
         //      this.orderMuseumsByRating(); Ï
 
     }
@@ -96,6 +97,7 @@ export default class MuseumsFinder extends Component {
 
 
     renderItem(item) {
+        debugger
         return (
             <MuseumModel onOpenInMaps={this.handleOpenInMaps} event={item} />
         )
@@ -115,6 +117,7 @@ export default class MuseumsFinder extends Component {
     }
 
     render() {
+        debugger
         if (this.state.loaded == false) {
             return (
                 <View>
@@ -162,13 +165,13 @@ const styles = StyleSheet.create({
         paddingTop: 0,
         width: '100%'
     },
-    spinnerStyle:{
-      //  size:"large",
-        color:'#8979B7',
+    spinnerStyle: {
+        //  size:"large",
+        color: '#8979B7',
         flex: 1,
-        marginTop:240,
+        marginTop: 240,
         justifyContent: 'center',
-        alignItems:'center'
+        alignItems: 'center'
     }
 
 });

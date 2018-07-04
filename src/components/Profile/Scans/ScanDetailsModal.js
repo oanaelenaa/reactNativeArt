@@ -16,7 +16,7 @@ export default class ScanDetailsModal extends Component {
     }
 
     render() {
-        const { title, author, otherInformation, primaryimageURL, pageURL, id } = this.props.event;
+        const { title, author, primaryimageURL, authorURL, titleURL, id } = this.props.event;
         return (
             <Modal isVisible={this.state.isModalVisible}
                 animationType="slide"
@@ -35,13 +35,24 @@ export default class ScanDetailsModal extends Component {
                     </View>
                     <ScrollView>
                         <Text style={styles.title}>Title: {title}</Text>
-                        <Text style={styles.text}>Author: {author}</Text>
+                        <Text style={styles.title}>Author: {author}</Text>
                     </ScrollView>
-                    <TouchableOpacity onPress={() => {
-                        this.visitWebsite(pageURL);
-                    }} >
-                        <Text style={styles.web}>Visit website</Text>
-                    </TouchableOpacity>
+                    <View style={styles.actionButtons}>
+                        <TouchableOpacity
+                            style={styles.actionsB}
+                            onPress={() => {
+                                this.visitWebsite(authorURL);
+                            }} >
+                            <Text style={styles.textActions}>view author references </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.actionsB}
+                            onPress={() => {
+                                this.visitWebsite(titleURL);
+                            }} >
+                            <Text style={styles.textActions}>view title references </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </Modal>
         );
@@ -62,9 +73,9 @@ const styles = StyleSheet.create({
         width: 250,
         marginRight: 10
     },
-    web:{
-        color:'#8979B7',
-        fontSize:17
+    web: {
+        color: '#8979B7',
+        fontSize: 17
     },
     textContainer: {
         flex: 1,
@@ -72,8 +83,21 @@ const styles = StyleSheet.create({
         paddingRight: 10
     },
     title: {
-        fontSize: 13,
-        fontWeight: 'bold'
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#FFFFFF'
+    },
+    actionButtons: {
+        marginTop: 10,
+        flexDirection: 'row',
+    },
+    textActions: {
+        color: "#8979B7",
+        fontSize: 13
+    },
+    actionsB: {
+        height: 50,
+        width: 150
     },
     text: {
         fontSize: 13,

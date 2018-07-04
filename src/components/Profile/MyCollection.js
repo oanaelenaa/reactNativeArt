@@ -31,7 +31,6 @@ export default class MyCollection extends Component {
     loadScans() {
         this.setState({ refreshing: true });
         const uid =Firebase.registrationInfo.UID;// AsyncStorage.getItem('userToken');
-        debugger;
         var list = [];
         Firebase.databaseRef.child(`/SavedArtItems/${uid}`).on('value', (childSnapshot) => {
             childSnapshot.forEach((doc) => {
