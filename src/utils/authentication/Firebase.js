@@ -21,7 +21,7 @@ export default class Firebase {
         name: "",
         isAutheticated: false,
         refreshToken: "",
-        UID: "4cYcDsiVE6cbe0e7cfybhVWcZcn2",
+        UID: "zq1MLCMKc7V2lI5queEEEOccQfG3",
     }
 
     static init() {

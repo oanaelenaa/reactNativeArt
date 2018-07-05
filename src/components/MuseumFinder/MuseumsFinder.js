@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { View, ActivityIndicator, Text, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
+import { View, ActivityIndicator, Text, Image, StyleSheet, Button, FlatList, Modal, Alert } from 'react-native';
 import MuseumModel from './MuseumModel';
 import { Popup } from 'react-native-map-link';
+import Carousel from 'react-native-snap-carousel';
+
 export default class MuseumsFinder extends Component {
     constructor(props) {
         super(props);
@@ -14,13 +16,17 @@ export default class MuseumsFinder extends Component {
             loaded: false,
             museumsDetailsList: [],
             isMapsModalVisible: false,
-            destinationTitle: ""
+            destinationTitle: "",
+            showCarousel: false,
+            photos: []
         }
         this.showLocationsDetails = this.showLocationsDetails.bind(this);
         this.loadPlaces = this.loadPlaces.bind(this);
         this.orderMuseumsByRating = this.orderMuseumsByRating.bind(this);
         this.getCoordinates = this.getCoordinates.bind(this);
         this.handleOpenInMaps = this.handleOpenInMaps.bind(this);
+        this.renderCarousel = this.renderCarousel.bind(this);
+        this.handleCarousel = this.handleCarousel.bind(this);
     }
 
     componentWillMount() {
@@ -29,6 +35,29 @@ export default class MuseumsFinder extends Component {
 
     componentDidMount() {
         this.getCoordinates();
+    }
+
+    renderCarousel() {
+        const imgs = this.state.photos;
+        if (imgs != null && imgs.length != 0 && this.state.showCarousel) {
+            return (
+                <Carousel
+                    ref={(c) => { this._carousel = c; }}
+                    data={imgs}
+                    renderItem={
+                        ({ item }) => <View>
+                            <Image style={styles.pictureStyle}
+                                resizeMode="contain"
+                                source={{ uri: item.photo_reference, isStatic: true }}>
+                            </Image>
+                        </View>
+                    }
+                    layout={'default'}
+                    sliderWidth={300}
+                    itemWidth={250}
+                />
+            );
+        }
     }
 
     getCoordinates() {
@@ -46,7 +75,6 @@ export default class MuseumsFinder extends Component {
             { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
         );
     }
-
 
     loadPlaces() {
         var location = this.state.latitude + ',' + this.state.longitude;
@@ -73,7 +101,7 @@ export default class MuseumsFinder extends Component {
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-                    result.push(data);
+                    result.push(data.result);
                 });
         });
         this.setState({
@@ -86,7 +114,7 @@ export default class MuseumsFinder extends Component {
     }
 
     handleOpenInMaps = (latitude, longitude, name) => {
-      ///  debugger
+        
         this.setState({
             destinationLatitude: latitude,
             destinationLongitude: longitude,
@@ -94,12 +122,17 @@ export default class MuseumsFinder extends Component {
             isMapsModalVisible: true
         })
     }
+    handleCarousel = (photos) => {
+        this.setState({
+            showCarousel: true,
+            photos: photos
+        })
+    }
 
 
     renderItem(item) {
-     ///   debugger
         return (
-            <MuseumModel onOpenInMaps={this.handleOpenInMaps} event={item} />
+            <MuseumModel onOpenCarousel={this.handleCarousel} onOpenInMaps={this.handleOpenInMaps} event={item} />
         )
     }
 
@@ -117,8 +150,7 @@ export default class MuseumsFinder extends Component {
     }
 
     render() {
-      ///  debugger
-        if (this.state.loaded == false) {
+        if (this.state.loaded == false || this.state.museumsDetailsList == []) {
             return (
                 <View>
                     <ActivityIndicator size="large" color='#8979B7' />
@@ -152,6 +184,7 @@ export default class MuseumsFinder extends Component {
                         }}
                         appsWhiteList={['google-maps']}
                     />
+                    {this.renderCarousel()}
                 </View>
             );
         }

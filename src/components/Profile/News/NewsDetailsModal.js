@@ -19,8 +19,7 @@ export default class NewsDetailsModal extends Component {
         return (
             <Modal isVisible={this.state.isModalVisible}
                 animationType="slide"
-                transparent={false}
-            >
+                transparent={false}>
                 <View>
 
                     <TouchableOpacity style={styles.closeButton} onPress={this._toggleModal}>
@@ -56,9 +55,7 @@ export default class NewsDetailsModal extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        // alignItems: 'center',
         flexDirection: 'row',
-        // padding: 10,
         borderBottomColor: '#cdcdcd',
         borderBottomWidth: 1
     },

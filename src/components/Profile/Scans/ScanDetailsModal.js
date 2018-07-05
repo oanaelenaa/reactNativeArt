@@ -16,7 +16,9 @@ export default class ScanDetailsModal extends Component {
     }
 
     render() {
-        const { title, author, primaryimageURL, authorURL, titleURL, id } = this.props.event;
+        const { title, author,primaryimageURL, authorURL, titleURL, id } = this.props.event;
+      ///  var primaryimageURL = JSON.stringify(this.props.event.primaryimageURL);
+        console.log(primaryimageURL);
         return (
             <Modal isVisible={this.state.isModalVisible}
                 animationType="slide"
@@ -62,16 +64,14 @@ export default class ScanDetailsModal extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        // alignItems: 'center',
         flexDirection: 'row',
-        // padding: 10,
         borderBottomColor: '#cdcdcd',
         borderBottomWidth: 1
     },
     image: {
         height: 250,
         width: 250,
-        marginRight: 10
+        marginRight: 0
     },
     web: {
         color: '#8979B7',

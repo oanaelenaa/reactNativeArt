@@ -23,7 +23,6 @@ export default class ArtCollection extends Component {
 
     componentWillMount() {
         this.loadData();
-        //this.loadSearchData();
     }
 
     componentDidMount() {
@@ -32,7 +31,7 @@ export default class ArtCollection extends Component {
 
     showToastMessage = (isSuccessful) => {
         if (isSuccessful) {
-            Toast.show("Successfully added to your collection", styles.styleSuccess);
+            Toast.show("Successfully added to your collection");
         } else {
             Toast.show("Something went wrong, please check your internet connection", styles.styleError);
         }
@@ -40,7 +39,6 @@ export default class ArtCollection extends Component {
 
 
     loadData() {
-        //  fetch('https://api.harvardartmuseums.org/object?apikey=&size=100')
         fetch('https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&size=100')
             .then(response => response.json())
             .then(data => {
@@ -54,6 +52,9 @@ export default class ArtCollection extends Component {
 
     loadSearchData() {
         var result = [];
+        this.setState({
+            loaded:false
+        })
         fetch(`https://api.harvardartmuseums.org/object?apikey=3c32a450-65e8-11e8-85de-6b944c9ddaed&keyword=${encodeURIComponent(this.state.searchTerm)}&size=200`)
             .then(response => response.json())
             .then(data => {
@@ -70,9 +71,7 @@ export default class ArtCollection extends Component {
     smartSearch(text) {
         this.setState({
             searchTerm: text,
-            loaded: false
         })
-        console.log(event);
     }
 
 
@@ -92,13 +91,21 @@ export default class ArtCollection extends Component {
         }
         return (
             <View style={styles.container}>
-                <TextInput
-                    style={styles.TextInputStyleClass}
-                    onChangeText={(text) => this.smartSearch(text)}
-                    underlineColorAndroid='transparent'
-                    placeholder="Search Here"
-                    onSubmitEditing={this.loadSearchData}
-                />
+                <View style={styles.searchC}>
+                    <TextInput
+                        style={styles.TextInputStyleClass}
+                        onChangeText={(text) => this.smartSearch(text)}
+                        underlineColorAndroid='transparent'
+                        placeholder="Search Here"
+                    ///onSubmitEditing={this.loadSearchData}
+                    />
+                    <TouchableOpacity style={styles.SearchB} onPress={() => {
+                        this.loadSearchData();
+                    }}>
+                        <Text>Search</Text>
+
+                    </TouchableOpacity>
+                </View>
                 <FlatList
                     data={this.state.artItems}
                     renderItem={({ item }) => this.renderItem(item)}
@@ -109,6 +116,10 @@ export default class ArtCollection extends Component {
     }
 }
 
+const style = {
+    backgroundColor: "#29AB87"
+
+}
 const styles = StyleSheet.create({
     /* activity: {
          ///size:large,
@@ -120,20 +131,21 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 0,
         width: '100%',
-
+    },
+    searchC: {
+        flexDirection: 'row',
     },
     centerLoader: {
         justifyContent: 'center'
     },
     TextInputStyleClass: {
-
         textAlign: 'center',
         height: 40,
         borderWidth: 1,
         borderColor: '#009688',
         borderRadius: 7,
-        backgroundColor: "#FFFFFF"
-
+        backgroundColor: "#FFFFFF",
+        width:300 
     },
     title: {
         fontSize: 25,
@@ -143,6 +155,13 @@ const styles = StyleSheet.create({
     preview: {
         height: 200,
         width: 200
+    },
+    SearchB:{
+        backgroundColor: "#8979B7",
+		padding: 0,
+		height: 40,
+		width: 60,
+		borderRadius: 2,
     },
     capture: {
         flex: 0,

@@ -19,14 +19,12 @@ export default class WebReferencesResponseModal extends Component {
             pagesWithMatchingImages: []
         }
         this.searchWebReferences = this.searchWebReferences.bind(this);
-        /// this.processEntities.Entities = this.processEntities.bind.this(this);
         this.viewPage = this.viewPage.bind(this);
         this.renderCarousel = this.renderCarousel.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
     }
 
     toggleModal() {
-        debugger;
         this.setState({ modalVisible: false });
     }
 
@@ -99,6 +97,7 @@ export default class WebReferencesResponseModal extends Component {
                         visuallySimilarImages: similarImg,
                         pagesWithMatchingImages: pages
                     });
+                    console.log(this.state.pagesWithMatchingImages);
                 }, (err) => {
                     console.error('promise rejected')
                     console.error(err)
@@ -171,41 +170,16 @@ export default class WebReferencesResponseModal extends Component {
                             :
 
                             <View>
-                                <Text>Please wait</Text>
+                                <Text style={styles.text}>Please wait while we are processing the request</Text>
                                 <ActivityIndicator size="large" color='#8979B7' />
                             </View>
                     }
-
-
                 </ScrollView>
             </Modal>
         );
     }
 }
 
-
-/**
- * <Image style={styles.pictureStyle}
-                        resizeMode="contain"
-                        source={{ uri: this.state.imageUri, isStatic: true }}>
-                    </Image>
-                    <Text>{this.props.errorMessage}</Text>
-                    <FlatList
-                        data={this.state.labelAnnotations}
-                        renderItem={
-                            ({ item }) => <View>
-                                <Text style={styles.text} >Tag name:{item.description}</Text>
-                            </View>
-                        }
-                    />
-                    
-                        <Image style={styles.iconResponse} source={require('./../../assets/foundScan.png')} /> : <Image source={require('./../../assets/notFound.png')} />
-                    
-
- * 
- * 
- * 
- */
 
 const styles = StyleSheet.create({
     container: {

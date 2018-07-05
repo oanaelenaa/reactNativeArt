@@ -4,7 +4,6 @@ import Firebase from '../../utils/authentication/Firebase';
 import ScanResponseModal from './ScanResponseModal';
 import CameraView from './CameraView';
 import WebReferencesResponseModal from './WebReferencesResponseModal';
-import { RNCamera } from 'react-native-camera';
 
 export default class ScanArt extends Component {
     constructor(props) {
@@ -42,12 +41,9 @@ export default class ScanArt extends Component {
         requestAnimationFrame(() => {
             // update the camera state here or send a value to a function that changes the cameraEnabled state
         })
-        ///console.log(LabelFinder.findLabels('starrynight', 'Leonardo da Vinci'));
-        //const name = AsyncStorage.getItem('userName');
         this.setState({
-            name: "oana"  //!!to do update remove hardcoded data
+            name: "Oana Test"
         })
-        //${encodeURIComponent(search)}
     }
 
     componentWillMount() {
@@ -122,8 +118,7 @@ export default class ScanArt extends Component {
             </View>
         );
     }
-}//              {this.displayScansResponseModal()}
-//  {this.displayWebResponseModal()}
+}
 const styles = StyleSheet.create({
     container: {
         flex: 1,

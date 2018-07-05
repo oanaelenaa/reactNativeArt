@@ -28,8 +28,8 @@ export default class PersonalCollectionArtItem extends Component {
 
     render() {
         primaryimageURL=this.props.event.primaryimageURL;
-        return (
 
+        return (
             <View style={styles.container}>
                 {this.displayDetailsModal()}
                 <TouchableOpacity onPress={() => this.onPress()}>

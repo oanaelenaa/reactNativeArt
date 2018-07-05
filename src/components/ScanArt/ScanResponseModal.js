@@ -57,7 +57,7 @@ export default class ScanResponseModal extends Component {
             authorPage: urlAuthorPage,
             paintingPage: urlPaintingPage
         })
-
+        //https://firebasestorage.googleapis.com/v0/b/whatsart1995.appspot.com/o/images%2FUiJ8RV?alt=media&token=a6249bf5-a036-4176-a6ed-948d0722dbd1
     }
 
     async savePictureToCollection() {
@@ -84,11 +84,11 @@ export default class ScanResponseModal extends Component {
     }
 
     getFormatpageTitleLink(pageTitle) {
-        var formatted = pageTitle.replace(" ", "_");
+        var formatted = pageTitle.split(' ').join('_');
         return 'https://en.wikipedia.org/wiki/' + formatted;
     }
-
-    uploadToFirebase(uri, mime = 'application/octet-stream') {
+    //image/jpeg'
+    uploadToFirebase(uri, mime = 'image/jpeg') {//application/octet-stream
         var x = randomString({ length: 6 });
         //keep reference to original value
         const originalXMLHttpRequest = window.XMLHttpRequest;
@@ -126,22 +126,22 @@ export default class ScanResponseModal extends Component {
 
 
     componentDidMount() {
-      ///  this.classifyImageFile();
+        this.classifyImageFile();
     }
 
     validateResponse(data) {
         console.log(data, "vali");
-        if (data.predictions != null && data.predictions.length > 0 && data.predictions[0].probability >= 0.5) {
+        if (data.predictions != null && data.predictions.length > 0 && data.predictions[0].probability >= 0.6) {
             this.initializeLabels(data.predictions);
             this.uploadToFirebase(this.state.uri);
         }
         else
-            this.setState({ notFoundMessage: "Sorry,but no results were found for this art" });
+            this.setState({ notFoundMessage: "Sorry,but no results were found for this art", done: true });
     }
 
     async classifyImageFile() {
         const url = this.state.uri;
-        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=ddfee652-0132-4fc1-b7d2-580df387f3ad"
+        var baseUrl = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/bcd68e65-9e51-4d34-b120-0bae92a8bcab/image?iterationId=cf23791d-b6a2-4508-b626-ecc13e0babcf"
         RNFetchBlob.fetch('POST', baseUrl, {
             'Content-Type': 'application/octet-stream',
             'Prediction-Key': 'e55e3d08cfae46768f86aba72e051021'
@@ -182,14 +182,15 @@ export default class ScanResponseModal extends Component {
                     </Image>
                     <Text>{this.props.errorMessage}</Text>
                     {
-                        this.state.done ?
+                        this.state.done && this.state.notFoundMessage == "" ?
 
                             <View>
-                                <Text style={styles.userMessage}>We are done</Text>
-                                <Image
-                                    resizeMode="contain"
-                                    source={require('./../../assets/foundScan.png')} />
-
+                                <View style={styles.msgHolder}>
+                                    <Text style={styles.text}>We are done</Text>
+                                    <Image
+                                        resizeMode="contain"
+                                        source={require('./../../assets/foundScan.png')} />
+                                </View>
                                 <View>
                                     <Text style={styles.text} >Title:{this.state.title}</Text>
                                     <Text style={styles.text} >Author:{this.state.author}</Text>
@@ -206,7 +207,7 @@ export default class ScanResponseModal extends Component {
                                     <TouchableOpacity
                                         style={styles.actionsB}
                                         onPress={() => {
-                                            this.visitWebsite(this.state.pageTitle);
+                                            this.visitWebsite(this.state.paintingPage);
                                         }} >
                                         <Text style={styles.textActions}>view title references </Text>
                                     </TouchableOpacity>
@@ -214,11 +215,19 @@ export default class ScanResponseModal extends Component {
                             </View>
                             :
                             <View>
-                                <Text>Please wait while we processing the request</Text>
+                                <Text style={styles.text}>Please wait while we processing the request</Text>
                                 <ActivityIndicator size="large" color='#8979B7' />
                             </View>
                     }
+                    {this.state.notFoundMessage != "" ?
 
+                        <View style={styles.msgHolder}>
+                            <Text style={styles.text}>{this.state.notFoundMessage}</Text>
+                            <Image
+                                resizeMode="contain"
+                                source={require('./../../assets/notFound.png')} />
+                        </View> : null
+                    }
                 </View>
             </Modal>
         );
@@ -233,6 +242,9 @@ const styles = StyleSheet.create({
         // padding: 10,
         borderBottomColor: '#cdcdcd',
         borderBottomWidth: 1
+    },
+    msgHolder: {
+        flexDirection: 'row',
     },
     textContainer: {
         flex: 1,

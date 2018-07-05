@@ -3,7 +3,11 @@
  * https://github.com/facebook/react-native
  * @flow
  */
-
+/**
+ * oanaTest@gmail.com
+ * 123456
+ * Oana Test
+ */
 import React, { Component } from 'react';
 import {
   Platform,
@@ -69,7 +73,6 @@ export default class Login extends Component {
 
 
   writeUserData(uid, name) {
-    debugger;
     // the_uid can also come from let userId = firebaseApp.auth().currentUser.uid;
     Firebase.database.ref('users/' + uid + '/').set({
       name: name,

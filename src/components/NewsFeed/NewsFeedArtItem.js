@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { Animated, View, Text, Image, StyleSheet, TouchableHighlight,Linking, TouchableOpacity } from 'react-native';
 import Firebase from '../../utils/authentication/Firebase';
 import ImagePreview from 'react-native-image-preview';
 
@@ -35,7 +35,6 @@ export default class NewsFeedArtItem extends Component {
         var objToSave = ({
             department: this.props.event.department,
             title: this.props.event.title,
-            /// people=this.props.event.people,
             creditline: this.props.event.creditline,
             culture: this.props.event.culture,
             accessionyear: this.props.event.accessionyear,
@@ -44,17 +43,22 @@ export default class NewsFeedArtItem extends Component {
             id: this.props.event.id
         });
         console.log("obj", objToSave);
-        isSuccessful = true;
+       
         var ref = Firebase.database.ref(`/SavedNewsFeedItems/${uid}`);
         ref.push(JSON.parse(JSON.stringify(objToSave)))
             .then((result) => {
                 console.log('result', result);
-
+                isSuccessful = true;
             }).catch(function (error) {
                 console.log(error.code)
                 console.log(error.message)
             });
         this.handleSaveChange(isSuccessful);
+    }
+
+    checkForDuplicates()
+    {
+
     }
 
     togglePreviewImage() {
@@ -66,7 +70,6 @@ export default class NewsFeedArtItem extends Component {
 
     onPress() {
         this.saveTopersonalCollection();
-        console.log(this.props.event);
     }
 
     handleSaveChange(success) {

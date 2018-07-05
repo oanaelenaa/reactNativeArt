@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, Image,Linking,StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { Animated, View, Text, Image, Linking, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
 
 export default class MuseumModel extends Component {
     progress = new Animated.Value(0);
     constructor(props) {
         super(props);
         this.state = {
-            museum: this.props.event
+            museum: this.props.event,
+            showCar: false
         }
         this.openInMaps = this.openInMaps.bind(this);
         this.visitWebsite = this.visitWebsite.bind(this);
+        this.openCrousel = this.openCrousel.bind(this);
     }
 
     componentDidMount() {
@@ -19,6 +21,12 @@ export default class MuseumModel extends Component {
     onPress() {
 
     }
+    openCrousel(){
+        const imgs=this.state.museum.photos;
+        this.props.onOpenCarousel(imgs);
+    }
+
+
 
     openInMaps() {
         console.log(this.state.museum);
@@ -47,7 +55,10 @@ export default class MuseumModel extends Component {
         const isOpenNow = opening_hours.open_now;
         return (
             <Animated.View style={[styles.container, { opacity, transform: [{ scale }] }]}>
-                <TouchableOpacity style={styles.buttonLove} onPress={() => this.onPress()}>
+                <TouchableOpacity style={styles.buttonLove}
+                    onPress={() => {
+                        this.openCrousel()
+                    }}>
                     <Image
                         resizeMode="contain"
                         style={styles.image}
